@@ -1810,21 +1810,27 @@
           && expectedGallery.every((item, index) => savedHero.gallery[index]?.url === item.url
             && savedHero.gallery[index]?.media_type === item.media_type
             && Number(savedHero.gallery[index]?.duration_seconds || 5) === Number(item.duration_seconds || 5));
+        const contentFieldsPersisted = [...document.querySelectorAll('[data-homepage-path]')].every((field) => {
+          const savedValue = getHomepageContentValue(savedSettings.homepage_content, field.dataset.homepagePath);
+          return String(savedValue ?? '').trim() === String(field.value ?? '').trim();
+        });
         const settingsPersisted = galleryPersisted
+          && contentFieldsPersisted
           && Number(savedHero.gallery_width_percent) === Number(homepageContent.hero.gallery_width_percent)
           && savedHero.transition_type === homepageContent.hero.transition_type
           && Number(savedHero.frame_width_px) === Number(homepageContent.hero.frame_width_px)
           && Number(savedHero.frame_height_px) === Number(homepageContent.hero.frame_height_px);
         if (!settingsPersisted) {
           storeSettings.homepage_content = homepageContent;
-          throw new Error('الخادم لم يحفظ إعدادات المعرض كاملة. أعد تشغيل/نشر خادم API المحدّث ثم احفظ مرة أخرى.');
+          throw new Error('لم يُرجع الخادم كل تعديلات محتوى الصفحة الرئيسية كما حُفظت. تحقق من تشغيل أحدث إصدار لخادم API ثم أعد الحفظ.');
         }
         renderStoreSettings(savedSettings);
+        localStorage.setItem('storeSettingsUpdatedAt', String(Date.now()));
         showToast('تم حفظ إعدادات المتجر والمعرض بنجاح');
       } catch (error) {
         console.error('Failed to save store settings:', error);
-        showToast(error.message?.includes('إعدادات المعرض كاملة')
-          ? 'لم يحفظ الخادم إعدادات المعرض. أعد نشر/تشغيل خادم API المحدّث ثم أعد الحفظ.'
+        showToast(error.message?.includes('كل تعديلات محتوى الصفحة الرئيسية')
+          ? 'لم يحفظ الخادم جميع تعديلات الصفحة. أعد تشغيل خادم API المحدّث ثم أعد الحفظ.'
           : 'تعذر حفظ الإعدادات، تحقق من البيانات واتصال السيرفر');
       } finally {
         if (submitButton) {

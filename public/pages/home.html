@@ -778,6 +778,40 @@
       return path.split('.').reduce((value, key) => value?.[key], content);
     }
 
+    function normalizeWhatsAppDigits(value) {
+      return String(value || '').replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit))).replace(/\D/g, '');
+    }
+
+    function resolveWhatsAppLink(configuredLink, phone) {
+      const configured = String(configuredLink || '').trim();
+      if (configured) {
+        try {
+          const parsed = new URL(configured);
+          const host = parsed.hostname.toLowerCase();
+          if (host === 'wa.me' || host.endsWith('.wa.me') || host.includes('whatsapp.com')) {
+            const digits = normalizeWhatsAppDigits(parsed.searchParams.get('phone') || parsed.pathname.split('/').filter(Boolean).pop());
+            if (digits) return `https://wa.me/${digits}`;
+          }
+        } catch { /* Keep the configured HTTPS link as entered. */ }
+        return configured;
+      }
+      let digits = normalizeWhatsAppDigits(phone);
+      if (!digits) return 'https://wa.me/964986763418';
+      if (digits.startsWith('0')) digits = `964${digits.slice(1)}`;
+      else if (!digits.startsWith('964') && digits.length <= 10) digits = `964${digits}`;
+      return `https://wa.me/${digits}`;
+    }
+
+    function whatsappLinkWithMessage(message) {
+      try {
+        const link = new URL(storeWhatsAppLink);
+        link.searchParams.set('text', message);
+        return link.toString();
+      } catch {
+        return `${storeWhatsAppLink}${storeWhatsAppLink.includes('?') ? '&' : '?'}text=${encodeURIComponent(message)}`;
+      }
+    }
+
     function applyHomepageContent(content) {
       currentHomepageContent = content;
       document.querySelectorAll('[data-homepage-text]').forEach((element) => {
@@ -797,17 +831,18 @@
         element.src = mediaUrl(value);
       });
       renderHeroGallery(content.hero || {});
+      storeWhatsAppLink = resolveWhatsAppLink(content.social?.whatsapp, content.contact?.phone);
       document.querySelectorAll('[data-homepage-social]').forEach((element) => {
-        const url = content.social?.[element.dataset.homepageSocial];
+        const network = element.dataset.homepageSocial;
+        const url = network === 'whatsapp' ? storeWhatsAppLink : content.social?.[network];
         if (typeof url === 'string' && url) {
           element.href = url;
           element.target = '_blank';
           element.rel = 'noopener noreferrer';
-        } else if (element.dataset.homepageSocial !== 'whatsapp') {
+        } else {
           element.removeAttribute('href');
         }
       });
-      storeWhatsAppLink = content.social?.whatsapp || storeWhatsAppLink;
       if (productsRequestStatus === 'loaded') {
         if (publishedProducts.length) renderFilteredProducts();
         else productsStatus.textContent = homepageText('products.status.empty', 'لا توجد منتجات منشورة حالياً.');
@@ -916,13 +951,17 @@
 
     async function loadStorefrontSettings() {
       try {
-        const response = await fetch(`${PRODUCT_API_BASE}/api/store-settings`);
+        const response = await fetch(`${PRODUCT_API_BASE}/api/store-settings`, { cache: 'no-store' });
         if (!response.ok) throw new Error(`Store settings request failed (${response.status})`);
         applyStoreSettings(await response.json());
       } catch (error) {
         console.error('Failed to load store settings:', error);
       }
     }
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'storeSettingsUpdatedAt') loadStorefrontSettings();
+    });
 
     function mediaUrl(url) {
       return url.startsWith('/') ? new URL(url, PRODUCT_API_BASE).href : url;
@@ -1179,7 +1218,7 @@
       const action = document.createElement('a');
       const available = !['unavailable', 'out_of_stock', 'reserved'].includes(String(product.stock_status || '').toLowerCase());
       action.className = `w-full ${available ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500 hover:bg-gray-600'} text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition`;
-      action.href = `${storeWhatsAppLink}${storeWhatsAppLink.includes('?') ? '&' : '?'}text=${encodeURIComponent(`${available ? 'مرحبا، أود طلب' : 'مرحبا، أستفسر عن توفر'} ${product.name || 'المنتج'} ${product.code || ''}`)}`;
+      action.href = whatsappLinkWithMessage(`${available ? 'مرحبا، أود طلب' : 'مرحبا، أستفسر عن توفر'} ${product.name || 'المنتج'} ${product.code || ''}`);
       action.target = '_blank';
       action.rel = 'noopener noreferrer';
       const icon = document.createElement('i');
