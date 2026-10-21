@@ -1110,7 +1110,12 @@
 </div>
 <!-- Interactive Logic Script -->
 <script>
-    const API_BASE = 'http://localhost:3001';
+    const API_BASE = (() => {
+      const configured = window.STOREFRONT_API_BASE || document.querySelector('meta[name="api-base"]')?.content;
+      if (configured) return configured.replace(/\/$/, '');
+      const isLocal = ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+      return isLocal && location.port !== '3001' ? `${location.protocol}//${location.hostname}:3001` : location.origin;
+    })();
     const state = { categories: [], subcategories: [], products: [], customers: [] };
     const defaultStoreSettings = {
       store_name: 'صالون أم علي للأناقة',
@@ -1630,6 +1635,7 @@
         const option = document.createElement('option'); option.value = value; option.textContent = label; transitionSelect.append(option);
       });
       transitionSelect.value = storeSettings.homepage_content.hero.transition_type || 'fade';
+      transitionLabel.append(transitionSelect);
       const widthLabel = document.createElement('label');
       widthLabel.className = 'flex flex-col gap-2 text-sm text-on-surface';
       widthLabel.append(document.createTextNode('نسبة عرض المعرض من مساحة البانر (%)'));
@@ -1641,6 +1647,10 @@
       widthLabel.append(widthInput);
       const widthHelp = document.createElement('span'); widthHelp.className = 'text-xs text-on-surface-variant'; widthHelp.textContent = 'من 40% إلى 80%؛ والنص يشغل المساحة المتبقية.';
       widthLabel.append(widthHelp);
+      const transitionHelp = document.createElement('span');
+      transitionHelp.className = 'text-xs text-on-surface-variant';
+      transitionHelp.textContent = 'اختاري كيف تظهر الوسائط عند الانتقال إلى الصورة أو الفيديو التالي.';
+      transitionLabel.append(transitionHelp);
       gallerySettings.append(durationHint, transitionLabel, widthLabel);
       heroGroup.append(galleryWrap, gallerySettings);
       renderGalleryItems();

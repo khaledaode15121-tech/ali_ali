@@ -690,7 +690,12 @@
 </footer>
 <!-- END: MainFooter -->
 <script data-purpose="published-products">
-  const PRODUCT_API_BASE = 'http://localhost:3001';
+  const PRODUCT_API_BASE = (() => {
+      const configured = window.STOREFRONT_API_BASE || document.querySelector('meta[name="api-base"]')?.content;
+      if (configured) return configured.replace(/\/$/, '');
+      const isLocal = ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+      return isLocal && location.port !== '3001' ? `${location.protocol}//${location.hostname}:3001` : location.origin;
+    })();
   const productsGrid = document.getElementById('productsShowcaseGrid');
   const productsStatus = document.getElementById('productsShowcaseStatus');
   const productSearchInput = document.getElementById('productSearchInput');
