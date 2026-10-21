@@ -287,6 +287,16 @@ function normalizeHomepageContent(input) {
     }
     content.hero.gallery_width_percent = galleryWidth;
     content.hero.transition_type = transitionType;
+    const frameWidth = Number(input?.hero?.frame_width_px ?? 800);
+    const frameHeight = Number(input?.hero?.frame_height_px ?? 480);
+    if (!Number.isInteger(frameWidth) || frameWidth < 320 || frameWidth > 1600) {
+      return { error: "Homepage gallery frame width must be between 320 and 1600 pixels" };
+    }
+    if (!Number.isInteger(frameHeight) || frameHeight < 180 || frameHeight > 1000) {
+      return { error: "Homepage gallery frame height must be between 180 and 1000 pixels" };
+    }
+    content.hero.frame_width_px = frameWidth;
+    content.hero.frame_height_px = frameHeight;
     const imageUrls = [
       content.hero.image_url,
       content.category_actions.offers_image_url,

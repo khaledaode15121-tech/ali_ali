@@ -1651,7 +1651,25 @@
       transitionHelp.className = 'text-xs text-on-surface-variant';
       transitionHelp.textContent = 'اختاري كيف تظهر الوسائط عند الانتقال إلى الصورة أو الفيديو التالي.';
       transitionLabel.append(transitionHelp);
-      gallerySettings.append(durationHint, transitionLabel, widthLabel);
+      const frameWidthLabel = document.createElement('label');
+      frameWidthLabel.className = 'flex flex-col gap-2 text-sm text-on-surface';
+      frameWidthLabel.append(document.createTextNode('عرض الإطار (بكسل)'));
+      const frameWidthInput = document.createElement('input');
+      frameWidthInput.id = 'heroFrameWidthPx'; frameWidthInput.type = 'number'; frameWidthInput.min = '320'; frameWidthInput.max = '1600'; frameWidthInput.step = '10';
+      frameWidthInput.value = String(storeSettings.homepage_content.hero.frame_width_px || 800);
+      frameWidthInput.className = 'rounded-xl border border-outline-variant bg-surface-container-low px-3 py-2';
+      frameWidthInput.setAttribute('aria-label', 'عرض إطار معرض البانر بالبكسل');
+      frameWidthLabel.append(frameWidthInput);
+      const frameHeightLabel = document.createElement('label');
+      frameHeightLabel.className = 'flex flex-col gap-2 text-sm text-on-surface';
+      frameHeightLabel.append(document.createTextNode('ارتفاع الإطار (بكسل)'));
+      const frameHeightInput = document.createElement('input');
+      frameHeightInput.id = 'heroFrameHeightPx'; frameHeightInput.type = 'number'; frameHeightInput.min = '180'; frameHeightInput.max = '1000'; frameHeightInput.step = '10';
+      frameHeightInput.value = String(storeSettings.homepage_content.hero.frame_height_px || 480);
+      frameHeightInput.className = 'rounded-xl border border-outline-variant bg-surface-container-low px-3 py-2';
+      frameHeightInput.setAttribute('aria-label', 'ارتفاع إطار معرض البانر بالبكسل');
+      frameHeightLabel.append(frameHeightInput);
+      gallerySettings.append(durationHint, transitionLabel, widthLabel, frameWidthLabel, frameHeightLabel);
       heroGroup.append(galleryWrap, gallerySettings);
       renderGalleryItems();
       const categoryActionsGroup = addGroup('صور بطاقات العروض وعرض الكل');
@@ -1766,6 +1784,8 @@
         });
         homepageContent.hero.transition_type = document.getElementById('heroTransitionType')?.value || 'fade';
         homepageContent.hero.gallery_width_percent = Math.max(40, Math.min(80, Math.round(Number(document.getElementById('heroGalleryWidthPercent')?.value) || 66)));
+        homepageContent.hero.frame_width_px = Math.max(320, Math.min(1600, Math.round(Number(document.getElementById('heroFrameWidthPx')?.value) || 800)));
+        homepageContent.hero.frame_height_px = Math.max(180, Math.min(1000, Math.round(Number(document.getElementById('heroFrameHeightPx')?.value) || 480)));
         homepageContent.hero.gallery = (storeSettings.homepage_content.hero.gallery || []).map((item) => ({
           url: item.url,
           media_type: item.media_type,
@@ -1792,7 +1812,9 @@
             && Number(savedHero.gallery[index]?.duration_seconds || 5) === Number(item.duration_seconds || 5));
         const settingsPersisted = galleryPersisted
           && Number(savedHero.gallery_width_percent) === Number(homepageContent.hero.gallery_width_percent)
-          && savedHero.transition_type === homepageContent.hero.transition_type;
+          && savedHero.transition_type === homepageContent.hero.transition_type
+          && Number(savedHero.frame_width_px) === Number(homepageContent.hero.frame_width_px)
+          && Number(savedHero.frame_height_px) === Number(homepageContent.hero.frame_height_px);
         if (!settingsPersisted) {
           storeSettings.homepage_content = homepageContent;
           throw new Error('الخادم لم يحفظ إعدادات المعرض كاملة. أعد تشغيل/نشر خادم API المحدّث ثم احفظ مرة أخرى.');
