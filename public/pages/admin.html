@@ -1779,14 +1779,31 @@
           secondary_color: document.getElementById('storeSecondaryColor').value,
           homepage_content: homepageContent,
         };
-        renderStoreSettings(await fetchJson('/api/store-settings', {
+        const savedSettings = await fetchJson('/api/store-settings', {
           method: 'PUT',
           body: JSON.stringify(payload),
-        }));
-        showToast('تم حفظ إعدادات المتجر بنجاح');
+        });
+        const savedHero = savedSettings.homepage_content?.hero;
+        const expectedGallery = homepageContent.hero.gallery || [];
+        const galleryPersisted = Array.isArray(savedHero?.gallery)
+          && savedHero.gallery.length === expectedGallery.length
+          && expectedGallery.every((item, index) => savedHero.gallery[index]?.url === item.url
+            && savedHero.gallery[index]?.media_type === item.media_type
+            && Number(savedHero.gallery[index]?.duration_seconds || 5) === Number(item.duration_seconds || 5));
+        const settingsPersisted = galleryPersisted
+          && Number(savedHero.gallery_width_percent) === Number(homepageContent.hero.gallery_width_percent)
+          && savedHero.transition_type === homepageContent.hero.transition_type;
+        if (!settingsPersisted) {
+          storeSettings.homepage_content = homepageContent;
+          throw new Error('الخادم لم يحفظ إعدادات المعرض كاملة. أعد تشغيل/نشر خادم API المحدّث ثم احفظ مرة أخرى.');
+        }
+        renderStoreSettings(savedSettings);
+        showToast('تم حفظ إعدادات المتجر والمعرض بنجاح');
       } catch (error) {
         console.error('Failed to save store settings:', error);
-        showToast('تعذر حفظ الإعدادات، تحقق من البيانات واتصال السيرفر');
+        showToast(error.message?.includes('إعدادات المعرض كاملة')
+          ? 'لم يحفظ الخادم إعدادات المعرض. أعد نشر/تشغيل خادم API المحدّث ثم أعد الحفظ.'
+          : 'تعذر حفظ الإعدادات، تحقق من البيانات واتصال السيرفر');
       } finally {
         if (submitButton) {
           submitButton.disabled = false;
