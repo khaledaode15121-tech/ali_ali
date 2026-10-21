@@ -675,12 +675,16 @@ app.post("/api/customers", async (req, res) => {
   const payload = normalizeCustomerPayload(req.body);
   if (!payload.full_name || !payload.phone || !payload.password) return res.status(400).json({ message: "اسم العميل والهاتف وكلمة المرور مطلوبة" });
   try {
+    const [duplicates] = await db.query("SELECT id FROM customers WHERE full_name=? OR phone=? LIMIT 1", [payload.full_name, payload.phone]);
+    if (duplicates.length) return res.status(409).json({ message: "اسم العميل أو رقم الهاتف مستخدم مسبقاً" });
     const [result] = await db.query(
       "INSERT INTO customers (full_name, phone, password_hash, email, preferred_style) VALUES (?, ?, ?, ?, ?)",
       [payload.full_name, payload.phone, hashCustomerPassword(payload.password), payload.email, payload.preferred_style],
     );
     return res.status(201).json({ id: result.insertId, full_name: payload.full_name, phone: payload.phone });
   } catch {
+    const duplicate = memory.customers.find((item) => item.full_name === payload.full_name || item.phone === payload.phone);
+    if (duplicate) return res.status(409).json({ message: "اسم العميل أو رقم الهاتف مستخدم مسبقاً" });
     const nextId = memory.customers.length ? Math.max(...memory.customers.map((item) => Number(item.id) || 0)) + 1 : 1;
     memory.customers.push({ id: nextId, full_name: payload.full_name, phone: payload.phone, password_hash: hashCustomerPassword(payload.password), email: payload.email, preferred_style: payload.preferred_style });
     return res.status(201).json({ id: nextId, full_name: payload.full_name, phone: payload.phone });
