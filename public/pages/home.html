@@ -270,6 +270,13 @@
 </div>
 <div class="mb-6 rounded-2xl border border-pink-100 bg-white p-4 shadow-sm">
 <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+<label class="flex min-w-[220px] flex-[1.4] flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productFilterSearchInput">
+  البحث في المنتجات والأقسام
+  <span class="relative">
+    <input id="productFilterSearchInput" data-homepage-placeholder="search_placeholder" class="w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pr-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100" placeholder="ابحثِ عن فستان أحلامك..." type="search" autocomplete="off" aria-label="البحث في اسم المنتج والقسم الرئيسي والقسم الفرعي"/>
+    <i class="fa-solid fa-magnifying-glass pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-brand-pink"></i>
+  </span>
+</label>
 <label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productPriceFilter">
   <span>تصفية حسب سعر البيع</span>
   <span class="relative">
@@ -751,6 +758,7 @@
   const productsGrid = document.getElementById('productsShowcaseGrid');
   const productsStatus = document.getElementById('productsShowcaseStatus');
   const productSearchInput = document.getElementById('productSearchInput');
+  const productFilterSearchInput = document.getElementById('productFilterSearchInput');
   const productPriceFilter = document.getElementById('productPriceFilter');
   const productRentalPriceFilter = document.getElementById('productRentalPriceFilter');
   const productAvailabilityFilter = document.getElementById('productAvailabilityFilter');
@@ -1533,6 +1541,7 @@
       } else {
         selectedOffersOnly = false;
         if (productSearchInput) productSearchInput.value = '';
+        if (productFilterSearchInput) productFilterSearchInput.value = '';
       }
       setSelectedCategoryAction(action);
       renderFilteredProducts();
@@ -1574,24 +1583,36 @@
       document.getElementById('products-showcase').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    let searchScrollTimer;
-    productSearchInput?.addEventListener('input', () => {
+    function handleProductSearchInput(sourceInput) {
+      const value = sourceInput?.value || '';
+      if (productSearchInput && productSearchInput !== sourceInput) productSearchInput.value = value;
+      if (productFilterSearchInput && productFilterSearchInput !== sourceInput) productFilterSearchInput.value = value;
       const filteredProducts = renderFilteredProducts();
-      if (productSearchInput.value.trim() && filteredProducts.length) {
+      if (value.trim() && filteredProducts.length) {
         clearTimeout(searchScrollTimer);
         searchScrollTimer = setTimeout(scrollToProductResults, 100);
       }
-    });
+      return filteredProducts;
+    }
+    let searchScrollTimer;
+    productSearchInput?.addEventListener('input', () => handleProductSearchInput(productSearchInput));
+    productFilterSearchInput?.addEventListener('input', () => handleProductSearchInput(productFilterSearchInput));
     productSearchInput?.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
-      const filteredProducts = renderFilteredProducts();
+      const filteredProducts = handleProductSearchInput(productSearchInput);
       if (productSearchInput.value.trim() && filteredProducts.length) scrollToProductResults();
+    });
+    productFilterSearchInput?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      const filteredProducts = handleProductSearchInput(productFilterSearchInput);
+      if (productFilterSearchInput.value.trim() && filteredProducts.length) scrollToProductResults();
     });
     productPriceFilter?.addEventListener('change', renderFilteredProducts);
     productRentalPriceFilter?.addEventListener('change', renderFilteredProducts);
     productAvailabilityFilter?.addEventListener('change', renderFilteredProducts);
     resetProductFilters?.addEventListener('click', () => {
       if (productSearchInput) productSearchInput.value = '';
+      if (productFilterSearchInput) productFilterSearchInput.value = '';
       if (productPriceFilter) productPriceFilter.value = 'all';
       if (productRentalPriceFilter) productRentalPriceFilter.value = 'all';
       if (productAvailabilityFilter) productAvailabilityFilter.value = 'all';
