@@ -1053,8 +1053,9 @@
       <label class="flex flex-col gap-2 font-label-md text-label-md">الباقي<input id="orderRemaining" type="number" readonly class="bg-surface-container-highest px-3 py-2.5 rounded-xl" /></label>
       <div class="flex items-end gap-2"><button type="submit" class="px-5 py-2.5 rounded-xl bg-primary text-on-primary">حفظ الطلب</button><button type="button" id="cancelOrderButton" class="px-5 py-2.5 rounded-xl bg-surface-container-high">إلغاء</button></div>
     </form>
-    <div id="orderFilters" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 p-4 rounded-2xl bg-surface-container-low">
+    <div id="orderFilters" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 p-4 rounded-2xl bg-surface-container-low">
       <label class="flex flex-col gap-2 font-label-md text-label-md">حالة الطلب<select id="orderStatusFilter" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl"><option value="all">جميع الطلبات</option><option value="pending">قيد الانتظار / جديد</option><option value="confirmed">مؤكدة</option><option value="completed">مكتملة</option><option value="cancelled">ملغاة</option></select></label>
+      <label class="flex flex-col gap-2 font-label-md text-label-md">اسم الزبون<select id="orderCustomerFilter" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl"><option value="all">جميع الزبائن</option></select></label>
       <label class="flex flex-col gap-2 font-label-md text-label-md">من تاريخ<input id="orderDateFrom" type="date" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl" /></label>
       <label class="flex flex-col gap-2 font-label-md text-label-md">إلى تاريخ<input id="orderDateTo" type="date" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl" /></label>
       <label class="flex flex-col gap-2 font-label-md text-label-md">ترتيب حسب<select id="orderSortFilter" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl"><option value="date_desc">الأحدث أولاً</option><option value="debt_desc">الديون الأكثر</option><option value="debt_asc">الديون الأقل</option><option value="total_desc">السعر الكلي الأعلى</option></select></label>
@@ -1162,6 +1163,7 @@
     let selectedOrderDateFrom = '';
     let selectedOrderDateTo = '';
     let selectedOrderSort = 'date_desc';
+    let selectedOrderCustomer = 'all';
     let productMedia = [];
     const productImagePool = [
       'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80',
@@ -1912,8 +1914,10 @@
     function populateOrderFormOptions() {
       const customerSelect = document.getElementById('orderCustomerId');
       const productSelect = document.getElementById('orderProductId');
+      const customerFilter = document.getElementById('orderCustomerFilter');
       if (customerSelect) customerSelect.replaceChildren(...state.customers.map((item) => new Option(`${item.full_name} - ${item.phone}`, item.id)));
       if (productSelect) productSelect.replaceChildren(...state.products.map((item) => new Option(`${item.code} - ${item.name}`, item.id)));
+      if (customerFilter) { const currentValue = customerFilter.value || selectedOrderCustomer; customerFilter.replaceChildren(new Option('جميع الزبائن', 'all'), ...state.customers.map((item) => new Option(item.full_name, item.id))); customerFilter.value = state.customers.some((item) => String(item.id) === String(currentValue)) ? currentValue : 'all'; }
     }
 
     function updateOrderRemaining() {
@@ -1976,6 +1980,7 @@
       let orders = adminOrders.filter((order) => {
         const date = getOrderDate(order);
         return (selectedOrderStatus === 'all' || order.status === selectedOrderStatus)
+          && (selectedOrderCustomer === 'all' || String(order.customer_id) === String(selectedOrderCustomer))
           && (!selectedOrderDateFrom || date >= selectedOrderDateFrom)
           && (!selectedOrderDateTo || date <= selectedOrderDateTo);
       });
@@ -2028,7 +2033,7 @@
         const customer = customers.get(Number(order.customer_id));
         return `🆔 اسم المنتج: ${product?.name || `منتج ${order.product_id}`}\n📊 اسم الزبون: ${customer?.full_name || `عميل ${order.customer_id}`}`;
       });
-      const message = `✨ فاتوره ✨\n🔹 مجموع : ${totalSum.toLocaleString('ar-SY')} ل.س\n📂 الديون: ${debtSum.toLocaleString('ar-SY')} ل.س\n📁 التاريخ : من ${fromDate} - الى ${toDate}\n${lines.join('\n\n')}`;
+      const message = `✨ فاتوره ✨\n🔹 مجموع : ${totalSum.toLocaleString('ar-SY')} ل.س\n📂 الديون: ${debtSum.toLocaleString('ar-SY')} ل.س\n📁 التاريخ : من ${fromDate} - الى ${toDate}\n━━━━━━━━━━━━━━\n${lines.join('\n━━━━━━━━━━━━━━\n')}`;
       const encodedMessage = encodeURIComponent(message);
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const whatsappUrl = isMobile ? `whatsapp://send?text=${encodedMessage}` : `https://web.whatsapp.com/send?text=${encodedMessage}`;
@@ -2763,10 +2768,11 @@
       document.getElementById('orderProductId')?.addEventListener('change', updateOrderPrice);
       document.getElementById('orderType')?.addEventListener('change', updateOrderPrice);
       document.getElementById('orderStatusFilter')?.addEventListener('change', (event) => { selectedOrderStatus = event.target.value; renderOrders(); });
+      document.getElementById('orderCustomerFilter')?.addEventListener('change', (event) => { selectedOrderCustomer = event.target.value; renderOrders(); });
       document.getElementById('orderDateFrom')?.addEventListener('change', (event) => { selectedOrderDateFrom = event.target.value; renderOrders(); });
       document.getElementById('orderDateTo')?.addEventListener('change', (event) => { selectedOrderDateTo = event.target.value; renderOrders(); });
       document.getElementById('orderSortFilter')?.addEventListener('change', (event) => { selectedOrderSort = event.target.value; renderOrders(); });
-      document.getElementById('resetOrderFilters')?.addEventListener('click', () => { selectedOrderStatus = 'all'; selectedOrderDateFrom = ''; selectedOrderDateTo = ''; selectedOrderSort = 'date_desc'; document.getElementById('orderStatusFilter').value = 'all'; document.getElementById('orderDateFrom').value = ''; document.getElementById('orderDateTo').value = ''; document.getElementById('orderSortFilter').value = 'date_desc'; renderOrders(); });
+      document.getElementById('resetOrderFilters')?.addEventListener('click', () => { selectedOrderStatus = 'all'; selectedOrderCustomer = 'all'; selectedOrderDateFrom = ''; selectedOrderDateTo = ''; selectedOrderSort = 'date_desc'; document.getElementById('orderStatusFilter').value = 'all'; document.getElementById('orderCustomerFilter').value = 'all'; document.getElementById('orderDateFrom').value = ''; document.getElementById('orderDateTo').value = ''; document.getElementById('orderSortFilter').value = 'date_desc'; renderOrders(); });
       document.getElementById('printOrdersButton')?.addEventListener('click', sendOrdersInvoiceToWhatsapp);
       document.getElementById('addProductMediaButton')?.addEventListener('click', () => {
         document.getElementById('productImageInput')?.click();
