@@ -1283,7 +1283,53 @@
         ? (configuredOrderLabel === 'أطلب المنتج' ? 'طلب المنتج' : configuredOrderLabel)
         : homepageText('products.card.availability', 'للاستفسار عن التوفر');
       action.append(icon, actionText);
-      details.append(action);
+      const shareButton = document.createElement('button');
+      shareButton.type = 'button';
+      shareButton.className = 'w-full bg-pink-50 hover:bg-pink-100 text-brand-pink border border-pink-200 py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition';
+      shareButton.setAttribute('aria-label', `مشاركة المنتج ${product.name || ''}`);
+      const shareIcon = document.createElement('i');
+      shareIcon.className = 'fa-solid fa-share-nodes text-sm';
+      const shareLabel = document.createElement('span');
+      shareLabel.textContent = 'مشاركة';
+      shareButton.append(shareIcon, shareLabel);
+      const productPageUrl = new URL(location.href);
+      productPageUrl.hash = 'products-showcase';
+      const productShareText = `${productMessage}\nرابط صفحة المتجر: ${productPageUrl.href}`;
+      shareButton.addEventListener('click', async () => {
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: product.name || 'منتج من المتجر', text: productShareText, url: productPageUrl.href });
+            return;
+          } catch (error) {
+            if (error.name === 'AbortError') return;
+          }
+        }
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(productShareText);
+          } else {
+            const temporaryInput = document.createElement('textarea');
+            temporaryInput.value = productShareText;
+            temporaryInput.style.position = 'fixed';
+            temporaryInput.style.opacity = '0';
+            document.body.append(temporaryInput);
+            temporaryInput.select();
+            const copied = document.execCommand('copy');
+            temporaryInput.remove();
+            if (!copied) throw new Error('Copy to clipboard is unavailable');
+          }
+          shareLabel.textContent = 'تم نسخ التفاصيل';
+          setTimeout(() => { shareLabel.textContent = 'مشاركة'; }, 2200);
+        } catch (error) {
+          console.warn('Could not share or copy product details:', error);
+          shareLabel.textContent = 'تعذرت المشاركة';
+          setTimeout(() => { shareLabel.textContent = 'مشاركة'; }, 2200);
+        }
+      });
+      const productActions = document.createElement('div');
+      productActions.className = 'grid grid-cols-2 gap-2';
+      productActions.append(action, shareButton);
+      details.append(productActions);
       card.append(imageFrame, details);
       return card;
     }
