@@ -84,6 +84,7 @@ CREATE TABLE `customers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `full_name` varchar(255) NOT NULL,
   `phone` varchar(50) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `password_hash` char(64) DEFAULT NULL,
   `preferred_style` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,

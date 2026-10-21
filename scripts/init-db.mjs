@@ -88,6 +88,7 @@ async function init() {
       id INT AUTO_INCREMENT PRIMARY KEY,
       full_name VARCHAR(255) NOT NULL,
       phone VARCHAR(50) NOT NULL,
+      password VARCHAR(255),
       password_hash CHAR(64),
       preferred_style VARCHAR(255),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
