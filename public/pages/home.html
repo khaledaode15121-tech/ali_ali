@@ -805,6 +805,17 @@
     function whatsappLinkWithMessage(message) {
       try {
         const link = new URL(storeWhatsAppLink);
+        const mobile = navigator.userAgentData?.mobile ?? /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+        const host = link.hostname.toLowerCase();
+        if (!mobile && (host === 'wa.me' || host.endsWith('.wa.me'))) {
+          const digits = normalizeWhatsAppDigits(link.pathname.split('/').filter(Boolean).pop());
+          if (digits) {
+            const webLink = new URL('https://web.whatsapp.com/send');
+            webLink.searchParams.set('phone', digits);
+            webLink.searchParams.set('text', message);
+            return webLink.toString();
+          }
+        }
         link.searchParams.set('text', message);
         return link.toString();
       } catch {
@@ -1233,6 +1244,8 @@
       action.target = '_blank';
       action.rel = 'noopener noreferrer';
       action.addEventListener('click', async (event) => {
+        const mobile = navigator.userAgentData?.mobile ?? /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+        if (!mobile) return;
         if (!productImageUrl || !navigator.share || !navigator.canShare || typeof File === 'undefined') return;
         event.preventDefault();
         try {
@@ -1254,9 +1267,10 @@
       const icon = document.createElement('i');
       icon.className = 'fa-brands fa-whatsapp text-sm';
       const actionText = document.createElement('span');
-      actionText.textContent = available
-        ? homepageText('products.card.order', 'أطلب المنتج')
-        : homepageText('products.card.availability', 'للاستفسار عن التوفر');
+      const mobile = navigator.userAgentData?.mobile ?? /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+      actionText.textContent = mobile
+        ? (available ? homepageText('products.card.order', 'أطلب المنتج') : homepageText('products.card.availability', 'للاستفسار عن التوفر'))
+        : 'مراسلة المدير عبر واتساب ويب';
       action.append(icon, actionText);
       details.append(action);
       card.append(imageFrame, details);
