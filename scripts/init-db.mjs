@@ -89,7 +89,6 @@ async function init() {
       full_name VARCHAR(255) NOT NULL,
       phone VARCHAR(50) NOT NULL,
       password_hash CHAR(64),
-      email VARCHAR(255),
       preferred_style VARCHAR(255),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

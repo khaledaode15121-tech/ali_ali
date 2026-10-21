@@ -153,8 +153,8 @@ const memory = {
     { id: 8, category_id: 4, subcategory_id: 8, code: "BE-120", name: "مجموعة عطور ملكية", price: 330, rental_price: 110, stock_status: "available", is_featured: 1, is_active: 1, image_url: "https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=900&q=80" },
   ],
   customers: [
-    { id: 1, full_name: "ليلى محمد", phone: "966500000001", email: "layla@example.com", preferred_style: "كلاسيكي" },
-    { id: 2, full_name: "سارة علي", phone: "966500000002", email: "sara@example.com", preferred_style: "فخيم" },
+    { id: 1, full_name: "ليلى محمد", phone: "966500000001", preferred_style: "كلاسيكي" },
+    { id: 2, full_name: "سارة علي", phone: "966500000002", preferred_style: "فخيم" },
   ],
   orders: [
     { id: 1, customer_id: 1, product_id: 1, order_type: "rent", status: "confirmed", quantity: 1, total_price: 250, created_at: "2026-10-10" },
@@ -220,7 +220,6 @@ function normalizeCustomerPayload(body) {
     full_name: String(body.full_name || "").trim(),
     phone: String(body.phone || "").trim(),
     password: String(body.password || ""),
-    email: String(body.email || "").trim(),
     preferred_style: String(body.preferred_style || "").trim(),
   };
 }
@@ -678,15 +677,15 @@ app.post("/api/customers", async (req, res) => {
     const [duplicates] = await db.query("SELECT id FROM customers WHERE full_name=? OR phone=? LIMIT 1", [payload.full_name, payload.phone]);
     if (duplicates.length) return res.status(409).json({ message: "اسم العميل أو رقم الهاتف مستخدم مسبقاً" });
     const [result] = await db.query(
-      "INSERT INTO customers (full_name, phone, password_hash, email, preferred_style) VALUES (?, ?, ?, ?, ?)",
-      [payload.full_name, payload.phone, hashCustomerPassword(payload.password), payload.email, payload.preferred_style],
+      "INSERT INTO customers (full_name, phone, password_hash, preferred_style) VALUES (?, ?, ?, ?)",
+      [payload.full_name, payload.phone, hashCustomerPassword(payload.password), payload.preferred_style],
     );
     return res.status(201).json({ id: result.insertId, full_name: payload.full_name, phone: payload.phone });
   } catch {
     const duplicate = memory.customers.find((item) => item.full_name === payload.full_name || item.phone === payload.phone);
     if (duplicate) return res.status(409).json({ message: "اسم العميل أو رقم الهاتف مستخدم مسبقاً" });
     const nextId = memory.customers.length ? Math.max(...memory.customers.map((item) => Number(item.id) || 0)) + 1 : 1;
-    memory.customers.push({ id: nextId, full_name: payload.full_name, phone: payload.phone, password_hash: hashCustomerPassword(payload.password), email: payload.email, preferred_style: payload.preferred_style });
+    memory.customers.push({ id: nextId, full_name: payload.full_name, phone: payload.phone, password_hash: hashCustomerPassword(payload.password), preferred_style: payload.preferred_style });
     return res.status(201).json({ id: nextId, full_name: payload.full_name, phone: payload.phone });
   }
 });
@@ -696,13 +695,13 @@ app.put("/api/customers/:id", async (req, res) => {
   try {
     const passwordPart = payload.password ? ", password_hash=?" : "";
     const values = payload.password
-      ? [payload.full_name, payload.phone, payload.email, payload.preferred_style, hashCustomerPassword(payload.password), req.params.id]
-      : [payload.full_name, payload.phone, payload.email, payload.preferred_style, req.params.id];
-    await db.query(`UPDATE customers SET full_name=?, phone=?, email=?, preferred_style=?${passwordPart} WHERE id=?`, values);
+      ? [payload.full_name, payload.phone, payload.preferred_style, hashCustomerPassword(payload.password), req.params.id]
+      : [payload.full_name, payload.phone, payload.preferred_style, req.params.id];
+    await db.query(`UPDATE customers SET full_name=?, phone=?, preferred_style=?${passwordPart} WHERE id=?`, values);
     return res.json({ message: "Customer updated" });
   } catch {
     const index = memory.customers.findIndex((item) => Number(item.id) === Number(req.params.id));
-    if (index >= 0) memory.customers[index] = { ...memory.customers[index], full_name: payload.full_name, phone: payload.phone, email: payload.email, preferred_style: payload.preferred_style, ...(payload.password ? { password_hash: hashCustomerPassword(payload.password) } : {}) };
+    if (index >= 0) memory.customers[index] = { ...memory.customers[index], full_name: payload.full_name, phone: payload.phone, preferred_style: payload.preferred_style, ...(payload.password ? { password_hash: hashCustomerPassword(payload.password) } : {}) };
     return res.json({ message: "Customer updated in demo mode" });
   }
 });
@@ -717,7 +716,7 @@ app.post("/api/auth/login", async (req, res) => {
   const phone = String(req.body.phone || "").trim();
   const passwordHash = hashCustomerPassword(req.body.password || "");
   try {
-    const [rows] = await db.query("SELECT id, full_name, phone, email, preferred_style FROM customers WHERE full_name=? AND phone=? AND password_hash=? LIMIT 1", [fullName, phone, passwordHash]);
+    const [rows] = await db.query("SELECT id, full_name, phone, preferred_style FROM customers WHERE full_name=? AND phone=? AND password_hash=? LIMIT 1", [fullName, phone, passwordHash]);
     if (!rows.length) return res.status(401).json({ message: "رقم الهاتف أو كلمة المرور غير صحيحة" });
     return res.json({ customer: rows[0] });
   } catch {
@@ -887,6 +886,8 @@ async function startServer() {
     }
     const [customerPasswordColumns] = await db.query("SHOW COLUMNS FROM customers LIKE 'password_hash'");
     if (!customerPasswordColumns.length) await db.query("ALTER TABLE customers ADD COLUMN password_hash CHAR(64) NULL AFTER phone");
+    const [customerEmailColumns] = await db.query("SHOW COLUMNS FROM customers LIKE 'email'");
+    if (customerEmailColumns.length) await db.query("ALTER TABLE customers DROP COLUMN email");
     const orderColumns = [
       ["deposit", "DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER total_price"],
       ["remaining", "DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER deposit"],

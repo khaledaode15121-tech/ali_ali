@@ -85,7 +85,6 @@ CREATE TABLE `customers` (
   `full_name` varchar(255) NOT NULL,
   `phone` varchar(50) NOT NULL,
   `password_hash` char(64) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
   `preferred_style` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -196,9 +195,9 @@ INSERT INTO `offers` (`product_id`, `title`, `discount_percent`, `starts_at`, `e
 (1, 'عرض الموسم الحصري', 15, '2026-01-01', '2026-03-31'),
 (2, 'خصم شهر العروس', 10, '2026-02-01', '2026-04-15');
 
-INSERT INTO `customers` (`full_name`, `phone`, `email`, `preferred_style`) VALUES
-('ليلى محمد', '966500000001', 'layla@example.com', 'كلاسيكي'),
-('سارة علي', '966500000002', 'sara@example.com', 'فخيم');
+INSERT INTO `customers` (`full_name`, `phone`, `preferred_style`) VALUES
+('ليلى محمد', '966500000001', 'كلاسيكي'),
+('سارة علي', '966500000002', 'فخيم');
 
 INSERT INTO `orders` (`customer_id`, `product_id`, `order_type`, `status`, `quantity`, `total_price`) VALUES
 (1, 1, 'rent', 'confirmed', 1, 250.00),
