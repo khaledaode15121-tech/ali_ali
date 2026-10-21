@@ -36,7 +36,7 @@ const defaultHomepageContent = {
     login: "تسجيل الدخول",
     cart: "سلة التسوق",
     home: "الرئيسية",
-    dresses: "الفساتين",
+    dresses: "المنتجات",
     offers: "العروض",
     about: "من نحن",
     contact: "اتصل بنا",
@@ -266,6 +266,9 @@ function normalizeHomepageContent(input) {
 
   try {
     const content = mergeText(defaultHomepageContent, input);
+    if (content.nav.dresses === "الفساتين") {
+      content.nav.dresses = defaultHomepageContent.nav.dresses;
+    }
     const legacyTemplate = "السلام عليكم، أود {request_type} المنتج التالي:\nالاسم: {product_name}\nرقم المنتج: {product_code}\nسعر البيع: {sale_price}\nسعر الإيجار: {rental_price}\nالتوفر: {availability}\nالقسم الرئيسي: {main_category}\nالقسم الفرعي: {subcategory}\nصورة المنتج: {image_url}";
     if (content.products.card.whatsapp_message_template === legacyTemplate) {
       content.products.card.whatsapp_message_template = defaultHomepageContent.products.card.whatsapp_message_template;
