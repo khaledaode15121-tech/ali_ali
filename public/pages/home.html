@@ -1462,6 +1462,14 @@
       return filteredProducts;
     }
 
+    function scrollToProductResults() {
+      const productsSection = document.getElementById('products-showcase');
+      if (!productsSection) return;
+      const topOffset = 12;
+      const targetTop = Math.max(0, productsSection.getBoundingClientRect().top + window.scrollY - topOffset);
+      window.scrollTo({ top: targetTop, behavior: 'smooth' });
+    }
+
     async function loadPublishedProducts() {
       if (!productsGrid || !productsStatus) return;
       try {
@@ -1566,11 +1574,18 @@
       document.getElementById('products-showcase').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
+    let searchScrollTimer;
     productSearchInput?.addEventListener('input', () => {
       const filteredProducts = renderFilteredProducts();
       if (productSearchInput.value.trim() && filteredProducts.length) {
-        document.getElementById('products-showcase')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        clearTimeout(searchScrollTimer);
+        searchScrollTimer = setTimeout(scrollToProductResults, 100);
       }
+    });
+    productSearchInput?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      const filteredProducts = renderFilteredProducts();
+      if (productSearchInput.value.trim() && filteredProducts.length) scrollToProductResults();
     });
     productPriceFilter?.addEventListener('change', renderFilteredProducts);
     productRentalPriceFilter?.addEventListener('change', renderFilteredProducts);
