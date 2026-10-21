@@ -269,7 +269,24 @@ function normalizeHomepageContent(input) {
     if (heroGallery.length > 30 || heroGallery.some((item) => !item || typeof item.url !== "string" || !/^(https:\/\/|\/uploads\/)[^\s]*$/i.test(item.url) || !["image", "video"].includes(item.media_type))) {
       return { error: "Homepage gallery must contain up to 30 valid images or videos" };
     }
-    content.hero.gallery = heroGallery.map((item) => ({ url: item.url, media_type: item.media_type }));
+    if (heroGallery.some((item) => item.duration_seconds !== undefined && (!Number.isInteger(Number(item.duration_seconds)) || Number(item.duration_seconds) < 1 || Number(item.duration_seconds) > 60))) {
+      return { error: "Each homepage gallery item duration must be between 1 and 60 seconds" };
+    }
+    content.hero.gallery = heroGallery.map((item) => ({
+      url: item.url,
+      media_type: item.media_type,
+      duration_seconds: item.duration_seconds === undefined ? 5 : Number(item.duration_seconds),
+    }));
+    const galleryWidth = Number(input?.hero?.gallery_width_percent ?? 66);
+    const transitionType = input?.hero?.transition_type ?? "fade";
+    if (!Number.isInteger(galleryWidth) || galleryWidth < 40 || galleryWidth > 80) {
+      return { error: "Homepage gallery width must be between 40 and 80 percent" };
+    }
+    if (!["fade", "slide", "zoom", "none"].includes(transitionType)) {
+      return { error: "Invalid homepage gallery transition type" };
+    }
+    content.hero.gallery_width_percent = galleryWidth;
+    content.hero.transition_type = transitionType;
     const imageUrls = [
       content.hero.image_url,
       content.category_actions.offers_image_url,

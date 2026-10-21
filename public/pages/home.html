@@ -99,6 +99,7 @@
     header h1 { font-size: 1.5rem; line-height: 2rem; }
     [data-purpose="hero-section"] { padding-block: 24px; }
     [data-purpose="hero-section"] h2 { font-size: 2.25rem; line-height: 1.15; }
+    #heroGalleryRegion, #heroTextRegion { flex-basis: auto !important; }
     [data-purpose="hero-section"] .aspect-\[16\/9\] { aspect-ratio: 4 / 3; }
     [data-purpose="hero-section"] [data-homepage-text="hero.category_line"] { white-space: normal; }
     #mainCategoriesGrid { gap: 16px 10px; }
@@ -188,7 +189,7 @@
 </div>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center gap-8">
 <!-- Gallery: two thirds of the available horizontal space -->
-<div class="w-full md:w-2/3 flex justify-center">
+<div id="heroGalleryRegion" class="w-full md:w-auto flex justify-center">
 <div class="relative p-2 bg-white rounded-3xl shadow-xl ring-4 ring-pink-200/50 w-full max-w-4xl">
 <div class="overflow-hidden rounded-2xl aspect-[16/9] bg-pink-50 flex items-center justify-center">
 <img id="storeHomeImage" data-homepage-image="hero.image_url" alt="صالون أم علي للأناقة" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
@@ -201,7 +202,7 @@
 </div>
 </div>
 <!-- Left Side: Hero Typography & Call-To-Action -->
-<div class="w-full md:w-1/3 min-w-0 text-center md:text-right space-y-4">
+<div id="heroTextRegion" class="w-full md:w-auto min-w-0 text-center md:text-right space-y-4">
 <div class="inline-flex items-center gap-2 bg-pink-200/70 text-brand-pinkDeep px-4 py-1.5 rounded-full text-xs font-bold tracking-wide">
 <i class="fa-solid fa-gem text-amber-500"></i> <span data-homepage-text="hero.kicker">خيار العرائس الأول والأرقى</span>
         </div>
@@ -811,11 +812,18 @@
       const image = document.getElementById('storeHomeImage');
       const video = document.getElementById('storeHomeVideo');
       const dots = document.getElementById('heroGalleryDots');
+      const galleryRegion = document.getElementById('heroGalleryRegion');
+      const textRegion = document.getElementById('heroTextRegion');
       if (!image || !video || !dots) return;
+      const width = Math.max(40, Math.min(80, Number(hero.gallery_width_percent) || 66));
+      if (galleryRegion && textRegion) {
+        galleryRegion.style.flexBasis = `${width}%`;
+        textRegion.style.flexBasis = `${100 - width}%`;
+      }
       const items = Array.isArray(hero.gallery) && hero.gallery.length
         ? hero.gallery.filter((item) => item && item.url)
-        : (hero.image_url ? [{ url: hero.image_url, media_type: 'image' }] : []);
-      clearInterval(heroSlideTimer);
+        : (hero.image_url ? [{ url: hero.image_url, media_type: 'image', duration_seconds: 5 }] : []);
+      clearTimeout(heroSlideTimer);
       dots.replaceChildren();
       if (!items.length) return;
       let active = 0;
@@ -823,20 +831,34 @@
         active = index;
         const item = items[index];
         video.pause();
+        let activeMedia;
         if (item.media_type === 'video') {
-          clearInterval(heroSlideTimer);
           image.classList.add('hidden');
           video.classList.remove('hidden');
           const src = mediaUrl(item.url);
           if (video.src !== new URL(src, location.href).href) video.src = src;
+          activeMedia = video;
         } else {
           video.removeAttribute('src');
           video.load();
           video.classList.add('hidden');
           image.classList.remove('hidden');
           image.src = mediaUrl(item.url);
+          activeMedia = image;
         }
+        const motion = hero.transition_type || 'fade';
+        const effects = {
+          fade: [{ opacity: 0.25 }, { opacity: 1 }],
+          slide: [{ opacity: 0.4, transform: 'translateX(28px)' }, { opacity: 1, transform: 'translateX(0)' }],
+          zoom: [{ opacity: 0.5, transform: 'scale(0.94)' }, { opacity: 1, transform: 'scale(1)' }],
+        };
+        if (effects[motion]) activeMedia.animate(effects[motion], { duration: 450, easing: 'ease-out' });
         [...dots.children].forEach((dot, i) => dot.classList.toggle('bg-white', i === index));
+        clearTimeout(heroSlideTimer);
+        if (items.length > 1) {
+          const seconds = Math.max(1, Math.min(60, Number(item.duration_seconds) || 5));
+          heroSlideTimer = setTimeout(() => show((active + 1) % items.length), seconds * 1000);
+        }
       };
       items.forEach((_, index) => {
         const dot = document.createElement('button');
@@ -848,7 +870,6 @@
       dots.classList.toggle('hidden', items.length < 2);
       dots.classList.toggle('flex', items.length > 1);
       show(0);
-      if (items.length > 1) heroSlideTimer = setInterval(() => show((active + 1) % items.length), 5000);
     }
     function homepageText(path, fallback) {
       const value = getHomepageValue(currentHomepageContent, path);

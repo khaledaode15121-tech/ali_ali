@@ -1566,7 +1566,7 @@
         const gallery = storeSettings.homepage_content.hero.gallery || [];
         gallery.forEach((item, index) => {
           const card = document.createElement('div');
-          card.className = 'relative rounded-xl border border-outline-variant p-2';
+          card.className = 'relative rounded-xl border border-outline-variant p-2 flex flex-col gap-2';
           const preview = item.media_type === 'video' ? document.createElement('video') : document.createElement('img');
           preview.src = new URL(item.url, API_BASE).href;
           preview.className = 'w-full h-24 rounded-lg object-contain bg-surface-container-low';
@@ -1578,7 +1578,20 @@
             storeSettings.homepage_content.hero.gallery.splice(index, 1);
             renderGalleryItems();
           });
-          card.append(preview, remove); galleryList.append(card);
+          const durationLabel = document.createElement('label');
+          durationLabel.className = 'flex items-center justify-between gap-2 text-xs text-on-surface';
+          durationLabel.append(document.createTextNode('مدة العرض (ثانية)'));
+          const durationInput = document.createElement('input');
+          durationInput.type = 'number'; durationInput.min = '1'; durationInput.max = '60'; durationInput.step = '1';
+          durationInput.value = String(item.duration_seconds || 5);
+          durationInput.className = 'w-20 rounded-lg border border-outline-variant px-2 py-1';
+          durationInput.setAttribute('aria-label', `مدة عرض الوسيط ${index + 1} بالثواني`);
+          durationInput.addEventListener('change', () => {
+            const seconds = Math.max(1, Math.min(60, Math.round(Number(durationInput.value) || 5)));
+            item.duration_seconds = seconds; durationInput.value = String(seconds);
+          });
+          durationLabel.append(durationInput);
+          card.append(preview, durationLabel, remove); galleryList.append(card);
         });
       };
       galleryInput.addEventListener('change', async () => {
@@ -1594,7 +1607,7 @@
             if (!response.ok) throw new Error('Upload failed');
             const uploaded = await response.json();
             storeSettings.homepage_content.hero.gallery ||= [];
-            storeSettings.homepage_content.hero.gallery.push({ url: uploaded.url, media_type: uploaded.media_type });
+            storeSettings.homepage_content.hero.gallery.push({ url: uploaded.url, media_type: uploaded.media_type, duration_seconds: 5 });
           } catch (error) { showToast('تعذر رفع أحد ملفات المعرض'); }
         }
         galleryInput.value = '';
@@ -1602,7 +1615,34 @@
         showToast('تم تحديث المعرض، احفظ الإعدادات لتطبيق التغيير');
       });
       galleryWrap.append(galleryLabel, galleryInput, galleryList);
-      heroGroup.append(galleryWrap);
+      const gallerySettings = document.createElement('div');
+      gallerySettings.className = 'md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2';
+      const durationHint = document.createElement('p');
+      durationHint.className = 'sm:col-span-2 text-sm text-on-surface-variant';
+      durationHint.textContent = 'حددي مدة مستقلة لكل صورة أو فيديو من بطاقته أعلاه (من 1 إلى 60 ثانية).';
+      const transitionLabel = document.createElement('label');
+      transitionLabel.className = 'flex flex-col gap-2 text-sm text-on-surface';
+      transitionLabel.append(document.createTextNode('حركة الانتقال بين الوسائط'));
+      const transitionSelect = document.createElement('select');
+      transitionSelect.id = 'heroTransitionType';
+      transitionSelect.className = 'rounded-xl border border-outline-variant bg-surface-container-low px-3 py-2';
+      [['fade','تلاشي'],['slide','انزلاق'],['zoom','تكبير'],['none','بدون حركة']].forEach(([value,label]) => {
+        const option = document.createElement('option'); option.value = value; option.textContent = label; transitionSelect.append(option);
+      });
+      transitionSelect.value = storeSettings.homepage_content.hero.transition_type || 'fade';
+      const widthLabel = document.createElement('label');
+      widthLabel.className = 'flex flex-col gap-2 text-sm text-on-surface';
+      widthLabel.append(document.createTextNode('نسبة عرض المعرض من مساحة البانر (%)'));
+      const widthInput = document.createElement('input');
+      widthInput.id = 'heroGalleryWidthPercent'; widthInput.type = 'number'; widthInput.min = '40'; widthInput.max = '80'; widthInput.step = '1';
+      widthInput.value = String(storeSettings.homepage_content.hero.gallery_width_percent || 66);
+      widthInput.className = 'rounded-xl border border-outline-variant bg-surface-container-low px-3 py-2';
+      widthInput.setAttribute('aria-label','نسبة عرض المعرض من مساحة البانر بالمئة');
+      widthLabel.append(widthInput);
+      const widthHelp = document.createElement('span'); widthHelp.className = 'text-xs text-on-surface-variant'; widthHelp.textContent = 'من 40% إلى 80%؛ والنص يشغل المساحة المتبقية.';
+      widthLabel.append(widthHelp);
+      gallerySettings.append(durationHint, transitionLabel, widthLabel);
+      heroGroup.append(galleryWrap, gallerySettings);
       renderGalleryItems();
       const categoryActionsGroup = addGroup('صور بطاقات العروض وعرض الكل');
       categoryActionsGroup.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
@@ -1714,6 +1754,13 @@
         document.querySelectorAll('[data-homepage-path]').forEach((field) => {
           setHomepageContentValue(homepageContent, field.dataset.homepagePath, field.value);
         });
+        homepageContent.hero.transition_type = document.getElementById('heroTransitionType')?.value || 'fade';
+        homepageContent.hero.gallery_width_percent = Math.max(40, Math.min(80, Math.round(Number(document.getElementById('heroGalleryWidthPercent')?.value) || 66)));
+        homepageContent.hero.gallery = (storeSettings.homepage_content.hero.gallery || []).map((item) => ({
+          url: item.url,
+          media_type: item.media_type,
+          duration_seconds: Math.max(1, Math.min(60, Math.round(Number(item.duration_seconds) || 5))),
+        }));
         const payload = {
           store_name: document.getElementById('storeNameInput').value.trim(),
           logo_url: document.getElementById('storeLogoUrl').value,
