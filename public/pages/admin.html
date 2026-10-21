@@ -2018,23 +2018,29 @@
       status.classList.toggle('hidden', orders.length > 0);
     }
 
+    function getInvoiceDetails(orders, customers, products) {
+      return orders.map((order) => ({
+        customer: customers.get(Number(order.customer_id))?.full_name || `عميل ${order.customer_id}`,
+        product: products.get(Number(order.product_id))?.name || `منتج ${order.product_id}`,
+        date: getOrderDate(order) || '—',
+        total: Number(order.total_price || 0),
+        debt: getOrderDebt(order),
+      }));
+    }
+    function getInvoiceSummary(orders) {
+      const dates = orders.map(getOrderDate).filter(Boolean).sort();
+      return { total: orders.reduce((sum, order) => sum + Number(order.total_price || 0), 0), debt: orders.reduce((sum, order) => sum + getOrderDebt(order), 0), fromDate: selectedOrderDateFrom || dates[0] || '—', toDate: selectedOrderDateTo || dates[dates.length - 1] || selectedOrderDateFrom || '—' };
+    }
     function sendOrdersInvoiceToWhatsapp() {
       const orders = getFilteredOrders();
       if (!orders.length) return showToast('لا توجد طلبات مطابقة للفلاتر الحالية');
       const customers = new Map(state.customers?.map((item) => [Number(item.id), item]) || []);
       const products = new Map(state.products.map((item) => [Number(item.id), item]));
-      const totalSum = orders.reduce((sum, order) => sum + Number(order.total_price || 0), 0);
-      const debtSum = orders.reduce((sum, order) => sum + getOrderDebt(order), 0);
-      const dates = orders.map(getOrderDate).filter(Boolean).sort();
-      const fromDate = selectedOrderDateFrom || dates[0] || '—';
-      const toDate = selectedOrderDateTo || dates[dates.length - 1] || fromDate;
-      const lines = orders.map((order) => {
-        const product = products.get(Number(order.product_id));
-        const customer = customers.get(Number(order.customer_id));
-        return `🆔 اسم المنتج: ${product?.name || `منتج ${order.product_id}`}\n📊 اسم الزبون: ${customer?.full_name || `عميل ${order.customer_id}`}`;
-      });
+      const details = getInvoiceDetails(orders, customers, products);
+      const summary = getInvoiceSummary(orders);
       const storeName = storeSettings.store_name || 'صالون أم علي للأناقة';
-      const message = `✨ فاتورة ${storeName} ✨\n🔹 مجموع : ${totalSum.toLocaleString('ar-SY')} ل.س\n📂 الديون: ${debtSum.toLocaleString('ar-SY')} ل.س\n📁 التاريخ : من ${fromDate} - الى ${toDate}\n━━━━━━━━━━━━━━\n${lines.join('\n━━━━━━━━━━━━━━\n')}`;
+      const detailText = details.map((item) => `👤 الزبون: ${item.customer}\n🆔 المنتج: ${item.product}\n💰 المجموع الخاص: ${item.total.toLocaleString('ar-SY')} ل.س\n📂 الدين الخاص: ${item.debt.toLocaleString('ar-SY')} ل.س\n📅 التاريخ: ${item.date}`).join('\n━━━━━━━━━━━━━━\n');
+      const message = `✨ فاتورة ${storeName} ✨\n━━━━━━━━━━━━━━\n🔹 المجموع العام: ${summary.total.toLocaleString('ar-SY')} ل.س\n📂 مجموع الديون: ${summary.debt.toLocaleString('ar-SY')} ل.س\n📁 الفترة: من ${summary.fromDate} - إلى ${summary.toDate}\n━━━━━━━━━━━━━━\n${detailText}`;
       const encodedMessage = encodeURIComponent(message);
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const whatsappUrl = isMobile ? `whatsapp://send?text=${encodedMessage}` : `https://web.whatsapp.com/send?text=${encodedMessage}`;
@@ -2046,33 +2052,25 @@
       if (typeof window.html2pdf !== 'function') return showToast('تعذر تحميل أداة PDF، تحقق من اتصال الإنترنت');
       const customers = new Map(state.customers?.map((item) => [Number(item.id), item]) || []);
       const products = new Map(state.products.map((item) => [Number(item.id), item]));
-      const totalSum = orders.reduce((sum, order) => sum + Number(order.total_price || 0), 0);
-      const debtSum = orders.reduce((sum, order) => sum + getOrderDebt(order), 0);
-      const dates = orders.map(getOrderDate).filter(Boolean).sort();
-      const fromDate = selectedOrderDateFrom || dates[0] || '—';
-      const toDate = selectedOrderDateTo || dates[dates.length - 1] || fromDate;
+      const details = getInvoiceDetails(orders, customers, products);
+      const summary = getInvoiceSummary(orders);
       const storeName = storeSettings.store_name || 'صالون أم علي للأناقة';
       const content = document.createElement('div');
       content.dir = 'rtl';
-      content.style.cssText = 'background:#fff;color:#25181e;padding:24px;width:100%;font-family:Arial,sans-serif;';
-      content.innerHTML = `<h1 style="text-align:center;color:#b0004a;margin:0 0 8px">✨ ${storeName} ✨</h1><h2 style="text-align:center;margin:0 0 18px">فاتورة مجمعة</h2><div style="font-size:14px;margin-bottom:14px"><strong>🔹 مجموع:</strong> ${totalSum.toLocaleString('ar-SY')} ل.س<br><strong>📂 الديون:</strong> ${debtSum.toLocaleString('ar-SY')} ل.س<br><strong>📁 التاريخ:</strong> من ${fromDate} - إلى ${toDate}</div>`;
-      orders.forEach((order, index) => {
-        const product = products.get(Number(order.product_id));
-        const customer = customers.get(Number(order.customer_id));
-        const item = document.createElement('div');
-        item.style.cssText = 'border-top:1px solid #c9aeb5;padding:10px 0;font-size:13px;';
-        item.innerHTML = `<strong>🆔 اسم المنتج:</strong> ${product?.name || `منتج ${order.product_id}`}<br><strong>📊 اسم الزبون:</strong> ${customer?.full_name || `عميل ${order.customer_id}`}<br><strong>💰 الكلي:</strong> ${Number(order.total_price || 0).toLocaleString('ar-SY')} ل.س | <strong>📂 الدين:</strong> ${getOrderDebt(order).toLocaleString('ar-SY')} ل.س`;
-        content.append(item);
+      content.style.cssText = 'box-sizing:border-box;background:#fff;color:#25181e;padding:32px;width:1000px;min-height:500px;font-family:Arial,sans-serif;position:fixed;top:0;left:0;z-index:2147483647;pointer-events:none;';
+      content.innerHTML = `<div style="text-align:center;border-bottom:3px solid #b0004a;padding-bottom:14px;margin-bottom:18px"><div style="font-size:24px;font-weight:bold;color:#b0004a">✨ ${storeName} ✨</div><div style="font-size:20px;font-weight:bold;margin-top:8px">فاتورة مجمعة</div></div><div style="background:#fff0f4;border:1px solid #d81b60;border-radius:10px;padding:14px;font-size:15px;line-height:2;margin-bottom:18px"><strong>🔹 المجموع العام:</strong> ${summary.total.toLocaleString('ar-SY')} ل.س<br><strong>📂 مجموع الديون:</strong> ${summary.debt.toLocaleString('ar-SY')} ل.س<br><strong>📁 الفترة:</strong> من ${summary.fromDate} - إلى ${summary.toDate}</div>`;
+      details.forEach((item) => {
+        const card = document.createElement('div');
+        card.style.cssText = 'border:1px solid #c9aeb5;border-right:5px solid #b0004a;border-radius:8px;padding:12px 16px;margin:0 0 12px;font-size:14px;line-height:1.9;';
+        card.innerHTML = `<div style="font-weight:bold;color:#b0004a;font-size:16px;margin-bottom:4px">👤 ${item.customer}</div><div><strong>🆔 اسم المنتج:</strong> ${item.product}</div><div><strong>💰 المجموع الخاص:</strong> ${item.total.toLocaleString('ar-SY')} ل.س</div><div><strong>📂 الدين الخاص:</strong> ${item.debt.toLocaleString('ar-SY')} ل.س</div><div><strong>📅 التاريخ:</strong> ${item.date}</div>`;
+        content.append(card);
       });
-      content.style.position = 'fixed';
-      content.style.left = '-100000px';
       document.body.append(content);
       const today = new Date();
       const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      try { await window.html2pdf().set({ margin: 8, filename: `فاتورة-${todayValue}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4' } }).from(content).save(); showToast(`تم تصدير فاتورة-${todayValue}.pdf`); }
+      try { await window.html2pdf().set({ margin: 8, filename: `فاتورة-${todayValue}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['css', 'legacy'] } }).from(content).save(); showToast(`تم تصدير فاتورة-${todayValue}.pdf`); }
       finally { content.remove(); }
     }
-
     async function loadAdminOrders() {
       try {
         const [orders, customers] = await Promise.all([
