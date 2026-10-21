@@ -587,7 +587,13 @@ app.get("/api/products", async (req, res) => {
     }
   }
   const rows = await safeList("products", memory.products);
-  res.json(rows);
+  const categoryById = new Map(memory.categories.map((category) => [category.id, category.name]));
+  const subcategoryById = new Map(memory.subcategories.map((subcategory) => [subcategory.id, subcategory.name]));
+  res.json(rows.map((product) => ({
+    ...product,
+    category_name: product.category_name || categoryById.get(product.category_id) || "",
+    subcategory_name: product.subcategory_name || subcategoryById.get(product.subcategory_id) || "",
+  })));
 });
 
 app.get("/api/products/:id", async (req, res) => {

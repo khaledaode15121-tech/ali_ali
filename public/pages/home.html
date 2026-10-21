@@ -137,7 +137,7 @@
 <!-- Search Bar -->
 <div class="flex-1 max-w-xs mx-4">
 <div class="relative">
-<input id="productSearchInput" data-homepage-placeholder="search_placeholder" class="w-full text-xs rounded-full border-pink-200 focus:border-brand-pink focus:ring focus:ring-pink-200 py-1.5 pr-8 pl-3 bg-pink-50/50" placeholder="ابحثِ عن فستان أحلامك..." type="search"/>
+<input id="productSearchInput" data-homepage-placeholder="search_placeholder" class="w-full text-xs text-gray-800 rounded-full border-pink-200 focus:border-brand-pink focus:ring focus:ring-pink-200 py-1.5 pr-8 pl-3 bg-pink-50/50" placeholder="ابحثِ عن فستان أحلامك..." type="search" autocomplete="off" aria-label="البحث في اسم المنتج والقسم الرئيسي والقسم الفرعي"/>
 <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-pink-400">
 <i class="fa-solid fa-magnifying-glass text-xs"></i>
 </span>
@@ -1336,16 +1336,30 @@
       return card;
     }
 
+    function normalizeSearchText(value) {
+      return String(value || '')
+        .toLocaleLowerCase('ar')
+        .normalize('NFKD')
+        .replace(/[\u064B-\u065F\u0670]/g, '')
+        .replace(/[أإآٱ]/g, 'ا')
+        .replace(/ى/g, 'ي')
+        .replace(/ة/g, 'ه')
+        .replace(/ـ/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
     function renderFilteredProducts() {
-      const searchTerm = (productSearchInput?.value || '').trim().toLowerCase();
+      const searchTerm = normalizeSearchText(productSearchInput?.value);
       const filteredProducts = publishedProducts.filter((product) => {
-        const matchesSearch = !searchTerm || [
+        const searchableProductText = normalizeSearchText([
           product.name,
           product.code,
           product.category_name,
           product.subcategory_name,
           product.description,
-        ].filter(Boolean).join(' ').toLowerCase().includes(searchTerm);
+        ].filter(Boolean).join(' '));
+        const matchesSearch = !searchTerm || searchTerm.split(' ').every((word) => searchableProductText.includes(word));
         const matchesMainCategory = selectedMainCategory === 'all'
           || String(product.category_id) === selectedMainCategory;
         const matchesSubcategory = selectedSubcategory === 'all'
