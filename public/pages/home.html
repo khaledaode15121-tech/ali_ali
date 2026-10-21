@@ -75,6 +75,11 @@
   .to-brand-pink { --tw-gradient-to: var(--store-primary) !important; }
   .ring-brand-pink { --tw-ring-color: var(--store-primary) !important; }
 </style>
+<style data-purpose="hero-media-background">
+  .hero-media-frame { isolation: isolate; background-color: #fce7f1; }
+  .hero-media-backdrop { position: absolute; inset: -5%; z-index: -1; width: 110%; height: 110%; object-fit: cover; filter: blur(18px); opacity: .58; transform: scale(1.04); }
+  .hero-media-foreground { position: relative; z-index: 1; }
+</style>
 <style data-purpose="mobile-storefront-layout">
   @media (max-width: 640px) {
     html, body { max-width: 100%; overflow-x: hidden; }
@@ -191,9 +196,10 @@
 <!-- Gallery: two thirds of the available horizontal space -->
 <div id="heroGalleryRegion" class="w-full md:w-auto flex justify-center">
 <div id="heroFrameCard" class="relative p-2 bg-white rounded-3xl shadow-xl ring-4 ring-pink-200/50 w-full max-w-4xl">
-<div id="heroMediaFrame" class="overflow-hidden rounded-2xl bg-pink-50 flex items-center justify-center">
-<img id="storeHomeImage" data-homepage-image="hero.image_url" alt="صالون أم علي للأناقة" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
-<video id="storeHomeVideo" class="hidden w-full h-full object-contain" controls playsinline muted autoplay></video>
+<div id="heroMediaFrame" class="hero-media-frame relative overflow-hidden rounded-2xl bg-pink-100 flex items-center justify-center">
+<img id="heroMediaBackdrop" class="hero-media-backdrop" alt="" aria-hidden="true" />
+<img id="storeHomeImage" data-homepage-image="hero.image_url" alt="صالون أم علي للأناقة" class="hero-media-foreground w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
+<video id="storeHomeVideo" class="hero-media-foreground hidden w-full h-full object-contain" controls playsinline muted autoplay></video>
 </div>
 <div id="heroGalleryDots" class="hidden absolute bottom-5 left-1/2 -translate-x-1/2 items-center gap-2 rounded-full bg-black/40 px-3 py-2"></div>
 <span data-homepage-text="hero.badge" class="absolute -bottom-3 -right-3 bg-brand-pink text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">
@@ -821,8 +827,9 @@
       const galleryRegion = document.getElementById('heroGalleryRegion');
       const textRegion = document.getElementById('heroTextRegion');
       const frame = document.getElementById('heroMediaFrame');
+      const backdrop = document.getElementById('heroMediaBackdrop');
       const frameCard = document.getElementById('heroFrameCard');
-      if (!image || !video || !dots || !frame) return;
+      if (!image || !video || !dots || !frame || !backdrop) return;
       const frameWidth = Math.max(320, Math.min(1600, Number(hero.frame_width_px) || 800));
       const frameHeight = Math.max(180, Math.min(1000, Number(hero.frame_height_px) || 480));
       if (frameCard) {
@@ -847,6 +854,7 @@
         active = index;
         const item = items[index];
         video.pause();
+        backdrop.src = mediaUrl(item.url);
         let activeMedia;
         if (item.media_type === 'video') {
           image.classList.add('hidden');
