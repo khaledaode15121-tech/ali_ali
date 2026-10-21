@@ -191,7 +191,7 @@
 <!-- Gallery: two thirds of the available horizontal space -->
 <div id="heroGalleryRegion" class="w-full md:w-auto flex justify-center">
 <div class="relative p-2 bg-white rounded-3xl shadow-xl ring-4 ring-pink-200/50 w-full max-w-4xl">
-<div class="overflow-hidden rounded-2xl aspect-[16/9] bg-pink-50 flex items-center justify-center">
+<div id="heroMediaFrame" class="overflow-hidden rounded-2xl aspect-[16/9] bg-pink-50 flex items-center justify-center transition-[aspect-ratio] duration-300">
 <img id="storeHomeImage" data-homepage-image="hero.image_url" alt="صالون أم علي للأناقة" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
 <video id="storeHomeVideo" class="hidden w-full h-full object-contain" controls playsinline muted></video>
 </div>
@@ -819,7 +819,13 @@
       const dots = document.getElementById('heroGalleryDots');
       const galleryRegion = document.getElementById('heroGalleryRegion');
       const textRegion = document.getElementById('heroTextRegion');
+      const frame = document.getElementById('heroMediaFrame');
       if (!image || !video || !dots) return;
+      const matchFrameToMedia = (width, height) => {
+        if (frame && width > 0 && height > 0) frame.style.aspectRatio = `${width} / ${height}`;
+      };
+      image.onload = () => matchFrameToMedia(image.naturalWidth, image.naturalHeight);
+      video.onloadedmetadata = () => matchFrameToMedia(video.videoWidth, video.videoHeight);
       const width = Math.max(40, Math.min(80, Number(hero.gallery_width_percent) || 66));
       if (galleryRegion && textRegion) {
         galleryRegion.style.flexBasis = `${width}%`;
