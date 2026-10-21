@@ -2015,11 +2015,10 @@
 
     function printOrdersAndPrepareWhatsapp() {
       if (!getFilteredOrders().length) return showToast('لا توجد طلبات لطباعتها بعد الفلترة');
-      const phone = window.prompt('أدخل رقم واتساب الشخص الذي تريد إرسال ملف PDF إليه مع رمز الدولة:', '');
-      if (phone === null) return;
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
-      if (!cleanPhone) return showToast('يرجى إدخال رقم واتساب صحيح');
-      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent('سأرسل لك ملف PDF يحتوي على جدول الطلبات بعد الفلترة.')}`, '_blank', 'noopener');
+      const message = encodeURIComponent('مرحباً، سأرسل لك ملف PDF يحتوي على جدول الطلبات بعد الفلترة.');
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const whatsappUrl = isMobile ? `whatsapp://send?text=${message}` : `https://web.whatsapp.com/send?text=${message}`;
+      window.open(whatsappUrl, '_blank', 'noopener');
       window.print();
     }
 
