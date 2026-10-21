@@ -614,7 +614,7 @@
 </label>
 <span class="font-label-sm text-label-sm text-secondary">كود تسلسلي فريد</span>
 </div>
-<input class="bg-surface-container-low text-secondary font-label-md text-label-md px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="prodCode" required="" type="text" value="OM-2024"/>
+<input class="bg-surface-container-low text-secondary font-label-md text-label-md px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="prodCode" placeholder="مثال: OM-2024" required="" type="text" value=""/>
 </div>
 </div>
 <!-- Row 2: Product Name -->
@@ -711,9 +711,9 @@
 <span class="font-label-sm text-label-sm text-on-surface-variant">يحدد ظهوره في واجهة المتجر كأولوية مع شارة "عرض خاص"</span>
 </div>
 </div>
-<label class="relative inline-flex items-center cursor-pointer">
+<label class="relative inline-flex items-center cursor-pointer" title="ضمن العروض">
 <input class="sr-only peer" id="isOfferToggle" type="checkbox"/>
-<div class="w-13 h-7 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-secondary"></div>
+<div class="w-7 h-7 rounded-full border-2 border-outline-variant bg-transparent peer-focus:outline-none peer-checked:border-[#25D366] peer-checked:bg-[#25D366] transition-colors"></div>
 </label>
 </div>
 <!-- Product Stock Status -->
@@ -2323,7 +2323,12 @@
         switchTab('products-table');
       } catch (error) {
         console.error(error);
-        showToast('تعذر حفظ المنتج، تأكد من تشغيل السيرفر المحلي');
+        let errorMessage = 'تعذر حفظ المنتج، تأكد من تشغيل السيرفر المحلي';
+        try {
+          const details = JSON.parse(error.message);
+          if (details.message) errorMessage = `تعذر حفظ المنتج: ${details.message}`;
+        } catch { /* Keep the friendly fallback message. */ }
+        showToast(errorMessage);
       }
     }
 

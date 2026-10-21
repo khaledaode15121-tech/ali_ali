@@ -790,6 +790,10 @@ async function startServer() {
     if (!columns.length) {
       await db.query("ALTER TABLE products ADD COLUMN description TEXT NULL AFTER name");
     }
+    const [imageColumns] = await db.query("SHOW COLUMNS FROM products LIKE 'image_url'");
+    if (!imageColumns.length) {
+      await db.query("ALTER TABLE products ADD COLUMN image_url TEXT NULL AFTER is_active");
+    }
     await db.query(`
       CREATE TABLE IF NOT EXISTS store_settings (
         id TINYINT NOT NULL PRIMARY KEY,
