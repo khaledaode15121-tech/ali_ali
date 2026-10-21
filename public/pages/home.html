@@ -1218,7 +1218,16 @@
       const action = document.createElement('a');
       const available = !['unavailable', 'out_of_stock', 'reserved'].includes(String(product.stock_status || '').toLowerCase());
       action.className = `w-full ${available ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500 hover:bg-gray-600'} text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition`;
-      action.href = whatsappLinkWithMessage(`${available ? 'مرحبا، أود طلب' : 'مرحبا، أستفسر عن توفر'} ${product.name || 'المنتج'} ${product.code || ''}`);
+      const productImageUrl = imageUrl ? new URL(mediaUrl(imageUrl), location.href).href : '';
+      const productMessage = [
+        available ? 'طلب منتج من المتجر' : 'استفسار عن توفر منتج',
+        `اسم المنتج: ${product.name || 'غير محدد'}`,
+        `رقم المنتج: ${product.code || product.id || 'غير محدد'}`,
+        `القسم الرئيسي: ${product.category_name || 'غير محدد'}`,
+        `القسم الفرعي: ${product.subcategory_name || 'غير محدد'}`,
+        productImageUrl ? `صورة المنتج: ${productImageUrl}` : 'صورة المنتج: غير متوفرة',
+      ].join('\n');
+      action.href = whatsappLinkWithMessage(productMessage);
       action.target = '_blank';
       action.rel = 'noopener noreferrer';
       const icon = document.createElement('i');
