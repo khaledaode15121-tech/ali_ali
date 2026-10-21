@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { db, testConnection } from "./db.js";
@@ -197,7 +197,7 @@ function normalizeProductPayload(body) {
   return {
     category_id: toNumber(category_id),
     subcategory_id: toNumber(subcategory_id),
-    code: String(code || "").trim() || `AUTO-${Date.now()}`,
+    code: String(code || "").trim(),
     name: String(name || "").trim() || "منتج جديد",
     description: String(description || "").trim(),
     price: Number(price) || 0,
@@ -209,6 +209,30 @@ function normalizeProductPayload(body) {
     is_active: is_active !== false ? 1 : 0,
     image_url: normalizeImageUrl(image_url),
   };
+}
+
+function hashCustomerPassword(password) {
+  return createHash("sha256").update(String(password || "")).digest("hex");
+}
+
+function normalizeCustomerPayload(body) {
+  return {
+    full_name: String(body.full_name || "").trim(),
+    phone: String(body.phone || "").trim(),
+    password: String(body.password || ""),
+    email: String(body.email || "").trim(),
+    preferred_style: String(body.preferred_style || "").trim(),
+  };
+}
+
+async function getNextProductCode() {
+  try {
+    const [[row]] = await db.query("SELECT COALESCE(MAX(CAST(SUBSTRING(code, 4) AS UNSIGNED)), 0) + 1 AS next_id FROM products WHERE code LIKE 'OM-%'");
+    return `OM-${String(Number(row?.next_id) || 1).padStart(4, "0")}`;
+  } catch {
+    const nextId = memory.products.reduce((max, item) => Math.max(max, Number(String(item.code || '').replace(/^OM-/, '')) || 0), 0) + 1;
+    return `OM-${String(nextId).padStart(4, "0")}`;
+  }
 }
 
 function normalizeStoreSettings(body) {
@@ -605,6 +629,10 @@ app.get("/api/products", async (req, res) => {
   })).sort((left, right) => Number(right.is_featured) - Number(left.is_featured) || Number(right.id) - Number(left.id)));
 });
 
+app.get("/api/products/next-code", async (req, res) => {
+  res.json({ code: await getNextProductCode() });
+});
+
 app.get("/api/products/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -640,7 +668,59 @@ app.get("/api/orders", async (req, res) => {
 
 app.get("/api/customers", async (req, res) => {
   const rows = await safeList("customers", memory.customers);
-  res.json(rows);
+  res.json(rows.map(({ password_hash, ...customer }) => customer));
+});
+
+app.post("/api/customers", async (req, res) => {
+  const payload = normalizeCustomerPayload(req.body);
+  if (!payload.full_name || !payload.phone || !payload.password) return res.status(400).json({ message: "اسم العميل والهاتف وكلمة المرور مطلوبة" });
+  try {
+    const [result] = await db.query(
+      "INSERT INTO customers (full_name, phone, password_hash, email, preferred_style) VALUES (?, ?, ?, ?, ?)",
+      [payload.full_name, payload.phone, hashCustomerPassword(payload.password), payload.email, payload.preferred_style],
+    );
+    return res.status(201).json({ id: result.insertId, full_name: payload.full_name, phone: payload.phone });
+  } catch {
+    const nextId = memory.customers.length ? Math.max(...memory.customers.map((item) => Number(item.id) || 0)) + 1 : 1;
+    memory.customers.push({ id: nextId, full_name: payload.full_name, phone: payload.phone, password_hash: hashCustomerPassword(payload.password), email: payload.email, preferred_style: payload.preferred_style });
+    return res.status(201).json({ id: nextId, full_name: payload.full_name, phone: payload.phone });
+  }
+});
+
+app.put("/api/customers/:id", async (req, res) => {
+  const payload = normalizeCustomerPayload(req.body);
+  try {
+    const passwordPart = payload.password ? ", password_hash=?" : "";
+    const values = payload.password
+      ? [payload.full_name, payload.phone, payload.email, payload.preferred_style, hashCustomerPassword(payload.password), req.params.id]
+      : [payload.full_name, payload.phone, payload.email, payload.preferred_style, req.params.id];
+    await db.query(`UPDATE customers SET full_name=?, phone=?, email=?, preferred_style=?${passwordPart} WHERE id=?`, values);
+    return res.json({ message: "Customer updated" });
+  } catch {
+    const index = memory.customers.findIndex((item) => Number(item.id) === Number(req.params.id));
+    if (index >= 0) memory.customers[index] = { ...memory.customers[index], full_name: payload.full_name, phone: payload.phone, email: payload.email, preferred_style: payload.preferred_style, ...(payload.password ? { password_hash: hashCustomerPassword(payload.password) } : {}) };
+    return res.json({ message: "Customer updated in demo mode" });
+  }
+});
+
+app.delete("/api/customers/:id", async (req, res) => {
+  try { await db.query("DELETE FROM customers WHERE id=?", [req.params.id]); return res.json({ message: "Customer deleted" }); }
+  catch { memory.customers = memory.customers.filter((item) => Number(item.id) !== Number(req.params.id)); return res.json({ message: "Customer deleted in demo mode" }); }
+});
+
+app.post("/api/auth/login", async (req, res) => {
+  const phone = String(req.body.phone || "").trim();
+  const passwordHash = hashCustomerPassword(req.body.password || "");
+  try {
+    const [rows] = await db.query("SELECT id, full_name, phone, email, preferred_style FROM customers WHERE phone=? AND password_hash=? LIMIT 1", [phone, passwordHash]);
+    if (!rows.length) return res.status(401).json({ message: "رقم الهاتف أو كلمة المرور غير صحيحة" });
+    return res.json({ customer: rows[0] });
+  } catch {
+    const customer = memory.customers.find((item) => item.phone === phone && item.password_hash === passwordHash);
+    if (!customer) return res.status(401).json({ message: "رقم الهاتف أو كلمة المرور غير صحيحة" });
+    const { password_hash, ...safeCustomer } = customer;
+    return res.json({ customer: safeCustomer });
+  }
 });
 
 app.get("/api/admins", async (req, res) => {
@@ -650,6 +730,7 @@ app.get("/api/admins", async (req, res) => {
 
 app.post("/api/products", async (req, res) => {
   const payload = normalizeProductPayload(req.body);
+  if (!payload.code) payload.code = await getNextProductCode();
   const media = Array.isArray(req.body.media) ? req.body.media : [];
 
   try {
@@ -740,33 +821,38 @@ app.delete("/api/products/:id", async (req, res) => {
 });
 
 app.post("/api/orders", async (req, res) => {
-  const { customer_id, product_id, order_type, status, quantity, total_price } = req.body;
+  const { customer_id, product_id, order_type, status, quantity, total_price, booking_date, deposit } = req.body;
+  const total = Number(total_price) || 0;
+  const paid = Number(deposit) || 0;
+  const remaining = Math.max(0, total - paid);
 
   try {
     const [result] = await db.query(
-      `INSERT INTO orders (customer_id, product_id, order_type, status, quantity, total_price, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, NOW())`,
-      [toNumber(customer_id), toNumber(product_id), order_type || "rent", status || "pending", toNumber(quantity, 1), Number(total_price) || 0],
+      `INSERT INTO orders (customer_id, product_id, order_type, status, quantity, total_price, deposit, remaining, booking_date, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+      [toNumber(customer_id), toNumber(product_id), order_type || "rent", status || "pending", toNumber(quantity, 1), total, paid, remaining, booking_date || null],
     );
     return res.status(201).json({ id: result.insertId, message: "Order created" });
   } catch {
     const nextId = memory.orders.length ? Math.max(...memory.orders.map((o) => o.id)) + 1 : 1;
-    memory.orders.push({ id: nextId, customer_id: toNumber(customer_id), product_id: toNumber(product_id), order_type: order_type || "rent", status: status || "pending", quantity: toNumber(quantity, 1), total_price: Number(total_price) || 0, created_at: new Date().toISOString() });
+    memory.orders.push({ id: nextId, customer_id: toNumber(customer_id), product_id: toNumber(product_id), order_type: order_type || "rent", status: status || "pending", quantity: toNumber(quantity, 1), total_price: total, deposit: paid, remaining, booking_date: booking_date || null, created_at: new Date().toISOString() });
     return res.status(201).json({ id: nextId, message: "Order created in demo mode" });
   }
 });
 
 app.put("/api/orders/:id", async (req, res) => {
   const { id } = req.params;
-  const { status, total_price } = req.body;
+  const { status, total_price, deposit, booking_date } = req.body;
+  const total = Number(total_price) || 0;
+  const paid = Number(deposit) || 0;
 
   try {
-    await db.query("UPDATE orders SET status=?, total_price=? WHERE id=?", [status, Number(total_price) || 0, id]);
+    await db.query("UPDATE orders SET status=?, total_price=?, deposit=?, remaining=?, booking_date=? WHERE id=?", [status, total, paid, Math.max(0, total - paid), booking_date || null, id]);
     return res.json({ message: "Order updated" });
   } catch {
     const orderIndex = memory.orders.findIndex((order) => order.id === Number(id));
     if (orderIndex >= 0) {
-      memory.orders[orderIndex] = { ...memory.orders[orderIndex], status: status || memory.orders[orderIndex].status, total_price: Number(total_price) || memory.orders[orderIndex].total_price };
+      memory.orders[orderIndex] = { ...memory.orders[orderIndex], status: status || memory.orders[orderIndex].status, total_price: total, deposit: paid, remaining: Math.max(0, total - paid), booking_date: booking_date || memory.orders[orderIndex].booking_date };
     }
     return res.json({ message: "Order updated in demo mode" });
   }
@@ -793,6 +879,17 @@ async function startServer() {
     const [imageColumns] = await db.query("SHOW COLUMNS FROM products LIKE 'image_url'");
     if (!imageColumns.length) {
       await db.query("ALTER TABLE products ADD COLUMN image_url TEXT NULL AFTER is_active");
+    }
+    const [customerPasswordColumns] = await db.query("SHOW COLUMNS FROM customers LIKE 'password_hash'");
+    if (!customerPasswordColumns.length) await db.query("ALTER TABLE customers ADD COLUMN password_hash CHAR(64) NULL AFTER phone");
+    const orderColumns = [
+      ["deposit", "DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER total_price"],
+      ["remaining", "DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER deposit"],
+      ["booking_date", "DATE NULL AFTER remaining"],
+    ];
+    for (const [name, definition] of orderColumns) {
+      const [columnsForOrder] = await db.query(`SHOW COLUMNS FROM orders LIKE '${name}'`);
+      if (!columnsForOrder.length) await db.query(`ALTER TABLE orders ADD COLUMN ${name} ${definition}`);
     }
     await db.query(`
       CREATE TABLE IF NOT EXISTS store_settings (

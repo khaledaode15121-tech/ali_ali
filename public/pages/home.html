@@ -153,7 +153,7 @@
 </div>
 <!-- Account and Cart -->
 <div class="flex items-center space-x-reverse space-x-5">
-<a class="flex items-center gap-1 hover:text-brand-pink transition" href="#">
+<a id="customerLoginLink" class="flex items-center gap-1 hover:text-brand-pink transition" href="#">
 <i class="fa-regular fa-user text-brand-pink"></i>
 <span data-homepage-text="nav.login">تسجيل الدخول</span>
 </a>
@@ -191,6 +191,20 @@
 </div>
 </header>
 <!-- END: TopBar -->
+<div id="customerAuthModal" class="hidden fixed inset-0 z-[100] bg-black/40 items-center justify-center p-4">
+  <div class="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl" dir="rtl">
+    <div class="flex items-center justify-between mb-5"><h3 class="text-xl font-bold text-brand-pink">تسجيل دخول العميل</h3><button id="closeCustomerAuth" type="button" class="text-gray-500 text-2xl">×</button></div>
+    <form id="customerAuthForm" class="flex flex-col gap-3">
+      <input id="authName" class="border rounded-xl px-3 py-2" placeholder="الاسم الكامل - للعميل الجديد" />
+      <input id="authPhone" required type="tel" class="border rounded-xl px-3 py-2" placeholder="رقم الهاتف" />
+      <input id="authPassword" required type="password" class="border rounded-xl px-3 py-2" placeholder="كلمة المرور" />
+      <input id="authPasswordRepeat" type="password" class="border rounded-xl px-3 py-2" placeholder="تأكيد كلمة المرور عند التسجيل" />
+      <p id="authMessage" class="text-sm text-red-600"></p>
+      <button type="submit" class="bg-brand-pink text-white rounded-xl py-2.5 font-bold">دخول / تسجيل عميل جديد</button>
+    </form>
+  </div>
+</div>
+
 <!-- BEGIN: HeroBanner -->
 <section class="relative bg-gradient-to-r from-pink-100 via-rose-50 to-pink-100 py-10 md:py-14 border-b border-pink-200 overflow-hidden" data-purpose="hero-section">
 <!-- Decorative floral corner graphics -->
@@ -1628,6 +1642,38 @@
       setSelectedCategoryAction(null);
       renderFilteredProducts();
     });
+    function setupCustomerAuth() {
+      const modal = document.getElementById('customerAuthModal');
+      const message = document.getElementById('authMessage');
+      const open = () => { modal?.classList.remove('hidden'); modal?.classList.add('flex'); };
+      const close = () => { modal?.classList.add('hidden'); modal?.classList.remove('flex'); };
+      document.getElementById('customerLoginLink')?.addEventListener('click', (event) => { event.preventDefault(); open(); });
+      document.getElementById('closeCustomerAuth')?.addEventListener('click', close);
+      modal?.addEventListener('click', (event) => { if (event.target === modal) close(); });
+      document.getElementById('customerAuthForm')?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const name = document.getElementById('authName').value.trim();
+        const phone = document.getElementById('authPhone').value.trim();
+        const password = document.getElementById('authPassword').value;
+        const repeat = document.getElementById('authPasswordRepeat').value;
+        message.textContent = '';
+        try {
+          let response;
+          if (name) {
+            if (password !== repeat) throw new Error('كلمتا المرور غير متطابقتين');
+            response = await fetch(`${PRODUCT_API_BASE}/api/customers`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ full_name: name, phone, password }) });
+          } else {
+            response = await fetch(`${PRODUCT_API_BASE}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone, password }) });
+          }
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.message || 'تعذر إتمام العملية');
+          localStorage.setItem('customerSession', JSON.stringify(data.customer || { full_name: name, phone }));
+          message.className = 'text-sm text-emerald-600'; message.textContent = name ? 'تم تسجيل العميل بنجاح' : `مرحباً ${data.customer.full_name}`;
+          setTimeout(close, 800);
+        } catch (error) { message.className = 'text-sm text-red-600'; message.textContent = error.message; }
+      });
+    }
+    setupCustomerAuth();
     loadStorefrontSettings();
     loadMainCategories();
     loadPublishedProducts();

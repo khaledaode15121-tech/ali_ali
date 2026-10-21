@@ -88,6 +88,7 @@ async function init() {
       id INT AUTO_INCREMENT PRIMARY KEY,
       full_name VARCHAR(255) NOT NULL,
       phone VARCHAR(50) NOT NULL,
+      password_hash CHAR(64),
       email VARCHAR(255),
       preferred_style VARCHAR(255),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -130,6 +131,9 @@ async function init() {
       status ENUM('pending','confirmed','completed','cancelled') DEFAULT 'pending',
       quantity INT DEFAULT 1,
       total_price DECIMAL(10,2) NOT NULL,
+      deposit DECIMAL(10,2) NOT NULL DEFAULT 0,
+      remaining DECIMAL(10,2) NOT NULL DEFAULT 0,
+      booking_date DATE NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       INDEX idx_customer_id (customer_id),
       INDEX idx_product_id (product_id),
