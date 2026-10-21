@@ -359,6 +359,14 @@ app.get("/api/health", async (req, res) => {
   const conn = await testConnection();
   res.json({
     ok: !!conn,
+    api_version: "hero-gallery-frame-20261021-1",
+    capabilities: {
+      hero_gallery: true,
+      per_item_duration: true,
+      transition_type: true,
+      gallery_width_percent: true,
+      fixed_frame_dimensions: true,
+    },
     database: process.env.DB_NAME || "salon_om_ali",
     message: conn ? "Database connection successful" : "Database connection failed, using demo data fallback",
   });

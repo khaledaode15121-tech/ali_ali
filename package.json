@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"vite dev\"",
     "dev:full": "npm run dev",
-    "server": "node server/index.js",
+    "server": "node --watch server/index.js",
     "db:init": "node scripts/init-db.mjs",
     "db:seed": "node scripts/seed-db.mjs",
     "build": "vite build",
