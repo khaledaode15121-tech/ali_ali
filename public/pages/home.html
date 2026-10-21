@@ -260,6 +260,32 @@
           ✦ ✦ ✦
         </div>
 </div>
+<div class="mb-6 rounded-2xl border border-pink-100 bg-white p-4 shadow-sm">
+<div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+<label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productPriceFilter">
+  تصفية حسب السعر
+  <select id="productPriceFilter" class="w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
+    <option value="all">كل الأسعار</option>
+    <option value="0-250">أقل من 250</option>
+    <option value="250-500">من 250 إلى 500</option>
+    <option value="500-750">من 500 إلى 750</option>
+    <option value="750-plus">750 فأكثر</option>
+  </select>
+</label>
+<label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productAvailabilityFilter">
+  تصفية حسب التوفر
+  <select id="productAvailabilityFilter" class="w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
+    <option value="all">كل الحالات</option>
+    <option value="available">متوفر وجاهز للتسليم</option>
+    <option value="reserved">محجوز</option>
+    <option value="out_of_stock">غير متوفر</option>
+  </select>
+</label>
+<button id="resetProductFilters" class="rounded-xl border border-pink-200 px-4 py-2 text-xs font-bold text-brand-pink transition hover:bg-pink-50" type="button">
+  إعادة ضبط التصفية
+</button>
+</div>
+</div>
 <!-- Product Cards Grid: Ordered prioritizing Special Offer ('عرض') -->
 <div id="productsShowcaseGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" hidden>
 <!-- CARD 1: Offer Dress (Soft Engagement Pink) -->
@@ -706,6 +732,9 @@
   const productsGrid = document.getElementById('productsShowcaseGrid');
   const productsStatus = document.getElementById('productsShowcaseStatus');
   const productSearchInput = document.getElementById('productSearchInput');
+  const productPriceFilter = document.getElementById('productPriceFilter');
+  const productAvailabilityFilter = document.getElementById('productAvailabilityFilter');
+  const resetProductFilters = document.getElementById('resetProductFilters');
   const mainCategoriesGrid = document.getElementById('mainCategoriesGrid');
   const mainCategoriesStatus = document.getElementById('mainCategoriesStatus');
   const defaultCategoryActionImages = {
@@ -1351,6 +1380,8 @@
 
     function renderFilteredProducts() {
       const searchTerm = normalizeSearchText(productSearchInput?.value);
+      const priceFilter = productPriceFilter?.value || 'all';
+      const availabilityFilter = productAvailabilityFilter?.value || 'all';
       const filteredProducts = publishedProducts.filter((product) => {
         const searchableProductText = normalizeSearchText([
           product.name,
@@ -1367,7 +1398,17 @@
         const matchesOffer = !selectedOffersOnly
           || Number(product.is_featured) === 1
           || product.is_featured === true;
-        return matchesSearch && matchesMainCategory && matchesSubcategory && matchesOffer;
+        const salePrice = Number(product.price) || 0;
+        const matchesPrice = priceFilter === 'all'
+          || (priceFilter === '0-250' && salePrice < 250)
+          || (priceFilter === '250-500' && salePrice >= 250 && salePrice < 500)
+          || (priceFilter === '500-750' && salePrice >= 500 && salePrice < 750)
+          || (priceFilter === '750-plus' && salePrice >= 750);
+        const stockStatus = String(product.stock_status || '').toLowerCase();
+        const matchesAvailability = availabilityFilter === 'all'
+          || (availabilityFilter === 'available' && !['unavailable', 'out_of_stock', 'reserved'].includes(stockStatus))
+          || stockStatus === availabilityFilter;
+        return matchesSearch && matchesMainCategory && matchesSubcategory && matchesOffer && matchesPrice && matchesAvailability;
       });
 
       productsGrid.replaceChildren(...filteredProducts.map(createProductCard));
@@ -1483,6 +1524,19 @@
     });
 
     productSearchInput?.addEventListener('input', renderFilteredProducts);
+    productPriceFilter?.addEventListener('change', renderFilteredProducts);
+    productAvailabilityFilter?.addEventListener('change', renderFilteredProducts);
+    resetProductFilters?.addEventListener('click', () => {
+      if (productSearchInput) productSearchInput.value = '';
+      if (productPriceFilter) productPriceFilter.value = 'all';
+      if (productAvailabilityFilter) productAvailabilityFilter.value = 'all';
+      selectedMainCategory = 'all';
+      selectedSubcategory = 'all';
+      selectedOffersOnly = false;
+      mainCategoriesGrid?.querySelectorAll('[data-subcategory-filter]').forEach((select) => { select.value = 'all'; });
+      setSelectedCategoryAction(null);
+      renderFilteredProducts();
+    });
     loadStorefrontSettings();
     loadMainCategories();
     loadPublishedProducts();
