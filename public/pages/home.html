@@ -1301,7 +1301,8 @@
       details.append(info, prices);
 
       const action = document.createElement('a');
-      const available = !['unavailable', 'out_of_stock', 'reserved'].includes(String(product.stock_status || '').toLowerCase());
+      const stockStatus = String(product.stock_status || 'available').toLowerCase();
+      const available = stockStatus === 'available';
       action.className = `w-full ${available ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500 hover:bg-gray-600'} text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition`;
       const productImageUrl = imageUrl ? new URL(mediaUrl(imageUrl), location.href).href : '';
       const salePrice = Number(product.price) > 0 ? `${Number(product.price).toLocaleString('ar-SY')} ل.س` : 'غير متاح';
@@ -1314,7 +1315,7 @@
         sale_price: salePrice,
         rental_price: rentalPrice,
         price: `البيع ${salePrice} | الإيجار ${rentalPrice}`,
-        availability: available ? 'متوفر' : 'غير متوفر — أرجو إعلامي عند توفره',
+        availability: available ? 'متوفر' : stockStatus === 'reserved' ? 'محجوز حالياً — أرجو إعلامي عند توفره' : 'غير متوفر — أرجو إعلامي عند توفره',
         main_category: product.category_name || 'غير محدد',
         subcategory: product.subcategory_name || 'غير محدد',
         image_url: productImageUrl || 'غير متوفرة',
@@ -1454,9 +1455,9 @@
         const matchesRentalPrice = rentalPriceFilter === 'all'
           || (rentalPriceRange && rentalPrice >= Number(rentalPriceRange[1])
             && (rentalPriceRange[2] ? rentalPrice < Number(rentalPriceRange[2]) : true));
-        const stockStatus = String(product.stock_status || '').toLowerCase();
+        const stockStatus = String(product.stock_status || 'available').toLowerCase();
         const matchesAvailability = availabilityFilter === 'all'
-          || (availabilityFilter === 'available' && !['unavailable', 'out_of_stock', 'reserved'].includes(stockStatus))
+          || (availabilityFilter === 'available' && stockStatus === 'available')
           || stockStatus === availabilityFilter;
         return matchesSearch && matchesMainCategory && matchesSubcategory && matchesOffer && matchesSalePrice && matchesRentalPrice && matchesAvailability;
       });

@@ -712,25 +712,26 @@
 </div>
 </div>
 <label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" id="isOfferToggle" type="checkbox"/>
+<input class="sr-only peer" id="isOfferToggle" type="checkbox"/>
 <div class="w-13 h-7 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-secondary"></div>
 </label>
 </div>
-<!-- Toggle 2: Is Available? -->
+<!-- Product Stock Status -->
 <div class="flex items-center justify-between p-5 rounded-2xl bg-surface-container-low">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary">
 <span class="material-symbols-outlined text-[20px]">check_circle</span>
 </div>
 <div>
-<span class="font-title-md text-title-md text-on-surface block">هل المنتج متوفر حالياً للحجز؟</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">متوفر (زر أخضر "أطلب المنتج") / غير متوفر (زر رمادي + استفسار)</span>
+<label class="font-title-md text-title-md text-on-surface block" for="productStockStatus">حالة المنتج</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">متوفر، محجوز، أو غير متوفر</span>
 </div>
 </div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" id="isAvailableToggle" type="checkbox"/>
-<div class="w-13 h-7 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#25D366]"></div>
-</label>
+<select class="bg-surface-container-lowest text-on-surface font-label-md text-label-md px-3 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="productStockStatus">
+<option value="available">متوفر</option>
+<option value="reserved">محجوز</option>
+<option value="out_of_stock">غير متوفر</option>
+</select>
 </div>
 </div>
 <!-- Live Preview Preview Box of Buttons -->
@@ -781,10 +782,11 @@
 <select id="productCategoryFilter" class="bg-surface-container-low text-on-surface font-label-md text-label-md px-3.5 py-2 rounded-xl outline-none">
 <option value="all">جميع الأقسام</option>
 </select>
-<select class="bg-surface-container-low text-on-surface font-label-md text-label-md px-3.5 py-2 rounded-xl outline-none">
+<select id="productAvailabilityFilter" class="bg-surface-container-low text-on-surface font-label-md text-label-md px-3.5 py-2 rounded-xl outline-none">
 <option value="all">حالة التوفر: الكل</option>
 <option value="available">المتوفر فقط</option>
-<option value="unavailable">غير متوفر</option>
+<option value="reserved">المحجوز فقط</option>
+<option value="out_of_stock">غير متوفر</option>
 </select>
 </div>
 </div>
@@ -1930,7 +1932,8 @@
     }
 
     function createProductRow(product) {
-      const isAvailable = String(product.stock_status || 'available').toLowerCase() !== 'unavailable' && String(product.stock_status || 'available').toLowerCase() !== 'out_of_stock';
+      const stockStatus = String(product.stock_status || 'available').toLowerCase();
+      const isAvailable = stockStatus === 'available';
       const isFeatured = Number(product.is_featured) === 1 || product.is_featured === true;
       const categoryName = state.categories.find((category) => Number(category.id) === Number(product.category_id))?.name || 'قسم';
       const subCategoryName = state.subcategories.find((subcategory) => Number(subcategory.id) === Number(product.subcategory_id))?.name || 'فرعي';
@@ -1942,7 +1945,7 @@
         : '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">عادي</span>';
       const availabilityMarkup = isAvailable
         ? '<div class="flex items-center gap-2"><button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105"><span class="material-symbols-outlined text-[15px]">shopping_bag</span><span>أطلب المنتج</span></button><span class="w-2 h-2 rounded-full bg-[#25D366]"></span></div>'
-        : '<div class="flex items-center gap-1.5 flex-wrap"><span class="px-2.5 py-1 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">غير متوفر</span><button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105"><span class="material-symbols-outlined text-[14px]">chat</span><span>للاستفسار</span></button></div>';
+        : `<div class="flex items-center gap-1.5 flex-wrap"><span class="px-2.5 py-1 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">${stockStatus === 'reserved' ? 'محجوز' : 'غير متوفر'}</span><button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105"><span class="material-symbols-outlined text-[14px]">chat</span><span>للاستفسار</span></button></div>`;
 
       return `
         <tr class="hover:bg-surface-container-low/40 transition-colors">
@@ -2033,7 +2036,7 @@
       if (!tableBody) return;
       const searchInput = document.querySelector('#section-products-table input[placeholder="بحث بالاسم أو الكود..."]');
       const categoryFilter = document.getElementById('productCategoryFilter');
-      const availabilityFilter = document.querySelector('#section-products-table select:not(#productCategoryFilter)');
+      const availabilityFilter = document.getElementById('productAvailabilityFilter');
       const search = (searchInput?.value || '').trim().toLowerCase();
       const categoryValue = String(categoryFilter?.value || 'all');
       const availabilityValue = String(availabilityFilter?.value || 'all');
@@ -2042,12 +2045,11 @@
         const matchesSearch = !search || [product.name, product.code].some((value) => String(value || '').toLowerCase().includes(search));
         const matchesCategory = categoryValue === 'all' || String(product.category_id) === categoryValue || formatCategoryCode(product.category_id) === categoryValue;
         const stockStatus = String(product.stock_status || 'available').toLowerCase();
-        const matchesAvailability = availabilityValue === 'all'
-          || (availabilityValue === 'available' && stockStatus !== 'unavailable')
-          || (availabilityValue === 'unavailable' && stockStatus === 'unavailable');
+        const matchesAvailability = availabilityValue === 'all' || stockStatus === availabilityValue;
         return matchesSearch && matchesCategory && matchesAvailability;
       });
 
+      filtered.sort((left, right) => Number(right.is_featured) - Number(left.is_featured) || Number(right.id) - Number(left.id));
       tableBody.innerHTML = filtered.map(createProductRow).join('');
       renderProductTableCount(filtered.length);
     }
@@ -2107,12 +2109,13 @@
           ? previousValue
           : 'all';
       });
-      const availabilityFilter = document.querySelector('#section-products-table select:not(#productCategoryFilter)');
+      const availabilityFilter = document.getElementById('productAvailabilityFilter');
       if (availabilityFilter && !availabilityFilter.options.length) {
         availabilityFilter.replaceChildren(
           new Option('حالة التوفر: الكل', 'all'),
           new Option('المتوفر فقط', 'available'),
-          new Option('غير متوفر', 'unavailable'),
+          new Option('المحجوز فقط', 'reserved'),
+          new Option('غير متوفر', 'out_of_stock'),
         );
       }
       renderAdminCounts();
@@ -2143,7 +2146,7 @@
         ];
         state.products = [
           { id: 1, category_id: 1, subcategory_id: 1, code: 'OM-2001', name: 'فستان زفاف ملكي', price: 850, rental_price: 250, stock_status: 'available', is_featured: 1, is_active: 1 },
-          { id: 2, category_id: 2, subcategory_id: 2, code: 'OM-2002', name: 'فستان سهرة ميرميد', price: 0, rental_price: 120, stock_status: 'unavailable', is_featured: 0, is_active: 1 },
+          { id: 2, category_id: 2, subcategory_id: 2, code: 'OM-2002', name: 'فستان سهرة ميرميد', price: 0, rental_price: 120, stock_status: 'out_of_stock', is_featured: 0, is_active: 1 },
         ];
       }
 
@@ -2284,7 +2287,7 @@
       const subCategory = document.getElementById('prodSubCategory')?.value || '';
       const salePrice = document.getElementById('salePriceInput')?.value || 0;
       const rentPrice = document.getElementById('rentPriceInput')?.value || 0;
-      const isAvailable = document.getElementById('isAvailableToggle')?.checked !== false;
+      const stockStatus = document.getElementById('productStockStatus')?.value || 'available';
       const isOffer = document.getElementById('isOfferToggle')?.checked !== false;
       const editingId = document.getElementById('productEditingId')?.value;
 
@@ -2298,7 +2301,7 @@
         description: document.getElementById('prodDesc')?.value?.trim() || '',
         price: Number(salePrice) || 0,
         rental_price: Number(rentPrice) || 0,
-        stock_status: isAvailable ? 'available' : 'unavailable',
+        stock_status: stockStatus,
         is_featured: isOffer ? 1 : 0,
         is_active: 1,
         image_url: productMedia.find((item) => item.media_type === 'image')?.url
@@ -2513,7 +2516,7 @@
           document.getElementById('salePriceInput').value = product.price || 0;
           document.getElementById('rentPriceInput').value = product.rental_price || 0;
           document.getElementById('isOfferToggle').checked = Number(product.is_featured) === 1;
-          document.getElementById('isAvailableToggle').checked = String(product.stock_status || 'available').toLowerCase() !== 'unavailable' && String(product.stock_status || 'available').toLowerCase() !== 'out_of_stock';
+          document.getElementById('productStockStatus').value = ['available', 'reserved', 'out_of_stock'].includes(String(product.stock_status || '').toLowerCase()) ? String(product.stock_status).toLowerCase() : 'available';
           document.getElementById('productImageUrl').value = product.image_url || '';
           try {
             productMedia = await fetchJson(`/api/products/${id}/media`);
@@ -2533,13 +2536,20 @@
       }
     });
 
+    function updateProductButtonPreview(status) {
+      const container = document.getElementById('buttonPreviewContainer');
+      if (!container) return;
+      if (status === 'available') {
+        container.innerHTML = '<button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">shopping_bag</span><span>أطلب المنتج الآن</span></button>';
+      } else {
+        const label = status === 'reserved' ? 'محجوز حالياً' : 'غير متوفر حالياً';
+        container.innerHTML = `<div class="flex items-center gap-2"><span class="px-3.5 py-2 rounded-xl bg-surface-container-highest text-on-surface-variant font-label-md text-label-md">${label}</span><button type="button" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">chat</span><span>للاستفسار المباشر عبر واتساب</span></button></div>`;
+      }
+    }
+
     document.addEventListener('change', (event) => {
       const target = event.target;
-      if (target && target.id === 'isAvailableToggle') {
-        const container = document.getElementById('buttonPreviewContainer');
-        if (!container) return;
-        container.innerHTML = target.checked ? '<button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">shopping_bag</span><span>أطلب المنتج الآن</span></button>' : '<div class="flex items-center gap-2"><span class="px-3.5 py-2 rounded-xl bg-surface-container-highest text-on-surface-variant font-label-md text-label-md">غير متوفر حالياً</span><button type="button" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">chat</span><span>للاستفسار المباشر عبر واتساب</span></button></div>';
-      }
+      if (target && target.id === 'productStockStatus') updateProductButtonPreview(target.value);
       if (target && target.id === 'prodMainCategory') {
         updateSubCategoryOptions();
       }
@@ -2591,18 +2601,14 @@
       const subCategoryForm = document.querySelector('#section-sub-categories form');
       if (subCategoryForm) subCategoryForm.addEventListener('submit', handleSubCategorySubmit);
 
-      document.getElementById('isAvailableToggle')?.addEventListener('change', function (e) {
-        const container = document.getElementById('buttonPreviewContainer');
-        if (!container) return;
-        container.innerHTML = e.target.checked
-          ? '<button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">shopping_bag</span><span>أطلب المنتج الآن</span></button>'
-          : '<div class="flex items-center gap-2"><span class="px-3.5 py-2 rounded-xl bg-surface-container-highest text-on-surface-variant font-label-md text-label-md">غير متوفر حالياً</span><button type="button" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">chat</span><span>للاستفسار المباشر عبر واتساب</span></button></div>';
+      document.getElementById('productStockStatus')?.addEventListener('change', (event) => {
+        updateProductButtonPreview(event.target.value);
       });
 
       const searchInput = document.querySelector('#section-products-table input[placeholder="بحث بالاسم أو الكود..."]');
       if (searchInput) searchInput.addEventListener('input', renderProducts);
       document.getElementById('productCategoryFilter')?.addEventListener('change', renderProducts);
-      document.querySelector('#section-products-table select:not(#productCategoryFilter)')?.addEventListener('change', renderProducts);
+      document.getElementById('productAvailabilityFilter')?.addEventListener('change', renderProducts);
       document.getElementById('subcategoryCategoryFilter')?.addEventListener('change', renderSubCategoryTable);
 
       await loadData();

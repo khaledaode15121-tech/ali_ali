@@ -202,7 +202,9 @@ function normalizeProductPayload(body) {
     description: String(description || "").trim(),
     price: Number(price) || 0,
     rental_price: Number(rental_price) || 0,
-    stock_status: stock_status || "available",
+    stock_status: ["available", "reserved", "out_of_stock"].includes(String(stock_status || "").toLowerCase())
+      ? String(stock_status).toLowerCase()
+      : "available",
     is_featured: is_featured ? 1 : 0,
     is_active: is_active !== false ? 1 : 0,
     image_url: normalizeImageUrl(image_url),
@@ -600,7 +602,7 @@ app.get("/api/products", async (req, res) => {
     ...product,
     category_name: product.category_name || categoryById.get(product.category_id) || "",
     subcategory_name: product.subcategory_name || subcategoryById.get(product.subcategory_id) || "",
-  })));
+  })).sort((left, right) => Number(right.is_featured) - Number(left.is_featured) || Number(right.id) - Number(left.id)));
 });
 
 app.get("/api/products/:id", async (req, res) => {
