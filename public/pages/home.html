@@ -1583,10 +1583,14 @@
       document.getElementById('products-showcase').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    function handleProductSearchInput(sourceInput) {
+    function syncProductSearchInputs(sourceInput) {
       const value = sourceInput?.value || '';
       if (productSearchInput && productSearchInput !== sourceInput) productSearchInput.value = value;
       if (productFilterSearchInput && productFilterSearchInput !== sourceInput) productFilterSearchInput.value = value;
+      return value;
+    }
+    function executeProductSearch(sourceInput) {
+      const value = syncProductSearchInputs(sourceInput);
       const filteredProducts = renderFilteredProducts();
       if (value.trim() && filteredProducts.length) {
         clearTimeout(searchScrollTimer);
@@ -1595,16 +1599,16 @@
       return filteredProducts;
     }
     let searchScrollTimer;
-    productSearchInput?.addEventListener('input', () => handleProductSearchInput(productSearchInput));
-    productFilterSearchInput?.addEventListener('input', () => handleProductSearchInput(productFilterSearchInput));
+    productSearchInput?.addEventListener('input', () => syncProductSearchInputs(productSearchInput));
+    productFilterSearchInput?.addEventListener('input', () => syncProductSearchInputs(productFilterSearchInput));
     productSearchInput?.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
-      const filteredProducts = handleProductSearchInput(productSearchInput);
+      const filteredProducts = executeProductSearch(productSearchInput);
       if (productSearchInput.value.trim() && filteredProducts.length) scrollToProductResults();
     });
     productFilterSearchInput?.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
-      const filteredProducts = handleProductSearchInput(productFilterSearchInput);
+      const filteredProducts = executeProductSearch(productFilterSearchInput);
       if (productFilterSearchInput.value.trim() && filteredProducts.length) scrollToProductResults();
     });
     productPriceFilter?.addEventListener('change', renderFilteredProducts);
