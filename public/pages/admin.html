@@ -1,0 +1,2435 @@
+<!-- لوحة تحكم الإدارة - صالون أم علي للأناقة -->
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>
+<style data-purpose="mobile-admin-layout">
+  @media (max-width: 767px) {
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+    body > aside {
+      position: relative !important;
+      inset: auto !important;
+      width: 100% !important;
+      height: auto !important;
+      padding: 12px !important;
+      gap: 10px !important;
+    }
+    body > aside > div:first-child { gap: 10px !important; }
+    body > aside > div:first-child > div:nth-child(2) { display: none; }
+    body > aside nav {
+      display: flex !important;
+      flex-direction: row !important;
+      width: 100%;
+      gap: 6px !important;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    body > aside nav a {
+      flex: 0 0 auto;
+      white-space: nowrap;
+      padding: 8px 10px !important;
+    }
+    body > aside > div:last-child {
+      display: flex;
+      flex-direction: row;
+      padding: 0;
+    }
+    body > aside > div:last-child > div { display: none; }
+    body > .pr-72 { width: 100%; min-width: 0; padding-right: 0 !important; }
+    body > .pr-72 > header {
+      position: static !important;
+      width: 100%;
+      height: auto;
+      min-height: 56px;
+      padding: 8px 12px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    body > .pr-72 > header > div:first-child { flex: 1 1 180px; }
+    body > .pr-72 > header > div:last-child { gap: 8px; }
+    body > .pr-72 > main { padding-top: 12px !important; }
+    body > .pr-72 > main > div > div { max-width: 100%; padding: 12px !important; gap: 16px; }
+    #managementTabs { width: 100%; align-self: stretch; }
+    #managementTabs .tab-button { flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; }
+    table { min-width: 680px; }
+    #storeSettingsForm { grid-template-columns: minmax(0, 1fr); }
+    #homepageContentEditor { min-width: 0; }
+  }
+</style>
+<script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "outline-variant": "#e3bdc3", "on-background": "#25181e", "surface-variant": "#f4dce4", "primary-fixed-dim": "#ffb2bf", "on-tertiary-container": "#fff2f3", "on-primary": "#ffffff", "secondary-container": "#fed65b", "primary-fixed": "#ffd9de", "on-secondary-container": "#745c00", "surface-container-high": "#fae2ea", "on-secondary": "#ffffff", "tertiary-container": "#dc0c5a", "inverse-primary": "#ffb2bf", "on-tertiary-fixed": "#400014", "on-secondary-fixed": "#241a00", "secondary": "#735c00", "on-primary-fixed-variant": "#90003b", "on-secondary-fixed-variant": "#574500", "error": "#ba1a1a", "on-error-container": "#93000a", "surface-container-highest": "#f4dce4", "primary-container": "#d81b60", "surface-container-low": "#fff0f4", "on-surface-variant": "#5a4044", "surface-bright": "#fff8f8", "background": "#fff8f8", "on-tertiary": "#ffffff", "surface-container-lowest": "#ffffff", "outline": "#8e6f74", "tertiary": "#b00046", "error-container": "#ffdad6", "secondary-fixed": "#ffe088", "inverse-surface": "#3b2c32", "inverse-on-surface": "#ffecf2", "surface": "#fff8f8", "on-primary-fixed": "#3f0016", "surface-container": "#ffe8f0", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#900038", "surface-dim": "#ebd4dc", "tertiary-fixed": "#ffd9de", "tertiary-fixed-dim": "#ffb2be", "on-surface": "#25181e", "on-primary-container": "#fff2f3", "primary": "#b0004a", "surface-tint": "#bc004f", "secondary-fixed-dim": "#e9c349" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-mobile": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-xl": "2.5rem", "margin": "2.5rem", "gutter": "1.25rem", "space-md": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem" }, "fontFamily": { "label-sm": [ "Plus Jakarta Sans" ], "display-lg": [ "Playfair Display" ], "body-lg": [ "Plus Jakarta Sans" ], "headline-lg": [ "Playfair Display" ], "label-md": [ "Plus Jakarta Sans" ], "title-lg": [ "Plus Jakarta Sans" ], "headline-lg-mobile": [ "Playfair Display" ], "title-md": [ "Plus Jakarta Sans" ], "headline-md": [ "Playfair Display" ], "display-lg-mobile": [ "Playfair Display" ], "body-md": [ "Plus Jakarta Sans" ], "label-lg": [ "Plus Jakarta Sans" ] }, "fontSize": { "label-sm": [ "10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600" } ], "display-lg": [ "48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "26px", "fontWeight": "400" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "fontWeight": "600" } ], "label-md": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ], "title-lg": [ "20px", { "lineHeight": "28px", "fontWeight": "600" } ], "headline-lg-mobile": [ "26px", { "lineHeight": "34px", "fontWeight": "600" } ], "title-md": [ "16px", { "lineHeight": "24px", "fontWeight": "600" } ], "headline-md": [ "24px", { "lineHeight": "32px", "fontWeight": "500" } ], "display-lg-mobile": [ "34px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "body-md": [ "14px", { "lineHeight": "22px", "fontWeight": "400" } ], "label-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "600" } ] } } } };</script><script src="/pages/nav.js"></script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed right-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-6 px-4"><div class="flex flex-col gap-6"><div class="flex items-center gap-3 px-3 py-2"><div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center shadow-md"><span class="material-symbols-outlined text-on-primary-container text-[22px]">styler</span></div><div><span class="font-headline-md text-headline-md text-primary block leading-none">أم علي</span><span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest mt-1 block">للأناقة والإتيليه</span></div></div><div class="h-[1px] bg-outline-variant/40 mx-2"></div><nav class="flex flex-col gap-1.5" data-active-classes="bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_4px_16px_rgba(216,27,96,0.15)]"><a aria-current="page" class="flex items-center gap-3.5 px-4 py-3 transition-all bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_4px_16px_rgba(216,27,96,0.15)]" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">dashboard</span><span>نظرة عامة والإحصائيات</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="main-categories" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">category</span><span>الأقسام الرئيسية</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="sub-categories" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">account_tree</span><span>الأقسام الفرعية</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="products-management" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">checkroom</span><span>إدارة المنتجات والفساتين</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="whatsapp-orders" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">chat</span><span>طلبات واستفسارات الواتساب</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="store-settings" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">tune</span><span>إعدادات المتجر</span></a></nav></div><div class="px-2 flex flex-col gap-3"><a class="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-surface-container-highest text-primary hover:bg-primary-container hover:text-on-primary-container transition-all font-label-md" data-path="storefront" href="#"><span class="material-symbols-outlined text-[18px]">storefront</span><span>العودة للمتجر الرئيسي</span></a><div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-high"><div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col flex-1 overflow-hidden"><span class="font-label-md text-label-md text-on-surface truncate">المدير العام</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">admin@omali-couture.com</span></div></div></div></aside><div class="pr-72"><header class="fixed top-0 right-72 left-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8"><div class="flex items-center gap-4"><div class="relative flex items-center"><span class="material-symbols-outlined absolute right-3 text-on-surface-variant text-[18px]">search</span><input class="bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant text-body-md font-body-md pr-9 pl-4 py-1.5 rounded-lg outline-none w-72 shadow-sm focus:ring-1 focus:ring-primary" placeholder="بحث سريع في المنتجات والطلبات..." type="text"/></div></div><div class="flex items-center gap-4"><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full"></span></button><div class="h-6 w-[1px] bg-outline-variant/30"></div><div class="flex items-center gap-3"><div class="text-left hidden sm:block"><span class="block font-label-md text-label-md text-on-surface">صالون أم علي</span><span class="block font-label-sm text-label-sm text-secondary font-medium">لوحة التحكم الإدارية</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<!-- Content Area -->
+<div class="p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
+<!-- Top Couture Welcome Bar with Real-time Status -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-container-low p-6 rounded-2xl shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container shadow-md">
+<span class="material-symbols-outlined text-[28px]">diamond</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-primary">صالون أم علي للأناقة والجمال</span>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">نسخة الكوتور الفاخرة</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">التحكم المركزي في الكتالوج، الأقسام، إدارة حجوزات الأثواب والعروض الحصرية</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-tertiary shadow-md transition-all font-label-md text-label-md" id="quickNewProductBtn" onclick="switchTab('products')">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>إضافة فستان جديد</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-highest text-secondary hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">cached</span>
+<span>مزامنة الكتالوج</span>
+</button>
+</div>
+</div>
+<!-- Quick Stats Metric Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+<!-- Stat 1: Total Dresses -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-all group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">إجمالي المنتجات والفساتين</span>
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">checkroom</span>
+</div>
+</div>
+<div class="mt-4 flex items-baseline justify-between">
+<span id="statProductsCount" class="font-headline-lg text-headline-lg text-on-surface">0</span>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container-high px-2 py-0.5 rounded-full">إجمالي المنتجات والفساتين</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[82%] rounded-full"></div>
+</div>
+</div>
+<!-- Stat 2: Main Categories -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-all group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">الأقسام الرئيسية</span>
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">category</span>
+</div>
+</div>
+<div class="mt-4 flex items-baseline justify-between">
+<span id="statCategoriesCount" class="font-headline-lg text-headline-lg text-on-surface">0</span>
+<span class="font-label-sm text-label-sm text-primary bg-primary-fixed px-2 py-0.5 rounded-full">قسم رئيسي</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-secondary h-full w-[100%] rounded-full"></div>
+</div>
+</div>
+<!-- Stat 3: Sub Categories -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-all group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">الأقسام الفرعية</span>
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+</div>
+</div>
+<div class="mt-4 flex items-baseline justify-between">
+<span id="statSubcategoriesCount" class="font-headline-lg text-headline-lg text-on-surface">0</span>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container-high px-2 py-0.5 rounded-full">قسم فرعي</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary-container h-full w-[65%] rounded-full"></div>
+</div>
+</div>
+<!-- Stat 4: Active Offers -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-all group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">المنتجات بعرض ترويجي</span>
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">local_offer</span>
+</div>
+</div>
+<div class="mt-4 flex items-baseline justify-between">
+<span id="statOffersCount" class="font-headline-lg text-headline-lg text-secondary">0</span>
+<span class="font-label-sm text-label-sm text-on-secondary-container bg-secondary-container px-2 py-0.5 rounded-full">عروض نشطة</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-secondary-container h-full w-[45%] rounded-full"></div>
+</div>
+</div>
+<!-- Stat 5: WhatsApp Orders -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-all group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">طلبات واستفسارات الواتساب</span>
+<div class="w-10 h-10 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">chat</span>
+</div>
+</div>
+<div class="mt-4 flex items-baseline justify-between">
+<span id="statOrdersCount" class="font-headline-lg text-headline-lg text-[#25D366]">0</span>
+<span class="font-label-sm text-label-sm text-white bg-[#25D366] px-2 py-0.5 rounded-full">طلب مسجل</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-[#25D366] h-full w-[90%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Navigation Tabs For Management Sections -->
+<div class="flex items-center gap-2 p-1.5 bg-surface-container-high rounded-2xl self-start overflow-x-auto max-w-full" id="managementTabs">
+<button class="tab-button active flex items-center gap-2 px-5 py-2.5 rounded-xl font-label-md text-label-md transition-all bg-primary-container text-on-primary-container shadow-sm" id="tab-btn-main-categories" onclick="switchTab('main-categories')">
+<span class="material-symbols-outlined text-[18px]">category</span>
+<span id="tabMainCategoriesCount">إدارة الأقسام الرئيسية (0)</span>
+</button>
+<button class="tab-button flex items-center gap-2 px-5 py-2.5 rounded-xl font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container" id="tab-btn-sub-categories" onclick="switchTab('sub-categories')">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+<span id="tabSubcategoriesCount">إدارة الأقسام الفرعية (0)</span>
+</button>
+<button class="tab-button flex items-center gap-2 px-5 py-2.5 rounded-xl font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container" id="tab-btn-products" onclick="switchTab('products')">
+<span class="material-symbols-outlined text-[18px]">checkroom</span>
+<span id="tabProductsCount">إدارة المنتجات والفساتين (0)</span>
+</button>
+<button class="tab-button flex items-center gap-2 px-5 py-2.5 rounded-xl font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container" id="tab-btn-products-table" onclick="switchTab('products-table')">
+<span class="material-symbols-outlined text-[18px]">table_rows</span>
+<span>قائمة الفساتين بالمتجر</span>
+</button>
+</div>
+<!-- ========================================== -->
+<!-- SECTION 1: MAIN CATEGORIES MANAGEMENT     -->
+<!-- ========================================== -->
+<div class="management-section flex flex-col gap-6" id="section-main-categories">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Add Category Form Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-5 lg:col-span-1">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+</div>
+<div>
+<h3 id="mainCategoryFormTitle" class="font-title-lg text-title-lg text-on-surface">إضافة قسم رئيسي</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">قم بإنشاء وتحديد هوية تصنيف رئيسي لفساتين صالون أم علي</p>
+</div>
+</div>
+<form class="flex flex-col gap-4">
+<!-- Category ID -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">رقم القسم (معرف تلقائي)</label>
+<div class="relative flex items-center">
+<input id="mainCategoryId" class="w-full bg-surface-container-low text-secondary font-label-md text-label-md px-3.5 py-2.5 rounded-xl outline-none select-none" readonly="" type="text" value="MC-006"/>
+<span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">lock</span>
+</div>
+</div>
+<!-- Unique Category Name -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface">اسم القسم الفريد <span class="text-primary">*</span></label>
+<span class="font-label-sm text-label-sm text-secondary">اسم فريد غير مكرر</span>
+</div>
+<input id="mainCategoryName" class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary transition-all placeholder:text-on-surface-variant/60" placeholder="مثال: أثواب سهرة هوت كوتور" required="" type="text"/>
+</div>
+<!-- Category Image Upload Area -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">صورة القسم المخصصة <span class="text-primary">*</span></label>
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-container transition-colors relative overflow-hidden group">
+<img id="mainCategoryPreview" class="hidden w-full h-28 object-cover rounded-xl" src="" alt="معاينة صورة القسم"/>
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary mb-2 shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[24px]">cloud_upload</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">اسحبي وأفلتي الصورة هنا، أو اضغطي للتصفح</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">PNG, JPG, WEBP (حجم مقترح 600x800 بكسل)</span>
+<input id="mainCategoryImageInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">رابط الصورة</label>
+<input id="mainCategoryImageUrl" class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary placeholder:text-on-surface-variant/60" placeholder="https://example.com/image.jpg" type="url"/>
+</div>
+</div>
+<button class="w-full py-3 rounded-xl bg-primary text-on-primary hover:bg-tertiary shadow-sm transition-all font-label-md text-label-md flex items-center justify-center gap-2 mt-2" type="submit">
+<span class="material-symbols-outlined text-[20px]">save</span>
+<span id="mainCategorySubmitText">حفظ وإضافة القسم الرئيسي</span>
+</button>
+</form>
+</div>
+<!-- Categories Table Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4 lg:col-span-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface">الأقسام الرئيسية الحالية</h3>
+</div>
+<span id="categoryListCount" class="font-label-md text-label-md text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-full">إجمالي 0 قسم رئيسي</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+<th class="p-3.5 rounded-r-xl">الكود</th>
+<th class="p-3.5">صورة الغلاف</th>
+<th class="p-3.5">اسم القسم الرئيسي</th>
+<th class="p-3.5">الأقسام الفرعية</th>
+<th class="p-3.5 rounded-l-xl text-center">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low text-body-md font-body-md text-on-surface">
+<!-- Item 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">MC-001</td>
+<td class="p-3.5">
+<img class="w-12 h-12 rounded-xl object-cover shadow-sm" data-alt="Close up luxurious bridal gown embroidery lace details, ivory and gold sparkles, boutique display photography, editorial high fashion aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzAokiNWvnOJxlJBMBtXBm84MPdWonukxx-mkZqv9yj2RpthWJIl8YW32uwDI7VzZh1krtIpjqHSU8vh4RLmX1JUHfbbrZx49pLUc0icE8bbs43SS2cQJ6AJejEZpDXPh1lh_BD--32LTUHIsKg_Kvrj-D4YHtWRNInyuCRPLiE2bYJVrUWsYSOIWHLRf2PLRvBAWT30KO_ay-q_NO5iCRFY7GDVorEZw0lCr81JmyOYDu6EYJXGiF"/>
+</td>
+<td class="p-3.5 font-title-md text-title-md text-on-surface">تجهيز عرائسي متكامل</td>
+<td class="p-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">account_tree</span>
+                      4 أقسام فرعية
+                    </span>
+</td>
+<td class="p-3.5">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-lg text-secondary hover:bg-secondary-container/20 transition-colors" title="معاينة القسم">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-2 rounded-lg text-primary hover:bg-primary-container/20 transition-colors" title="تعديل القسم">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-2 rounded-lg text-error hover:bg-error-container/20 transition-colors" title="حذف القسم">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">MC-002</td>
+<td class="p-3.5">
+<img class="w-12 h-12 rounded-xl object-cover shadow-sm" data-alt="Royal emerald and burgundy evening gown displayed on velvet mannequin in an opulent couture salon, soft warm lighting, luxury gold accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQVpD6XNCSnHVnQEXc1SpShAbeFQn8qcLdWz4JHx59fD6BDBbPNPnanGLMi8wNk41OeYHuBUF3U5O0eZZubR4CaTVE6pGjv6TF925ulhfdG284uWr27JIUa88gl_p2gXfrc2R0Ku-PJ-o8fwI_EusBPZMBF6shFcPzXP5kySyBwbuUXbzP0iYO2T3ERwNrT1gspNxC1hvHHy7ZJQEMXKHX9L1m8-wOWbTBPi4g-nWQhee3dObywT71"/>
+</td>
+<td class="p-3.5 font-title-md text-title-md text-on-surface">تأجير فساتين السهرة والمناسبات</td>
+<td class="p-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">account_tree</span>
+                      5 أقسام فرعية
+                    </span>
+</td>
+<td class="p-3.5">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-lg text-secondary hover:bg-secondary-container/20 transition-colors" title="معاينة">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-2 rounded-lg text-primary hover:bg-primary-container/20 transition-colors" title="تعديل">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-2 rounded-lg text-error hover:bg-error-container/20 transition-colors" title="حذف">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">MC-003</td>
+<td class="p-3.5">
+<img class="w-12 h-12 rounded-xl object-cover shadow-sm" data-alt="Ornate bridal trousseau luxury bags and decorated jewelry boxes on velvet fabric, Arabic bridal dowry preparation, warm golden reflections" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOf3xavJEqHT3sQ5XLSKSL1iDL3EFcGVF0zaaen5wTIE0FDG8e5CMUosGeMIiTe7LcCO4fpcW4s-eRwX08uFcmMOt799MPEQmInYnK_tbiBOqCwed5fXvii25PMUm5awgl9mlyRnJUOWun0LpeUWVLWJbVCaEMSrKO8bHVCzcJ1lLRDSsFqn2Hhy2SPWSYiEBDMION2mzUh13pveUStE7h6TB0Aa68BGJzg27ATK4TD4HAkgs8c7J3"/>
+</td>
+<td class="p-3.5 font-title-md text-title-md text-on-surface">تأجير شنط جهاز العروس</td>
+<td class="p-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">account_tree</span>
+                      2 أقسام فرعية
+                    </span>
+</td>
+<td class="p-3.5">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-lg text-secondary hover:bg-secondary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+<button class="p-2 rounded-lg text-primary hover:bg-primary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 rounded-lg text-error hover:bg-error-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Item 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">MC-004</td>
+<td class="p-3.5">
+<img class="w-12 h-12 rounded-xl object-cover shadow-sm" data-alt="High-end luxury perfume bottles with gold caps, delicate cosmetic powders and bridal makeup arrangement in a pink satin setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpGOhcoiEumpMSYfvztW6gB8aqcH-pcQqHu_JnrlrHIw28Idq64MJ1pWxqd6KhhM0ZtvLTCelFTDtfO2GxdExY750vX6YW3ovYwj_K_iwk81MVAa-nrANKIr92gimQvCoskeX2apYOgGn9Scu5wOC_LbaUIySE5uQ2ShtU1g4AtXhj7y7x7LahesRP4nCpLXa8BWCjeIM91gKsAW0Bdna8PQtNwWZl1VakvRIWItEQb_WrRieHGx_m"/>
+</td>
+<td class="p-3.5 font-title-md text-title-md text-on-surface">ميكب وعطور الكوتور الملكي</td>
+<td class="p-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">account_tree</span>
+                      3 أقسام فرعية
+                    </span>
+</td>
+<td class="p-3.5">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-lg text-secondary hover:bg-secondary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+<button class="p-2 rounded-lg text-primary hover:bg-primary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 rounded-lg text-error hover:bg-error-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Item 5 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">MC-005</td>
+<td class="p-3.5">
+<img class="w-12 h-12 rounded-xl object-cover shadow-sm" data-alt="Whimsical delicate fairy flower girl dress, soft pastel pink tulle ruffles with intricate crystal beadwork, luxury children couture studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCq2ryOZW48OVX2s7DIgB4FfHKkPZ4kdU1kgxmdB5M7KJQRMN6iYLb9dqur8WF8lBhZLw-_RP3aH7BfzfRZ17cvrwqMDKN6TvCFrsVOiZSqeeyv5QUgKwyWLKSQ0xx6O2glq2P_k_gFNPqPaS6cjpbEyDY7ZLNrjHCk0MHMPX08uRTa15IR-Q73-CLlK57uGpXFZEvXDR4Yc0WvobHsNgNLRe568_WpfL4r3yuFnqjJMOFV1kAiyx9I"/>
+</td>
+<td class="p-3.5 font-title-md text-title-md text-on-surface">تأجير وتصميم فساتين الأطفال والملكة</td>
+<td class="p-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">account_tree</span>
+                      2 أقسام فرعية
+                    </span>
+</td>
+<td class="p-3.5">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-lg text-secondary hover:bg-secondary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+<button class="p-2 rounded-lg text-primary hover:bg-primary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 rounded-lg text-error hover:bg-error-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- SECTION 2: SUB CATEGORIES MANAGEMENT      -->
+<!-- ========================================== -->
+<div class="management-section hidden flex flex-col gap-6" id="section-sub-categories">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Sub-Category Form Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-5 lg:col-span-1">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+</div>
+<div>
+<h3 id="subCategoryFormTitle" class="font-title-lg text-title-lg text-on-surface">إضافة قسم فرعي جديد</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">ربط التصنيف الدقيق بالقسم الرئيسي التابع له</p>
+</div>
+</div>
+<form class="flex flex-col gap-4">
+<!-- Sub-Category ID -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">رقم القسم الفرعي (تلقائي)</label>
+<input id="subCategoryId" class="w-full bg-surface-container-low text-secondary font-label-md text-label-md px-3.5 py-2.5 rounded-xl outline-none select-none" readonly="" type="text" value="SC-015"/>
+</div>
+<!-- Parent Main Category Dropdown -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">القسم الرئيسي التابع له <span class="text-primary">*</span></label>
+<select id="subCategoryParentSelect" class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary" required="">
+<option value="">جارٍ تحميل الأقسام...</option>
+</select>
+</div>
+<!-- Unique Sub Category Name -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface">اسم القسم الفرعي <span class="text-primary">*</span></label>
+<span class="font-label-sm text-label-sm text-secondary">اسم فريد مطلوب</span>
+</div>
+<input id="subCategoryName" class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary transition-all placeholder:text-on-surface-variant/60" placeholder="مثال: فساتين حنة وتراث شرقي مطرز" required="" type="text"/>
+</div>
+<!-- Sub Category Image -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">أيقونة أو صورة القسم الفرعي</label>
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-container transition-colors relative">
+<img id="subCategoryPreview" class="hidden w-full h-24 object-cover rounded-lg" src="" alt="معاينة صورة القسم الفرعي"/>
+<span class="material-symbols-outlined text-[24px] text-primary mb-1">image</span>
+<span class="font-label-md text-label-md text-on-surface">انقري لرفع صورة القسم الفرعي</span>
+<input id="subCategoryImageInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">رابط الصورة</label>
+<input id="subCategoryImageUrl" class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary placeholder:text-on-surface-variant/60" placeholder="https://example.com/subcategory.jpg" type="url"/>
+</div>
+</div>
+<button class="w-full py-3 rounded-xl bg-primary text-on-primary hover:bg-tertiary shadow-sm transition-all font-label-md text-label-md flex items-center justify-center gap-2 mt-2" type="submit">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span id="subCategorySubmitText">إضافة القسم الفرعي</span>
+</button>
+</form>
+</div>
+<!-- Sub Categories List Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4 lg:col-span-2">
+<div class="flex items-center justify-between flex-wrap gap-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+</div>
+<h3 id="subcategoryListCount" class="font-title-lg text-title-lg text-on-surface">الأقسام الفرعية (0)</h3>
+</div>
+<div class="flex items-center gap-2">
+<select id="subcategoryCategoryFilter" class="bg-surface-container-low text-on-surface font-label-md text-label-md px-3 py-1.5 rounded-lg outline-none">
+<option value="all">تصفية حسب القسم الرئيسي: الكل</option>
+</select>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+<th class="p-3.5 rounded-r-xl">الكود</th>
+<th class="p-3.5">القسم الفرعي</th>
+<th class="p-3.5">القسم الرئيسي التابع</th>
+<th class="p-3.5">الفساتين المرتبطة</th>
+<th class="p-3.5 rounded-l-xl text-center">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low text-body-md font-body-md text-on-surface">
+<!-- Sub 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">SC-001</td>
+<td class="p-3.5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs">01</div>
+<span class="font-title-md text-title-md text-on-surface">فساتين زفاف ملكية (Royal White)</span>
+</div>
+</td>
+<td class="p-3.5">
+<span class="px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-sm text-label-sm">تجهيز عرائسي متكامل</span>
+</td>
+<td class="p-3.5 font-label-md text-label-md text-secondary">32 فستان</td>
+<td class="p-3.5 text-center">
+<div class="flex items-center justify-center gap-2">
+<button class="p-1.5 rounded-lg text-primary hover:bg-primary-container/20"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg text-error hover:bg-error-container/20"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Sub 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">SC-002</td>
+<td class="p-3.5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs">02</div>
+<span class="font-title-md text-title-md text-on-surface">فساتين خطوبة بريق النجوم</span>
+</div>
+</td>
+<td class="p-3.5">
+<span class="px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-sm text-label-sm">تجهيز عرائسي متكامل</span>
+</td>
+<td class="p-3.5 font-label-md text-label-md text-secondary">21 فستان</td>
+<td class="p-3.5 text-center">
+<div class="flex items-center justify-center gap-2">
+<button class="p-1.5 rounded-lg text-primary hover:bg-primary-container/20"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg text-error hover:bg-error-container/20"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Sub 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">SC-003</td>
+<td class="p-3.5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs">03</div>
+<span class="font-title-md text-title-md text-on-surface">فساتين سهرة ميرميد حورية البحر</span>
+</div>
+</td>
+<td class="p-3.5">
+<span class="px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-sm text-label-sm">تأجير فساتين السهرة</span>
+</td>
+<td class="p-3.5 font-label-md text-label-md text-secondary">28 فستان</td>
+<td class="p-3.5 text-center">
+<div class="flex items-center justify-center gap-2">
+<button class="p-1.5 rounded-lg text-primary hover:bg-primary-container/20"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg text-error hover:bg-error-container/20"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Sub 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="p-3.5 font-label-md text-label-md text-primary font-bold">SC-004</td>
+<td class="p-3.5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs">04</div>
+<span class="font-title-md text-title-md text-on-surface">شنط جهاز مخملية مطرزة باللؤلؤ</span>
+</div>
+</td>
+<td class="p-3.5">
+<span class="px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-sm text-label-sm">تأجير شنط جهاز العروس</span>
+</td>
+<td class="p-3.5 font-label-md text-label-md text-secondary">11 طقم</td>
+<td class="p-3.5 text-center">
+<div class="flex items-center justify-center gap-2">
+<button class="p-1.5 rounded-lg text-primary hover:bg-primary-container/20"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1.5 rounded-lg text-error hover:bg-error-container/20"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- SECTION 3: PRODUCT ADDITION & MANAGEMENT   -->
+<!-- ========================================== -->
+<div class="management-section hidden flex flex-col gap-6" id="section-products">
+<!-- Complete Couture Product Insertion Form -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm flex flex-col gap-8">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-primary-container text-on-primary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[24px]">styler</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary">نموذج قيد فستان / منتج جديد في المتجر</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">أدخلي كافة البيانات الدقيقة للقطعة لعرضها في كتالوج صالون أم علي</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span id="productFormModeTag" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+              إضافة منتج جديد
+            </span>
+</div>
+</div>
+<form class="flex flex-col gap-8">
+<!-- Row 1: Categories & Code -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Main Category Dropdown -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+<span>القسم الرئيسي</span>
+<span class="text-primary">*</span>
+</label>
+<select class="bg-surface-container-low text-on-surface font-body-md text-body-md px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="prodMainCategory" onchange="updateSubCategoryOptions()" required="">
+<option value="">جارٍ تحميل الأقسام...</option>
+</select>
+</div>
+<!-- Dynamic Sub-Category Dropdown -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+<span>القسم الفرعي المرتبط</span>
+<span class="text-primary">*</span>
+</label>
+<select class="bg-surface-container-low text-on-surface font-body-md text-body-md px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="prodSubCategory" required="">
+<option value="">جارٍ تحميل الأقسام الفرعية...</option>
+</select>
+</div>
+<!-- Product ID / Code -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+<span>رقم / كود المنتج</span>
+<span class="text-primary">*</span>
+</label>
+<span class="font-label-sm text-label-sm text-secondary">كود تسلسلي فريد</span>
+</div>
+<input class="bg-surface-container-low text-secondary font-label-md text-label-md px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="prodCode" required="" type="text" value="OM-2024"/>
+</div>
+</div>
+<!-- Row 2: Product Name -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+<span>اسم المنتج / الفستان</span>
+<span class="text-primary">*</span>
+</label>
+<span class="font-label-sm text-label-sm text-secondary">اسم مميز غير قابل للتكرار في النظام</span>
+</div>
+<input class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md px-4 py-3.5 rounded-xl outline-none focus:ring-1 focus:ring-primary placeholder:text-on-surface-variant/60" id="prodName" placeholder="مثال: فستان الملكة إليزابيث - ساتان ملكي مع كيب دانتيل فرنسي مطرز يدوياً" required="" type="text"/>
+</div>
+<!-- Row 3: Product Image URL -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+<span>رابط الصورة الرئيسية للمنتج</span>
+<span class="text-primary">*</span>
+</label>
+<input class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary placeholder:text-on-surface-variant/60" id="productImageUrl" placeholder="https://example.com/product.jpg" type="url"/>
+</div>
+<!-- Row 4: Pricing & Business Model (Sale vs Rent) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-surface-container-low">
+<!-- Sale Price -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary" id="isForSale" onchange="togglePriceField('salePriceInput', this.checked)" type="checkbox"/>
+<span class="font-title-md text-title-md text-on-surface">قابل للبيع والشراء التام</span>
+</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">بالليرة السورية الجديدة (SYR)</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-lg text-title-lg px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="salePriceInput" min="0" placeholder="مثال: 650" step="5" type="number"/>
+<span class="absolute left-4 font-label-md text-label-md text-secondary font-bold">ل.س</span>
+</div>
+</div>
+<!-- Rent Price -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary" id="isForRent" onchange="togglePriceField('rentPriceInput', this.checked)" type="checkbox"/>
+<span class="font-title-md text-title-md text-on-surface">متاح للتأجير للمناسبات</span>
+</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">بالليرة السورية الجديدة (SYR)</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-lg text-title-lg px-4 py-3 rounded-xl outline-none focus:ring-1 focus:ring-primary" id="rentPriceInput" min="0" placeholder="مثال: 180" step="5" type="number"/>
+<span class="absolute left-4 font-label-md text-label-md text-secondary font-bold">ل.س / مناسبة</span>
+</div>
+</div>
+</div>
+<!-- Row 5: Multiple Image Gallery Upload -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-title-md text-title-md text-on-surface block">معرض وسائط المنتج (صور وفيديو)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">يمكن اختيار عدة ملفات؛ أول صورة تُستخدم كصورة رئيسية. الحد الأقصى: 10 MB للصورة و50 MB للفيديو.</span>
+</div>
+<button id="addProductMediaButton" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface-container text-primary hover:bg-primary-container hover:text-on-primary-container font-label-md text-label-md transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">add_photo_alternate</span>
+<span>رفع صور أو فيديو</span>
+</button>
+</div>
+<div id="productMediaGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 p-4 rounded-2xl bg-surface-container-low"></div>
+<button id="productMediaPicker" class="rounded-xl border-2 border-dashed border-outline-variant/60 flex flex-col items-center justify-center p-3 text-center cursor-pointer hover:bg-surface-container transition-all aspect-[3/4] relative" type="button">
+<span class="material-symbols-outlined text-[28px] text-primary mb-1">add_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">إضافة صور أو فيديو</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[9px] mt-0.5">يمكن اختيار عدة ملفات</span>
+</button>
+<input id="productImageInput" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime" class="hidden" multiple="" type="file"/>
+</div>
+<!-- Row 5: Detailed Description (Fabric, Cut, Accessories) -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+<span>شرح مبسوط وتفاصيل الفستان</span>
+<span class="text-primary">*</span>
+</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">نوع القماش، القصّة، التطريز، القياسات المتوفرة والمحتويات المرفقة</span>
+</div>
+<textarea class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md p-4 rounded-xl outline-none focus:ring-1 focus:ring-primary leading-relaxed placeholder:text-on-surface-variant/60" id="prodDesc" placeholder="مثال: فستان كوتور فاخر مصنوع من الحرير الطبيعي والتول الإيطالي، مطرز يدوياً بالخرز والكريستال اللامع. القياس يتناسب مع سمول وميديوم (S-M)، مع كورسيه داخلي قابل للتعديل. يأتي مع طرحة ملكية بطول 3 أمتار وجيبون مدمج وحقيبة سهرة متطابقة مجاناً مع الحجز." required="" rows="4"></textarea>
+</div>
+<!-- Row 6: Toggles (Promotion Status & Stock Availability) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Toggle 1: Is Offer? -->
+<div class="flex items-center justify-between p-5 rounded-2xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[20px]">percent</span>
+</div>
+<div>
+<span class="font-title-md text-title-md text-on-surface block">هل المنتج عرض ترويجي خاص؟</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">يحدد ظهوره في واجهة المتجر كأولوية مع شارة "عرض خاص"</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="isOfferToggle" type="checkbox"/>
+<div class="w-13 h-7 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Toggle 2: Is Available? -->
+<div class="flex items-center justify-between p-5 rounded-2xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+</div>
+<div>
+<span class="font-title-md text-title-md text-on-surface block">هل المنتج متوفر حالياً للحجز؟</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">متوفر (زر أخضر "أطلب المنتج") / غير متوفر (زر رمادي + استفسار)</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="isAvailableToggle" type="checkbox"/>
+<div class="w-13 h-7 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#25D366]"></div>
+</label>
+</div>
+</div>
+<!-- Live Preview Preview Box of Buttons -->
+<div class="p-4 rounded-xl bg-surface-container flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-secondary text-[20px]">info</span>
+<span class="font-label-md text-label-md">معاينة تفاعلية لكيفية ظهور أزرار الشراء في واجهة العميل بناءً على الخيارات المختارة أعلاه:</span>
+</div>
+<div class="flex items-center gap-2" id="buttonPreviewContainer">
+<!-- When Available: -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+<span>أطلب المنتج الآن</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Submit CTA -->
+<div class="flex items-center justify-end gap-4 pt-4">
+<button class="px-6 py-3.5 rounded-xl bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" type="reset">
+              تفريغ الحقول
+            </button>
+<button class="flex items-center gap-3 px-8 py-3.5 rounded-xl bg-primary text-on-primary hover:bg-tertiary shadow-lg shadow-primary/20 font-title-md text-title-md transition-all" type="submit">
+<span class="material-symbols-outlined text-[22px]">publish</span>
+<span>حفظ ونشر الفستان في المتجر فوراً</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- SECTION 4: REGISTERED PRODUCTS TABLE       -->
+<!-- ========================================== -->
+<div class="management-section hidden flex flex-col gap-6" id="section-products-table">
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-6">
+<!-- Table Top Filtering Tools -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">كتالوج الفساتين والمنتجات المسجلة</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">التحكم في تسعير البيع والإيجار، تفعيل العروض، وحالة التوفر عبر المتجر والواتساب</p>
+</div>
+<div class="flex items-center gap-3 flex-wrap">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute right-3 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-surface-container-low text-on-surface pr-9 pl-4 py-2 rounded-xl text-body-md font-body-md outline-none w-56 focus:ring-1 focus:ring-primary" placeholder="بحث بالاسم أو الكود..." type="text"/>
+</div>
+<select id="productCategoryFilter" class="bg-surface-container-low text-on-surface font-label-md text-label-md px-3.5 py-2 rounded-xl outline-none">
+<option value="all">جميع الأقسام</option>
+</select>
+<select class="bg-surface-container-low text-on-surface font-label-md text-label-md px-3.5 py-2 rounded-xl outline-none">
+<option value="all">حالة التوفر: الكل</option>
+<option value="available">المتوفر فقط</option>
+<option value="unavailable">غير متوفر</option>
+</select>
+</div>
+</div>
+<!-- Dresses Detailed Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+<th class="p-4 rounded-r-xl">صورة الفستان</th>
+<th class="p-4">كود واسم المنتج</th>
+<th class="p-4">التصنيف (رئيسي / فرعي)</th>
+<th class="p-4">سعر البيع</th>
+<th class="p-4">سعر الإيجار</th>
+<th class="p-4">شارة العرض</th>
+<th class="p-4">حالة التوفر للزبائن</th>
+<th class="p-4 rounded-l-xl text-center">التحكم السريع</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low text-body-md font-body-md text-on-surface" id="productsTableBody">
+<!-- Product 1 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4">
+<div class="w-14 h-18 rounded-xl overflow-hidden shadow-sm aspect-[3/4]">
+<img class="w-full h-full object-cover" data-alt="Opulent white ballgown wedding dress with glittering beads and cathedral train, luxury couture display" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvt-Y31JQPB03x8MnvOeB6od6_Yyj81qj_0Fvx_uihpy2pNsJBx1xUyMr_VSIzYyIiX-mRXyLwZr8nXRSyPhmn7Fu50huaz0XJxewM1XiZTW86TfZlD2Rod2XYIkDx5BL2LXot1g9L5UiIecfBQJL7xUvDQ7krhUx7MktFAyzCc4rYgpmB-kcU9iHgG2U-1kRQUTa3XgmJ7WqE6DI_hIAu2hmVr0HjC_2zEDeP9cgYfc5UJFuEk5cM"/>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-bold">OM-2001</span>
+<span class="font-title-md text-title-md text-on-surface mt-0.5">فستان زفاف سندريلا الكريستالي الملكي</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">طرحة 3 متر + جيبون مدمج</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-primary font-medium">تجهيز عرائسي</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">زفاف ملكي (SC-001)</span>
+</div>
+</td>
+<td class="p-4">
+<span class="font-title-md text-title-md text-on-surface font-bold">850 ل.س</span>
+</td>
+<td class="p-4">
+<span class="font-title-md text-title-md text-secondary font-bold">250 ل.س</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">local_offer</span>
+                    عرض نشط
+                  </span>
+</td>
+<td class="p-4">
+<!-- In stock state -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105">
+<span class="material-symbols-outlined text-[15px]">shopping_bag</span>
+<span>أطلب المنتج</span>
+</button>
+<span class="w-2 h-2 rounded-full bg-[#25D366]"></span>
+</div>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-xl text-secondary hover:bg-secondary-container/20 transition-colors" title="معاينة في المتجر">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+<button class="p-2 rounded-xl text-primary hover:bg-primary-container/20 transition-colors" title="تعديل الفستان">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-2 rounded-xl text-error hover:bg-error-container/20 transition-colors" title="حذف">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Product 2 (Out of stock showcase) -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4">
+<div class="w-14 h-18 rounded-xl overflow-hidden shadow-sm aspect-[3/4]">
+<img class="w-full h-full object-cover" data-alt="Emerald green mermaid luxury evening gown with delicate sheer sleeves and golden embroidery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsUp2mgU70L3uyGQ5vi0W689KqLi6ZmJgRYMpuD2zCutqpodA_yGvotGf9oy9iRCfImx3QgcFVR2Fqwvi3bnocVJ2qDnL7q8L8TpfOSvSG8bR2qqcnpwW_twTk2vuO8nR7y4UtwJjswfakldfL3wY8EhAIqNJ8rpdI81BFgyOqdc5_YB6DzU-ewxfXGRb_Ja2XGJKhCPe25ZFe9jLHBmJqwpjJ3CkKW8xHGzTEFsDDPMHMo70_Dbdl"/>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-bold">OM-2002</span>
+<span class="font-title-md text-title-md text-on-surface mt-0.5">فستان سهرة زمردي بقصة الحورية</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">مخمل إيطالي مطعم بالقصب</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-primary font-medium">تأجير فساتين السهرة</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">فساتين ميرميد (SC-003)</span>
+</div>
+</td>
+<td class="p-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">غير معروض للبيع</span>
+</td>
+<td class="p-4">
+<span class="font-title-md text-title-md text-secondary font-bold">120 ل.س</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                    عادي
+                  </span>
+</td>
+<td class="p-4">
+<!-- Out of stock state: Gray + Green Contact button -->
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="px-2.5 py-1 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">
+                      غير متوفر
+                    </span>
+<button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105">
+<span class="material-symbols-outlined text-[14px]">chat</span>
+<span>للاستفسار</span>
+</button>
+</div>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-xl text-secondary hover:bg-secondary-container/20 transition-colors" title="معاينة">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+<button class="p-2 rounded-xl text-primary hover:bg-primary-container/20 transition-colors" title="تعديل">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-2 rounded-xl text-error hover:bg-error-container/20 transition-colors" title="حذف">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Product 3 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4">
+<div class="w-14 h-18 rounded-xl overflow-hidden shadow-sm aspect-[3/4]">
+<img class="w-full h-full object-cover" data-alt="Traditional Palestinian and Jordanian bridal royal velvet thobe with luxurious golden embroidery thread" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEvoObEFdMN6PAq5w7OHpReb9u44wMKvwnMJBzARD5FuRAYFwY6z3hbhyhGSUnH4QEt486DBcVX4H8bzjTNvb5hAAfsGhWLcOhT3N0c5LTV7Wm859x5FY59PUGsAsCn2NxyBHQjevUkPavRrRnkmV8R2CJIoEFoJtWpCkzPdZJ7JKJSV8oejGnSO3QAKJmoD_o1797EXxSk2JmjFo8HjR6PrBZ2tXyCoKjEdnwnn0X-wFTVp9xbics"/>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-bold">OM-2003</span>
+<span class="font-title-md text-title-md text-on-surface mt-0.5">ثوب حنة ملكي تراثي مطرز يدوياً</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">حرير مع حزام ذهبي أصيل</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-primary font-medium">تجهيز عرائسي</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">فساتين حنة وتراث (SC-002)</span>
+</div>
+</td>
+<td class="p-4">
+<span class="font-title-md text-title-md text-on-surface font-bold">420 ل.س</span>
+</td>
+<td class="p-4">
+<span class="font-title-md text-title-md text-secondary font-bold">95 ل.س</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">local_offer</span>
+                    عرض نشط
+                  </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105">
+<span class="material-symbols-outlined text-[15px]">shopping_bag</span>
+<span>أطلب المنتج</span>
+</button>
+<span class="w-2 h-2 rounded-full bg-[#25D366]"></span>
+</div>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-xl text-secondary hover:bg-secondary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">open_in_new</span></button>
+<button class="p-2 rounded-xl text-primary hover:bg-primary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 rounded-xl text-error hover:bg-error-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Product 4 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4">
+<div class="w-14 h-18 rounded-xl overflow-hidden shadow-sm aspect-[3/4]">
+<img class="w-full h-full object-cover" data-alt="Set of royal bridal dowry bags and trousseau trunks in soft rose velvet with pearl and crystal embroidery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCroE86N4ZVaN_UFRJNrDa9Kd0PTJqjDsZOR-hDRD-tCvxmlZ1ZZtG-AczpG80G9ndxWNTqwpNP2j2VB8WupV5J0wp_1cEtxVlwgJP0h4zQVD0eZN0ypYnYF8VCQ4957pHbt0hNlkz6I1p2isg0VJZKKCFp5FH6iisRBw9GCShKFOrfK2KuU-Yc710tzOWTdLo-P9lzx75l4Z-E9Y8Eyis-WWHhI3-P5HPYyAkM2ln7Xd1RDCPzoFJ7"/>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-bold">OM-2004</span>
+<span class="font-title-md text-title-md text-on-surface mt-0.5">طقم شنط جهاز العروس المخملي الوردي (3 قطع)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">تأجير مع تعقيم وبخور خاص</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-primary font-medium">تأجير شنط جهاز</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">أطقم مخملية (SC-004)</span>
+</div>
+</td>
+<td class="p-4">
+<span class="font-title-md text-title-md text-on-surface font-bold">280 ل.س</span>
+</td>
+<td class="p-4">
+<span class="font-title-md text-title-md text-secondary font-bold">60 ل.س</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                    عادي
+                  </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105">
+<span class="material-symbols-outlined text-[15px]">shopping_bag</span>
+<span>أطلب المنتج</span>
+</button>
+<span class="w-2 h-2 rounded-full bg-[#25D366]"></span>
+</div>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<button class="p-2 rounded-xl text-secondary hover:bg-secondary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">open_in_new</span></button>
+<button class="p-2 rounded-xl text-primary hover:bg-primary-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 rounded-xl text-error hover:bg-error-container/20 transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Bar -->
+<div class="flex items-center justify-between pt-4 border-t border-surface-container-low flex-wrap gap-4">
+<span id="productTableCount" class="font-label-sm text-label-sm text-on-surface-variant">عرض 0 من 0 منتج</span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm">1</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low text-on-surface font-label-sm text-label-sm hover:bg-surface-container">2</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low text-on-surface font-label-sm text-label-sm hover:bg-surface-container">3</button>
+<span class="px-1 text-on-surface-variant">...</span>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low text-on-surface font-label-sm text-label-sm hover:bg-surface-container">13</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[16px]">chevron_left</span></button>
+</div>
+</div>
+</div>
+</div>
+<section class="management-section hidden flex flex-col gap-6" id="section-whatsapp-orders">
+  <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-5">
+    <div>
+      <h3 class="font-title-lg text-title-lg text-on-surface">طلبات واستفسارات الواتساب</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant">استعرض الطلبات المسجلة وصنّفها حسب حالتها.</p>
+    </div>
+    <div class="flex flex-wrap gap-2" id="orderStatusFilters" role="group" aria-label="تصفية الطلبات">
+      <button type="button" data-order-status="all" aria-pressed="true" class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md">جميع الطلبات</button>
+      <button type="button" data-order-status="pending" aria-pressed="false" class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">قيد الانتظار</button>
+      <button type="button" data-order-status="confirmed" aria-pressed="false" class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">مؤكدة</button>
+      <button type="button" data-order-status="completed" aria-pressed="false" class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">مكتملة</button>
+      <button type="button" data-order-status="cancelled" aria-pressed="false" class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">ملغاة</button>
+    </div>
+    <p class="hidden text-center text-on-surface-variant py-6" id="ordersStatus" role="status"></p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-right border-collapse">
+        <thead><tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+          <th class="p-3">رقم الطلب</th><th class="p-3">العميل</th><th class="p-3">المنتج</th><th class="p-3">النوع</th><th class="p-3">الحالة</th><th class="p-3">الإجمالي</th><th class="p-3">التاريخ</th>
+        </tr></thead>
+        <tbody id="ordersTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section class="management-section hidden flex flex-col gap-6" id="section-store-settings">
+  <div class="bg-surface-container-lowest p-6 md:p-8 rounded-2xl shadow-sm">
+    <div class="mb-6">
+      <h3 class="font-title-lg text-title-lg text-on-surface">إعدادات المتجر</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-1">عدّل هوية المتجر ومحتوى الأقسام الظاهرة في الصفحة الرئيسية. الأقسام وصورها وقوائمها الفرعية تُدار من أقسام الإدارة وتُحمّل من قاعدة البيانات.</p>
+    </div>
+    <form class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="storeSettingsForm">
+      <label class="flex flex-col gap-2 font-label-md text-label-md text-on-surface">
+        اسم المتجر
+        <input id="storeNameInput" required maxlength="120" class="bg-surface-container-low text-on-surface px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-primary" placeholder="اسم المتجر" />
+      </label>
+      <div class="flex flex-col gap-2 font-label-md text-label-md text-on-surface">
+        <label for="storeLogoFile">صورة الشعار</label>
+        <input id="storeLogoFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" class="block w-full text-sm text-on-surface-variant file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-container file:text-on-primary-container" />
+        <input id="storeLogoUrl" type="hidden" />
+        <img id="storeLogoPreview" class="hidden w-24 h-24 rounded-xl object-contain border border-outline-variant p-2" alt="معاينة شعار المتجر" />
+        <button type="button" data-clear-store-image="logo" class="self-start text-error font-label-sm text-label-sm">إزالة الشعار</button>
+      </div>
+      <div class="flex flex-col gap-2 font-label-md text-label-md text-on-surface">
+        <label for="storeHomeImageFile">صورة الصفحة الرئيسية</label>
+        <input id="storeHomeImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" class="block w-full text-sm text-on-surface-variant file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-container file:text-on-primary-container" />
+        <input id="storeHomeImageUrl" type="hidden" />
+        <img id="storeHomeImagePreview" class="hidden w-40 h-28 rounded-xl object-cover border border-outline-variant" alt="معاينة صورة الصفحة الرئيسية" />
+        <button type="button" data-clear-store-image="home" class="self-start text-error font-label-sm text-label-sm">إزالة صورة الصفحة الرئيسية</button>
+      </div>
+      <div class="flex flex-col gap-2 font-label-md text-label-md text-on-surface">
+        <label for="storePrimaryColor">اللون الأساسي</label>
+        <div class="flex items-center gap-3"><input id="storePrimaryColor" type="color" class="w-14 h-12 rounded-lg border-0 bg-transparent cursor-pointer" /><span class="text-on-surface-variant">لون الأزرار والعناوين الرئيسية</span></div>
+      </div>
+      <div class="flex flex-col gap-2 font-label-md text-label-md text-on-surface">
+        <label for="storeSecondaryColor">اللون المساعد</label>
+        <div class="flex items-center gap-3"><input id="storeSecondaryColor" type="color" class="w-14 h-12 rounded-lg border-0 bg-transparent cursor-pointer" /><span class="text-on-surface-variant">لون التفاصيل والزخارف</span></div>
+      </div>
+      <div class="lg:col-span-2 border-t border-outline-variant pt-6">
+        <h4 class="font-title-lg text-title-lg text-on-surface">تحرير محتوى الصفحة الرئيسية</h4>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-1">عدّل النصوص والصور والألوان الظاهرة في واجهة المتجر. المنتجات وأسعارها تبقى مرتبطة ببيانات المنتجات.</p>
+        <div id="homepageContentEditor" class="mt-5 flex flex-col gap-6"></div>
+      </div>
+      <div class="lg:col-span-2 flex justify-end">
+        <button class="flex items-center gap-2 px-7 py-3 rounded-xl bg-primary text-on-primary hover:brightness-105 shadow-sm font-label-lg text-label-lg" type="submit">
+          <span class="material-symbols-outlined">save</span><span>حفظ إعدادات المتجر</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+<!-- Live Toast / Notification Bar -->
+<div class="fixed bottom-6 left-6 z-50 bg-inverse-surface text-inverse-on-surface px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300" id="toastNotification">
+<span class="material-symbols-outlined text-secondary-fixed text-[22px]">check_circle</span>
+<span class="font-label-md text-label-md" id="toastMsg">تم تنفيذ الإجراء بنجاح</span>
+</div>
+</div>
+<!-- Interactive Logic Script -->
+<script>
+    const API_BASE = 'http://localhost:3001';
+    const state = { categories: [], subcategories: [], products: [], customers: [] };
+    const defaultStoreSettings = {
+      store_name: 'صالون أم علي للأناقة',
+      logo_url: '',
+      homepage_image_url: '',
+      primary_color: '#d81b60',
+      secondary_color: '#c59b27',
+    };
+    let storeSettings = { ...defaultStoreSettings };
+    let adminOrders = [];
+    let selectedOrderStatus = 'all';
+    let productMedia = [];
+    const productImagePool = [
+      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=900&q=80'
+    ];
+
+    function normalizeClientImageUrl(value, fallback) {
+      const candidate = typeof value === 'string' ? value.trim() : '';
+      if (!candidate) return fallback;
+      return /^(https?:\/\/|data:|blob:)/i.test(candidate) ? candidate : fallback;
+    }
+
+    function getCategoryImage(categoryId, imageUrl = '') {
+      const fallback = productImagePool[((Number(categoryId) || 1) - 1) % productImagePool.length];
+      return normalizeClientImageUrl(imageUrl, fallback);
+    }
+
+    function getSubCategoryImage(subcategoryId, imageUrl = '') {
+      const fallback = productImagePool[((Number(subcategoryId) || 1) + 2) % productImagePool.length];
+      return normalizeClientImageUrl(imageUrl, fallback);
+    }
+
+    function getProductImage(product) {
+      if (product?.image_url) return normalizeClientImageUrl(product.image_url, productImagePool[0]);
+      const codeSeed = String(product?.code || product?.name || 'product');
+      const seed = [...codeSeed].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      return productImagePool[seed % productImagePool.length];
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMsg');
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3200);
+    }
+
+    function formatCategoryCode(id) {
+      return `MC-${String(id || 1).padStart(3, '0')}`;
+    }
+
+    function formatSubCategoryCode(id) {
+      return `SC-${String(id || 1).padStart(3, '0')}`;
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return reject(new Error('No file selected'));
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.onerror = () => reject(new Error('Could not read image file'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleImageFileSelect(event, imageUrlInputId, previewImageId) {
+      const file = event.target?.files?.[0];
+      if (!file) return;
+      try {
+        const url = await readFileAsDataUrl(file);
+        const imageUrlInput = document.getElementById(imageUrlInputId);
+        const previewImage = document.getElementById(previewImageId);
+        if (imageUrlInput) imageUrlInput.value = url;
+        if (previewImage) {
+          previewImage.src = url;
+          previewImage.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error(error);
+        showToast('تعذر قراءة الصورة المحددة');
+      }
+    }
+
+    function renderProductMedia() {
+      const grid = document.getElementById('productMediaGrid');
+      if (!grid) return;
+      grid.innerHTML = productMedia.map((media, index) => {
+        const isVideo = media.media_type === 'video';
+        const preview = isVideo
+          ? `<video class="w-full h-full object-cover" src="${media.url}" controls preload="metadata"></video>`
+          : `<img class="w-full h-full object-cover" src="${media.url}" alt="وسيط المنتج ${index + 1}" />`;
+        const isCover = !isVideo && productMedia.slice(0, index).every((item) => item.media_type !== 'image');
+        return `
+          <div class="relative rounded-xl overflow-hidden aspect-[3/4] shadow-sm group bg-surface-container">
+            ${preview}
+            <button class="absolute top-2 left-2 w-8 h-8 rounded-full bg-surface-container-lowest text-error flex items-center justify-center shadow-md" data-media-remove="${index}" title="حذف الوسيط" type="button">
+              <span class="material-symbols-outlined text-[16px]">delete</span>
+            </button>
+            ${isCover ? '<span class="absolute bottom-2 right-2 bg-primary text-on-primary font-label-sm text-label-sm px-2 py-0.5 rounded-md shadow-sm">الصورة الرئيسية</span>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleProductMediaSelect(files) {
+      const submitButton = document.querySelector('#section-products form button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
+      try {
+        for (const file of Array.from(files || [])) {
+          const isSupported = file.type.startsWith('image/')
+            ? ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'].includes(file.type)
+            : ['video/mp4', 'video/webm', 'video/quicktime'].includes(file.type);
+          const maxSize = file.type.startsWith('video/') ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+          if (!isSupported) {
+            showToast(`نوع الملف غير مدعوم: ${file.name}`);
+            continue;
+          }
+          if (file.size > maxSize) {
+            showToast(`حجم الملف يتجاوز الحد المسموح: ${file.name}`);
+            continue;
+          }
+
+          try {
+            const response = await fetch(`${API_BASE}/api/uploads`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/octet-stream',
+                'X-Media-Type': file.type,
+              },
+              body: file,
+            });
+            if (!response.ok) {
+              const body = await response.json();
+              throw new Error(body.message || 'Upload failed');
+            }
+            const uploadedMedia = await response.json();
+            const media = { ...uploadedMedia, url: new URL(uploadedMedia.url, API_BASE).href };
+            const isFirstImage = media.media_type === 'image' && !productMedia.some((item) => item.media_type === 'image');
+            productMedia.push(media);
+            if (isFirstImage) {
+              const imageUrl = document.getElementById('productImageUrl');
+              if (imageUrl) imageUrl.value = media.url;
+            }
+            renderProductMedia();
+          } catch (error) {
+            console.error(error);
+            showToast(`تعذر رفع الملف: ${file.name}`);
+          }
+        }
+      } finally {
+        if (submitButton) submitButton.disabled = false;
+      }
+      if (productMedia.length) showToast('تم رفع الوسائط، احفظ المنتج لإضافتها إليه');
+    }
+
+    async function fetchJson(path, options = {}) {
+      const response = await fetch(`${API_BASE}${path}`, {
+        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+        ...options,
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || 'Request failed');
+      }
+
+      return response.json();
+    }
+
+    function setActiveAdminPath(path) {
+      const activePath = path === 'products' || path === 'products-table' ? 'products-management' : path;
+      document.querySelectorAll('aside nav a[data-path]').forEach((link) => {
+        const isActive = link.dataset.path === activePath;
+        link.classList.toggle('bg-primary-container', isActive);
+        link.classList.toggle('text-on-primary-container', isActive);
+        link.classList.toggle('font-label-lg', isActive);
+        link.classList.toggle('rounded-xl', isActive);
+        link.classList.toggle('shadow-[0_4px_16px_rgba(216,27,96,0.15)]', isActive);
+        link.classList.toggle('text-on-surface-variant', !isActive);
+        link.classList.toggle('hover:bg-surface-container-high', !isActive);
+        link.classList.toggle('hover:text-on-surface', !isActive);
+        link.classList.toggle('font-body-md', !isActive);
+        if (isActive) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+    }
+
+    function switchTab(tabId) {
+      const sections = ['main-categories', 'sub-categories', 'products', 'products-table', 'whatsapp-orders', 'store-settings'];
+      const isOverview = tabId === 'overview';
+      sections.forEach((id) => {
+        const sec = document.getElementById('section-' + id);
+        const btn = document.getElementById('tab-btn-' + id);
+        if (id === tabId) {
+          sec?.classList.remove('hidden');
+          btn?.classList.add('active', 'bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+          btn?.classList.remove('text-on-surface-variant', 'hover:text-on-surface', 'hover:bg-surface-container');
+        } else {
+          sec?.classList.add('hidden');
+          btn?.classList.remove('active', 'bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+          btn?.classList.add('text-on-surface-variant', 'hover:text-on-surface', 'hover:bg-surface-container');
+        }
+      });
+      document.getElementById('managementTabs')?.classList.toggle('hidden', isOverview || tabId === 'whatsapp-orders' || tabId === 'store-settings');
+      setActiveAdminPath(tabId);
+      if (tabId === 'store-settings') loadStoreSettings();
+      if (tabId === 'whatsapp-orders') loadAdminOrders();
+      if (isOverview) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      document.getElementById(`section-${tabId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderStoreSettings(settings) {
+      storeSettings = { ...defaultStoreSettings, ...settings };
+      document.getElementById('storeNameInput').value = storeSettings.store_name;
+      document.getElementById('storeLogoUrl').value = storeSettings.logo_url;
+      document.getElementById('storeHomeImageUrl').value = storeSettings.homepage_image_url;
+      document.getElementById('storePrimaryColor').value = storeSettings.primary_color;
+      document.getElementById('storeSecondaryColor').value = storeSettings.secondary_color;
+      const logoPreview = document.getElementById('storeLogoPreview');
+      const homePreview = document.getElementById('storeHomeImagePreview');
+      logoPreview.src = storeSettings.logo_url ? new URL(storeSettings.logo_url, API_BASE).href : '';
+      homePreview.src = storeSettings.homepage_image_url ? new URL(storeSettings.homepage_image_url, API_BASE).href : '';
+      logoPreview.classList.toggle('hidden', !storeSettings.logo_url);
+      homePreview.classList.toggle('hidden', !storeSettings.homepage_image_url);
+      renderHomepageContentEditor(storeSettings.homepage_content);
+    }
+
+    function getHomepageContentValue(content, path) {
+      return path.split('.').reduce((value, key) => value?.[key], content);
+    }
+
+    function setHomepageContentValue(content, path, value) {
+      const keys = path.split('.');
+      const finalKey = keys.pop();
+      const parent = keys.reduce((current, key, index) => {
+        if (!current[key] || typeof current[key] !== 'object') {
+          current[key] = /^\d+$/.test(keys[index + 1] || '') ? [] : {};
+        }
+        return current[key];
+      }, content);
+      parent[finalKey] = value;
+    }
+
+    function renderHomepageContentEditor(content) {
+      const editor = document.getElementById('homepageContentEditor');
+      editor.replaceChildren();
+      if (!content) {
+        editor.textContent = 'تعذر تحميل محتوى الصفحة الرئيسية.';
+        return;
+      }
+      const textGroups = [
+        {
+          title: 'الترويسة والتنقل',
+          fields: [
+            ['الشعار القصير', 'slogan'],
+            ['نص البحث', 'search_placeholder'],
+            ['الرئيسية', 'nav.home'],
+            ['العروض', 'nav.offers'],
+            ['من نحن', 'nav.about'],
+            ['اتصل بنا', 'nav.contact'],
+            ['الفساتين في روابط التذييل', 'nav.dresses'],
+            ['تسجيل الدخول', 'nav.login'],
+            ['سلة التسوق', 'nav.cart'],
+          ],
+        },
+        {
+          title: 'البانر الترحيبي',
+          fields: [
+            ['شارة البانر', 'hero.badge'],
+            ['عنوان البانر الصغير', 'hero.kicker'],
+            ['عنوان البانر', 'hero.title'],
+            ['وصف البانر', 'hero.category_line'],
+            ['تفاصيل البانر', 'hero.description'],
+            ['نص زر البانر', 'hero.cta'],
+          ],
+        },
+        {
+          title: 'عناوين الصفحة الرئيسية',
+          fields: [
+            ['عنوان قسم الأقسام', 'categories.title'],
+            ['وصف قسم الأقسام', 'categories.description'],
+            ['زر عرض الكل', 'categories.view_all'],
+            ['عنوان المنتجات', 'products.title'],
+            ['وصف المنتجات', 'products.subtitle'],
+          ],
+        },
+        {
+          title: 'رسائل وبطاقات المنتجات',
+          fields: [
+            ['رسالة تحميل المنتجات', 'products.status.loading'],
+            ['رسالة عدم وجود منتجات', 'products.status.empty'],
+            ['رسالة تعذر تحميل المنتجات', 'products.status.error'],
+            ['رسالة عدم مطابقة البحث أو الأقسام', 'products.status.no_matches'],
+            ['شارة العرض', 'products.card.offer'],
+            ['النص البديل لصورة المنتج', 'products.card.image_alt'],
+            ['رسالة عدم وجود صورة', 'products.card.no_image'],
+            ['اسم المنتج الافتراضي', 'products.card.missing_name'],
+            ['بادئة رقم المنتج', 'products.card.code_prefix'],
+            ['تسمية سعر الإيجار', 'products.card.rental_price'],
+            ['تسمية سعر البيع', 'products.card.sale_price'],
+            ['تسمية السعر غير المتاح', 'products.card.unavailable_price'],
+            ['تسمية عدد الصور', 'products.card.images_suffix'],
+            ['تسمية عدد الفيديوهات', 'products.card.videos_suffix'],
+            ['زر طلب المنتج', 'products.card.order'],
+            ['زر الاستفسار عن التوفر', 'products.card.availability'],
+          ],
+        },
+        {
+          title: 'مزايا المتجر والتواصل',
+          fields: [
+            ['عنوان شريط المزايا', 'trust.items.0.title'],
+            ['وصف شريط المزايا', 'trust.items.0.subtitle'],
+            ['عنوان التوصيل', 'trust.items.1.title'],
+            ['وصف التوصيل', 'trust.items.1.subtitle'],
+            ['عنوان التشكيلة', 'trust.items.2.title'],
+            ['وصف التشكيلة', 'trust.items.2.subtitle'],
+            ['عنوان خدمة العملاء', 'trust.items.3.title'],
+            ['وصف خدمة العملاء', 'trust.items.3.subtitle'],
+            ['عنوان بانر واتساب', 'whatsapp_banner.title'],
+            ['وصف بانر واتساب', 'whatsapp_banner.description'],
+            ['نص رابط واتساب', 'whatsapp_banner.cta'],
+          ],
+        },
+        {
+          title: 'التذييل ومعلومات المتجر',
+          fields: [
+            ['وصف المتجر في التذييل', 'footer.description'],
+            ['عنوان الروابط السريعة', 'footer.quick_links'],
+            ['العنوان', 'footer.address'],
+            ['رقم الهاتف', 'contact.phone'],
+            ['عبارة الحقوق', 'footer.copyright'],
+          ],
+        },
+      ];
+      const addGroup = (title) => {
+        const group = document.createElement('section');
+        group.className = 'border border-outline-variant rounded-2xl p-4 md:p-5';
+        const heading = document.createElement('h5');
+        heading.className = 'font-title-md text-title-md text-primary mb-4';
+        heading.textContent = title;
+        group.append(heading);
+        editor.append(group);
+        return group;
+      };
+      const addTextField = (parent, label, path) => {
+        const wrapper = document.createElement('label');
+        wrapper.className = 'flex flex-col gap-2 font-label-md text-label-md text-on-surface';
+        wrapper.append(document.createTextNode(label));
+        const value = String(getHomepageContentValue(content, path) ?? '');
+        const input = path === 'hero.description' || path === 'footer.description'
+          ? document.createElement('textarea')
+          : document.createElement('input');
+        input.dataset.homepagePath = path;
+        input.maxLength = 1200;
+        input.value = value;
+        input.className = 'w-full bg-surface-container-low text-on-surface px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary';
+        if (input instanceof HTMLTextAreaElement) input.rows = 3;
+        wrapper.append(input);
+        parent.append(wrapper);
+      };
+      const addImageField = (parent, label, path, id) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flex flex-col gap-2 font-label-md text-label-md text-on-surface';
+        const title = document.createElement('label');
+        title.textContent = label;
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/jpeg,image/png,image/webp,image/gif,image/avif';
+        fileInput.className = 'block w-full text-sm text-on-surface-variant file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-container file:text-on-primary-container';
+        const urlInput = document.createElement('input');
+        urlInput.type = 'hidden';
+        urlInput.id = `homepageImageValue-${id}`;
+        urlInput.dataset.homepagePath = path;
+        urlInput.value = String(getHomepageContentValue(content, path) || '');
+        const preview = document.createElement('img');
+        preview.id = `homepageImagePreview-${id}`;
+        preview.alt = `معاينة ${label}`;
+        preview.className = 'hidden w-36 h-28 rounded-xl object-cover border border-outline-variant';
+        if (urlInput.value) {
+          preview.src = new URL(urlInput.value, API_BASE).href;
+          preview.classList.remove('hidden');
+        }
+        fileInput.addEventListener('change', async () => {
+          const uploadedUrl = await uploadStoreImage(fileInput.files?.[0], urlInput.id, preview.id);
+          if (!uploadedUrl) return;
+          setHomepageContentValue(storeSettings.homepage_content, path, uploadedUrl);
+          if (path === 'hero.image_url') {
+            document.getElementById('storeHomeImageUrl').value = uploadedUrl;
+            document.getElementById('storeHomeImagePreview').src = new URL(uploadedUrl, API_BASE).href;
+            document.getElementById('storeHomeImagePreview').classList.remove('hidden');
+          }
+        });
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'self-start text-error font-label-sm text-label-sm';
+        removeButton.textContent = 'إزالة الصورة';
+        removeButton.addEventListener('click', () => {
+          urlInput.value = '';
+          preview.removeAttribute('src');
+          preview.classList.add('hidden');
+          setHomepageContentValue(storeSettings.homepage_content, path, '');
+          if (path === 'hero.image_url') {
+            document.getElementById('storeHomeImageUrl').value = '';
+            const storePreview = document.getElementById('storeHomeImagePreview');
+            storePreview.removeAttribute('src');
+            storePreview.classList.add('hidden');
+          }
+          showToast('تمت إزالة الصورة، احفظ لتطبيق التغيير');
+        });
+        wrapper.append(title, fileInput, urlInput, preview, removeButton);
+        parent.append(wrapper);
+      };
+
+      textGroups.forEach(({ title, fields }) => {
+        const group = addGroup(title);
+        group.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
+        group.querySelector('h5').classList.add('md:col-span-2');
+        fields.forEach(([label, path]) => addTextField(group, label, path));
+      });
+
+      const heroGroup = addGroup('صورة البانر الرئيسي');
+      addImageField(heroGroup, 'صورة البانر', 'hero.image_url', 'hero');
+
+      const categoryActionsGroup = addGroup('صور بطاقات العروض وعرض الكل');
+      categoryActionsGroup.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
+      categoryActionsGroup.querySelector('h5').classList.add('md:col-span-2');
+      addImageField(categoryActionsGroup, 'صورة العروض', 'category_actions.offers_image_url', 'category-offers');
+      addImageField(categoryActionsGroup, 'صورة عرض الكل', 'category_actions.all_image_url', 'category-all');
+
+      const categoryNote = addGroup('الأقسام الرئيسية والفرعية');
+      const categoryNoteText = document.createElement('p');
+      categoryNoteText.className = 'font-body-md text-body-md text-on-surface-variant';
+      categoryNoteText.textContent = 'تُحمّل بطاقات الأقسام وصورها والقائمة المنسدلة للأقسام الفرعية من قاعدة البيانات تلقائياً. أضيفي الأقسام أو عدّلي اسمها وصورتها من «الأقسام الرئيسية»، وأديري العناصر المنسدلة من «الأقسام الفرعية».';
+      categoryNote.append(categoryNoteText);
+
+      const colorsGroup = addGroup('ألوان الصفحة الرئيسية');
+      colorsGroup.classList.add('grid', 'grid-cols-1', 'sm:grid-cols-2', 'gap-4');
+      [
+        ['خلفية الصفحة', 'background'],
+        ['خلفية البطاقات', 'surface'],
+        ['لون النصوص', 'text'],
+        ['لون النصوص الثانوية', 'muted'],
+      ].forEach(([label, key]) => {
+        const wrapper = document.createElement('label');
+        wrapper.className = 'flex items-center justify-between gap-3 font-label-md text-label-md text-on-surface';
+        wrapper.append(document.createTextNode(label));
+        const input = document.createElement('input');
+        input.type = 'color';
+        input.dataset.homepagePath = `colors.${key}`;
+        input.value = content.colors[key];
+        input.className = 'w-14 h-10 rounded-lg border-0 bg-transparent cursor-pointer';
+        wrapper.append(input);
+        colorsGroup.append(wrapper);
+      });
+
+      const socialGroup = addGroup('روابط التواصل الاجتماعي');
+      socialGroup.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
+      ['tiktok', 'instagram', 'facebook', 'youtube', 'whatsapp'].forEach((network) => {
+        const wrapper = document.createElement('label');
+        wrapper.className = 'flex flex-col gap-2 font-label-md text-label-md text-on-surface';
+        wrapper.append(document.createTextNode(network === 'whatsapp' ? 'واتساب' : network));
+        const input = document.createElement('input');
+        input.type = 'url';
+        input.dataset.homepagePath = `social.${network}`;
+        input.value = content.social[network] || '';
+        input.placeholder = 'https://...';
+        input.className = 'bg-surface-container-low text-on-surface px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary';
+        wrapper.append(input);
+        socialGroup.append(wrapper);
+      });
+    }
+
+    async function loadStoreSettings() {
+      try {
+        renderStoreSettings(await fetchJson('/api/store-settings'));
+      } catch (error) {
+        console.error('Failed to load store settings:', error);
+        showToast('تعذر تحميل إعدادات المتجر');
+      }
+    }
+
+    async function uploadStoreImage(file, urlInputId, previewId) {
+      if (!file) return;
+      const supportedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+      if (!supportedImageTypes.includes(file.type)) {
+        showToast('صيغة الصورة غير مدعومة، استخدم JPG أو PNG أو WebP أو GIF أو AVIF');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('يجب ألا يتجاوز حجم الصورة 10 ميجابايت');
+        return;
+      }
+      try {
+        const response = await fetch(`${API_BASE}/api/uploads`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/octet-stream', 'X-Media-Type': file.type },
+          body: file,
+        });
+        if (!response.ok) {
+          const body = await response.json();
+          throw new Error(body.message || 'Upload failed');
+        }
+        const uploaded = await response.json();
+        document.getElementById(urlInputId).value = uploaded.url;
+        const preview = document.getElementById(previewId);
+        preview.src = new URL(uploaded.url, API_BASE).href;
+        preview.classList.remove('hidden');
+        showToast('تم رفع الصورة، احفظ الإعدادات لتطبيقها على المتجر');
+        return uploaded.url;
+      } catch (error) {
+        console.error('Store image upload failed:', error);
+        showToast('تعذر رفع الصورة');
+        return null;
+      }
+    }
+
+    async function saveStoreSettings(event) {
+      event.preventDefault();
+      const submitButton = event.currentTarget.querySelector('button[type="submit"]');
+      const submitLabel = submitButton?.querySelector('span:last-child');
+      const originalLabel = submitLabel?.textContent || '';
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.setAttribute('aria-busy', 'true');
+        submitButton.classList.add('opacity-60', 'cursor-wait');
+      }
+      if (submitLabel) submitLabel.textContent = 'جارٍ حفظ الإعدادات...';
+
+      try {
+        const homepageContent = JSON.parse(JSON.stringify(storeSettings.homepage_content));
+        document.querySelectorAll('[data-homepage-path]').forEach((field) => {
+          setHomepageContentValue(homepageContent, field.dataset.homepagePath, field.value);
+        });
+        const payload = {
+          store_name: document.getElementById('storeNameInput').value.trim(),
+          logo_url: document.getElementById('storeLogoUrl').value,
+          homepage_image_url: homepageContent.hero.image_url || document.getElementById('storeHomeImageUrl').value,
+          primary_color: document.getElementById('storePrimaryColor').value,
+          secondary_color: document.getElementById('storeSecondaryColor').value,
+          homepage_content: homepageContent,
+        };
+        renderStoreSettings(await fetchJson('/api/store-settings', {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        }));
+        showToast('تم حفظ إعدادات المتجر بنجاح');
+      } catch (error) {
+        console.error('Failed to save store settings:', error);
+        showToast('تعذر حفظ الإعدادات، تحقق من البيانات واتصال السيرفر');
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.removeAttribute('aria-busy');
+          submitButton.classList.remove('opacity-60', 'cursor-wait');
+        }
+        if (submitLabel) submitLabel.textContent = originalLabel;
+      }
+    }
+
+    function renderOrders() {
+      const tbody = document.getElementById('ordersTableBody');
+      const status = document.getElementById('ordersStatus');
+      if (!tbody || !status) return;
+      const customers = new Map(state.customers?.map((item) => [Number(item.id), item]) || []);
+      const products = new Map(state.products.map((item) => [Number(item.id), item]));
+      const orders = selectedOrderStatus === 'all'
+        ? adminOrders
+        : adminOrders.filter((order) => order.status === selectedOrderStatus);
+      tbody.replaceChildren(...orders.map((order) => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-surface-container text-on-surface';
+        const customer = customers.get(Number(order.customer_id));
+        const product = products.get(Number(order.product_id));
+        const cells = [
+          `#${order.id}`,
+          customer?.full_name || `عميل ${order.customer_id}`,
+          product?.name || `منتج ${order.product_id}`,
+          order.order_type === 'buy' ? 'شراء' : 'إيجار',
+          ({ pending: 'قيد الانتظار', confirmed: 'مؤكد', completed: 'مكتمل', cancelled: 'ملغى' })[order.status] || order.status || 'غير محدد',
+          `${Number(order.total_price || 0).toLocaleString('ar-SY')} ل.س`,
+          order.created_at ? new Date(order.created_at).toLocaleDateString('ar-JO') : '—',
+        ];
+        cells.forEach((value) => {
+          const cell = document.createElement('td');
+          cell.className = 'p-3';
+          cell.textContent = value;
+          row.append(cell);
+        });
+        return row;
+      }));
+      status.textContent = orders.length ? '' : 'لا توجد طلبات ضمن هذا التصنيف.';
+      status.classList.toggle('hidden', orders.length > 0);
+    }
+
+    async function loadAdminOrders() {
+      try {
+        const [orders, customers] = await Promise.all([
+          fetchJson('/api/orders'),
+          fetchJson('/api/customers'),
+        ]);
+        adminOrders = orders;
+        state.customers = customers;
+        const ordersCount = document.getElementById('statOrdersCount');
+        if (ordersCount) ordersCount.textContent = String(orders.length);
+        renderOrders();
+      } catch (error) {
+        console.error('Failed to load orders:', error);
+        const status = document.getElementById('ordersStatus');
+        status.textContent = 'تعذر تحميل الطلبات حالياً.';
+        status.classList.remove('hidden');
+      }
+    }
+
+    function togglePriceField(inputId, isChecked) {
+      const field = document.getElementById(inputId);
+      if (!field) return;
+      field.disabled = !isChecked;
+      field.classList.toggle('opacity-40', !isChecked);
+    }
+
+    function createProductRow(product) {
+      const isAvailable = String(product.stock_status || 'available').toLowerCase() !== 'unavailable' && String(product.stock_status || 'available').toLowerCase() !== 'out_of_stock';
+      const isFeatured = Number(product.is_featured) === 1 || product.is_featured === true;
+      const categoryName = state.categories.find((category) => Number(category.id) === Number(product.category_id))?.name || 'قسم';
+      const subCategoryName = state.subcategories.find((subcategory) => Number(subcategory.id) === Number(product.subcategory_id))?.name || 'فرعي';
+      const salePrice = Number(product.price || 0).toLocaleString('ar-SY');
+      const rentPrice = Number(product.rental_price || 0).toLocaleString('ar-SY');
+      const productImage = getProductImage(product);
+      const offerBadge = isFeatured
+        ? '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm"><span class="material-symbols-outlined text-[14px]">local_offer</span>عرض نشط</span>'
+        : '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">عادي</span>';
+      const availabilityMarkup = isAvailable
+        ? '<div class="flex items-center gap-2"><button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105"><span class="material-symbols-outlined text-[15px]">shopping_bag</span><span>أطلب المنتج</span></button><span class="w-2 h-2 rounded-full bg-[#25D366]"></span></div>'
+        : '<div class="flex items-center gap-1.5 flex-wrap"><span class="px-2.5 py-1 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">غير متوفر</span><button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#25D366] text-white font-label-sm text-label-sm shadow-sm hover:brightness-105"><span class="material-symbols-outlined text-[14px]">chat</span><span>للاستفسار</span></button></div>';
+
+      return `
+        <tr class="hover:bg-surface-container-low/40 transition-colors">
+          <td class="p-4"><div class="w-14 h-18 rounded-xl overflow-hidden shadow-sm aspect-[3/4]"><img class="w-full h-full object-cover" src="${productImage}" alt="${product.name}" /></div></td>
+          <td class="p-4"><div class="flex flex-col"><span class="font-label-sm text-label-sm text-secondary font-bold">${product.code || 'AUTO'}</span><span class="font-title-md text-title-md text-on-surface mt-0.5">${product.name}</span><span class="font-label-sm text-label-sm text-on-surface-variant">${product.description || 'منتج مميز من الكتالوج'}</span></div></td>
+          <td class="p-4"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-primary font-medium">${categoryName}</span><span class="font-label-sm text-label-sm text-on-surface-variant">${subCategoryName} (${formatSubCategoryCode(product.subcategory_id || 1)})</span></div></td>
+          <td class="p-4"><span class="font-title-md text-title-md text-on-surface font-bold">${salePrice} ل.س</span></td>
+          <td class="p-4"><span class="font-title-md text-title-md text-secondary font-bold">${rentPrice} ل.س</span></td>
+          <td class="p-4">${offerBadge}</td>
+          <td class="p-4">${availabilityMarkup}</td>
+          <td class="p-4 text-center"><div class="flex items-center justify-center gap-1.5"><button class="p-2 rounded-xl text-primary hover:bg-primary-container/20 transition-colors" data-edit-id="${product.id}" title="تعديل"><span class="material-symbols-outlined text-[18px]">edit</span></button><button class="p-2 rounded-xl text-error hover:bg-error-container/20 transition-colors" data-delete-id="${product.id}" title="حذف"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></td>
+        </tr>
+      `;
+    }
+
+    function renderCategoryTable() {
+      const tbody = document.querySelector('#section-main-categories tbody');
+      if (!tbody) return;
+      tbody.innerHTML = state.categories.map((category) => `
+        <tr class="hover:bg-surface-container-low/60 transition-colors">
+          <td class="p-3.5 font-label-md text-label-md text-primary font-bold">${formatCategoryCode(category.id)}</td>
+          <td class="p-3.5"><img class="w-12 h-12 rounded-xl object-cover shadow-sm" src="${getCategoryImage(category.id, category.image_url)}" alt="${category.name}" /></td>
+          <td class="p-3.5 font-title-md text-title-md text-on-surface">${category.name}</td>
+          <td class="p-3.5"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm"><span class="material-symbols-outlined text-[14px]">account_tree</span>${state.subcategories.filter((item) => Number(item.category_id) === Number(category.id)).length} أقسام فرعية</span></td>
+          <td class="p-3.5"><div class="flex items-center justify-center gap-1.5"><button class="p-2 rounded-lg text-primary hover:bg-primary-container/20 transition-colors" data-category-edit="${category.id}" title="تعديل القسم"><span class="material-symbols-outlined text-[18px]">edit</span></button><button class="p-2 rounded-lg text-error hover:bg-error-container/20 transition-colors" data-category-delete="${category.id}" title="حذف القسم"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAdminCounts() {
+      const categoryCount = state.categories.length;
+      const subcategoryCount = state.subcategories.length;
+      const productCount = state.products.length;
+      const offersCount = state.products.filter((product) => Number(product.is_featured) === 1 || product.is_featured === true).length;
+      const counts = {
+        statCategoriesCount: categoryCount,
+        statSubcategoriesCount: subcategoryCount,
+        statProductsCount: productCount,
+        statOffersCount: offersCount,
+        tabMainCategoriesCount: `إدارة الأقسام الرئيسية (${categoryCount})`,
+        tabSubcategoriesCount: `إدارة الأقسام الفرعية (${subcategoryCount})`,
+        tabProductsCount: `إدارة المنتجات والفساتين (${productCount})`,
+      };
+      Object.entries(counts).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = String(value);
+      });
+      const categoryListCount = document.getElementById('categoryListCount');
+      const subcategoryListCount = document.getElementById('subcategoryListCount');
+      if (categoryListCount) categoryListCount.textContent = `إجمالي ${categoryCount} قسم رئيسي`;
+      if (subcategoryListCount) subcategoryListCount.textContent = `الأقسام الفرعية (${subcategoryCount})`;
+      const nextCategoryId = Math.max(0, ...state.categories.map((item) => Number(item.id) || 0)) + 1;
+      const nextSubcategoryId = Math.max(0, ...state.subcategories.map((item) => Number(item.id) || 0)) + 1;
+      const categoryCode = document.getElementById('mainCategoryId');
+      const subcategoryCode = document.getElementById('subCategoryId');
+      if (categoryCode && !document.getElementById('mainCategoryEditingId')) categoryCode.value = formatCategoryCode(nextCategoryId);
+      if (subcategoryCode && !document.getElementById('subCategoryEditingId')) subcategoryCode.value = formatSubCategoryCode(nextSubcategoryId);
+    }
+
+    function renderSubCategoryTable() {
+      const tbody = document.querySelector('#section-sub-categories tbody');
+      if (!tbody) return;
+      const categoryFilter = document.getElementById('subcategoryCategoryFilter')?.value || 'all';
+      const subcategories = categoryFilter === 'all'
+        ? state.subcategories
+        : state.subcategories.filter((item) => formatCategoryCode(item.category_id) === categoryFilter);
+      tbody.innerHTML = subcategories.map((subcategory) => {
+        const parentCategory = state.categories.find((category) => Number(category.id) === Number(subcategory.category_id));
+        return `
+          <tr class="hover:bg-surface-container-low/60 transition-colors">
+            <td class="p-3.5 font-label-md text-label-md text-primary font-bold">${formatSubCategoryCode(subcategory.id)}</td>
+            <td class="p-3.5"><div class="flex items-center gap-3"><img class="w-10 h-10 rounded-lg object-cover shadow-sm" src="${getSubCategoryImage(subcategory.id, subcategory.image_url)}" alt="${subcategory.name}" /><span class="font-title-md text-title-md text-on-surface">${subcategory.name}</span></div></td>
+            <td class="p-3.5"><span class="px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-sm text-label-sm">${parentCategory ? parentCategory.name : 'غير محدد'}</span></td>
+            <td class="p-3.5 font-label-md text-label-md text-secondary">${state.products.filter((product) => Number(product.subcategory_id) === Number(subcategory.id)).length} منتج</td>
+            <td class="p-3.5 text-center"><div class="flex items-center justify-center gap-2"><button class="p-1.5 rounded-lg text-primary hover:bg-primary-container/20" data-subcategory-edit="${subcategory.id}"><span class="material-symbols-outlined text-[18px]">edit</span></button><button class="p-1.5 rounded-lg text-error hover:bg-error-container/20" data-subcategory-delete="${subcategory.id}"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderProductTableCount(filteredCount) {
+      const count = document.getElementById('productTableCount');
+      if (count) count.textContent = `عرض ${filteredCount} من ${state.products.length} منتج`;
+    }
+
+    function renderProducts() {
+      const tableBody = document.getElementById('productsTableBody');
+      if (!tableBody) return;
+      const searchInput = document.querySelector('#section-products-table input[placeholder="بحث بالاسم أو الكود..."]');
+      const categoryFilter = document.getElementById('productCategoryFilter');
+      const availabilityFilter = document.querySelector('#section-products-table select:not(#productCategoryFilter)');
+      const search = (searchInput?.value || '').trim().toLowerCase();
+      const categoryValue = String(categoryFilter?.value || 'all');
+      const availabilityValue = String(availabilityFilter?.value || 'all');
+
+      const filtered = state.products.filter((product) => {
+        const matchesSearch = !search || [product.name, product.code].some((value) => String(value || '').toLowerCase().includes(search));
+        const matchesCategory = categoryValue === 'all' || String(product.category_id) === categoryValue || formatCategoryCode(product.category_id) === categoryValue;
+        const stockStatus = String(product.stock_status || 'available').toLowerCase();
+        const matchesAvailability = availabilityValue === 'all'
+          || (availabilityValue === 'available' && stockStatus !== 'unavailable')
+          || (availabilityValue === 'unavailable' && stockStatus === 'unavailable');
+        return matchesSearch && matchesCategory && matchesAvailability;
+      });
+
+      tableBody.innerHTML = filtered.map(createProductRow).join('');
+      renderProductTableCount(filtered.length);
+    }
+
+    function updateSubCategoryOptions() {
+      const mainCat = document.getElementById('prodMainCategory');
+      const subCat = document.getElementById('prodSubCategory');
+      if (!mainCat || !subCat) return;
+      const previousSubcategory = subCat.value;
+      const selectedCatId = Number((mainCat.value || '').replace(/^MC-/, ''));
+      const items = state.subcategories.filter((item) => Number(item.category_id) === Number(selectedCatId));
+      subCat.innerHTML = '';
+      if (!items.length) {
+        subCat.add(new Option('لا توجد أقسام فرعية لهذا القسم', ''));
+        subCat.disabled = true;
+        return;
+      }
+      subCat.disabled = false;
+      items.forEach((item) => subCat.add(new Option(`${item.name} (${formatSubCategoryCode(item.id)})`, formatSubCategoryCode(item.id))));
+      if (items.some((item) => formatSubCategoryCode(item.id) === previousSubcategory)) subCat.value = previousSubcategory;
+    }
+
+    function populateProductSelects() {
+      const mainSelect = document.getElementById('prodMainCategory');
+      const categorySelects = [
+        mainSelect,
+        document.getElementById('subCategoryParentSelect'),
+      ].filter(Boolean);
+      categorySelects.forEach((select) => {
+        const previousValue = select.value;
+        const options = state.categories.map((category) => new Option(
+          `${formatCategoryCode(category.id)} | ${category.name}`,
+          formatCategoryCode(category.id),
+        ));
+        if (!options.length) options.push(new Option('لا توجد أقسام رئيسية', ''));
+        select.replaceChildren(...options);
+        if (state.categories.some((category) => formatCategoryCode(category.id) === previousValue)) {
+          select.value = previousValue;
+        }
+      });
+
+      const categoryFilters = [
+        document.getElementById('productCategoryFilter'),
+        document.getElementById('subcategoryCategoryFilter'),
+      ];
+      categoryFilters.forEach((select) => {
+        if (!select) return;
+        const previousValue = select.value || 'all';
+        const allOption = select.id === 'subcategoryCategoryFilter'
+          ? 'تصفية حسب القسم الرئيسي: الكل'
+          : 'جميع الأقسام';
+        select.replaceChildren(new Option(allOption, 'all'));
+        state.categories.forEach((category) => {
+          select.add(new Option(`${formatCategoryCode(category.id)} | ${category.name}`, formatCategoryCode(category.id)));
+        });
+        select.value = previousValue === 'all' || state.categories.some((category) => formatCategoryCode(category.id) === previousValue)
+          ? previousValue
+          : 'all';
+      });
+      const availabilityFilter = document.querySelector('#section-products-table select:not(#productCategoryFilter)');
+      if (availabilityFilter && !availabilityFilter.options.length) {
+        availabilityFilter.replaceChildren(
+          new Option('حالة التوفر: الكل', 'all'),
+          new Option('المتوفر فقط', 'available'),
+          new Option('غير متوفر', 'unavailable'),
+        );
+      }
+      renderAdminCounts();
+      updateSubCategoryOptions();
+    }
+
+    async function loadData() {
+      try {
+        const [categories, subcategories, products] = await Promise.all([
+          fetchJson('/api/categories'),
+          fetchJson('/api/subcategories'),
+          fetchJson('/api/products'),
+        ]);
+        state.categories = categories;
+        state.subcategories = subcategories;
+        state.products = products;
+      } catch (error) {
+        console.error('Failed to load admin data:', error);
+        state.categories = [
+          { id: 1, name: 'تجهيز عرائسي متكامل' },
+          { id: 2, name: 'تأجير فساتين السهرة' },
+          { id: 3, name: 'تأجير شنط جهاز العروس' },
+        ];
+        state.subcategories = [
+          { id: 1, category_id: 1, name: 'فساتين زفاف ملكية' },
+          { id: 2, category_id: 2, name: 'فساتين سهرة حورية البحر' },
+          { id: 3, category_id: 3, name: 'حقائب عروس مخملية' },
+        ];
+        state.products = [
+          { id: 1, category_id: 1, subcategory_id: 1, code: 'OM-2001', name: 'فستان زفاف ملكي', price: 850, rental_price: 250, stock_status: 'available', is_featured: 1, is_active: 1 },
+          { id: 2, category_id: 2, subcategory_id: 2, code: 'OM-2002', name: 'فستان سهرة ميرميد', price: 0, rental_price: 120, stock_status: 'unavailable', is_featured: 0, is_active: 1 },
+        ];
+      }
+
+      renderCategoryTable();
+      populateProductSelects();
+      renderSubCategoryTable();
+      renderProducts();
+    }
+
+    function setCategoryFormMode(mode) {
+      const isEditing = mode === 'edit';
+      const title = document.getElementById('mainCategoryFormTitle');
+      const submitText = document.getElementById('mainCategorySubmitText');
+      if (title) title.textContent = isEditing ? 'تعديل القسم الرئيسي' : 'إضافة قسم رئيسي';
+      if (submitText) submitText.textContent = isEditing ? 'حفظ التعديلات' : 'حفظ وإضافة القسم الرئيسي';
+    }
+
+    function setSubCategoryFormMode(mode) {
+      const isEditing = mode === 'edit';
+      const title = document.getElementById('subCategoryFormTitle');
+      const submitText = document.getElementById('subCategorySubmitText');
+      if (title) title.textContent = isEditing ? 'تعديل القسم الفرعي' : 'إضافة قسم فرعي جديد';
+      if (submitText) submitText.textContent = isEditing ? 'حفظ التعديلات' : 'إضافة القسم الفرعي';
+    }
+
+    async function handleMainCategorySubmit(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const input = document.getElementById('mainCategoryName');
+      const imageUrlInput = document.getElementById('mainCategoryImageUrl');
+      const editingId = document.getElementById('mainCategoryEditingId')?.value;
+      const name = input?.value?.trim();
+      if (!name) return showToast('يرجى كتابة اسم القسم');
+      const payload = {
+        name,
+        slug: name.replace(/\s+/g, '-'),
+        description: name,
+        image_url: imageUrlInput?.value || '',
+      };
+      try {
+        if (editingId) {
+          await fetchJson(`/api/categories/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
+          // remove editing id and reset form state
+          document.getElementById('mainCategoryEditingId')?.remove();
+          form.reset();
+          if (imageUrlInput) imageUrlInput.value = '';
+          setCategoryFormMode('create');
+          showToast('تم تعديل القسم الرئيسي بنجاح');
+        } else {
+          await fetchJson('/api/categories', { method: 'POST', body: JSON.stringify(payload) });
+          form.reset();
+          if (imageUrlInput) imageUrlInput.value = '';
+          setCategoryFormMode('create');
+          showToast('تمت إضافة القسم الرئيسي بنجاح');
+        }
+        await loadData();
+      } catch (error) {
+        console.error(error);
+        showToast(editingId ? 'تعذر تعديل القسم الرئيسي' : 'تعذر إضافة القسم الرئيسي');
+      }
+    }
+
+    async function handleSubCategorySubmit(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const select = form.querySelector('select');
+      const input = document.getElementById('subCategoryName');
+      const imageUrlInput = document.getElementById('subCategoryImageUrl');
+      const editingId = document.getElementById('subCategoryEditingId')?.value;
+      const parentCategory = select?.value || '';
+      const name = input?.value?.trim();
+      if (!parentCategory) return showToast('يرجى اختيار القسم الرئيسي');
+      if (!name) return showToast('يرجى كتابة اسم القسم الفرعي');
+      const payload = {
+        category_id: Number(parentCategory.replace(/^MC-/, '')),
+        name,
+        slug: name.replace(/\s+/g, '-'),
+        image_url: imageUrlInput?.value || '',
+      };
+      try {
+        if (editingId) {
+          await fetchJson(`/api/subcategories/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
+          document.getElementById('subCategoryEditingId')?.remove();
+          form.reset();
+          if (imageUrlInput) imageUrlInput.value = '';
+          setSubCategoryFormMode('create');
+          showToast('تم تعديل القسم الفرعي بنجاح');
+        } else {
+          await fetchJson('/api/subcategories', { method: 'POST', body: JSON.stringify(payload) });
+          form.reset();
+          if (imageUrlInput) imageUrlInput.value = '';
+          setSubCategoryFormMode('create');
+          showToast('تمت إضافة القسم الفرعي بنجاح');
+        }
+        await loadData();
+      } catch (error) {
+        console.error(error);
+        showToast(editingId ? 'تعذر تعديل القسم الفرعي' : 'تعذر إضافة القسم الفرعي');
+      }
+    }
+
+    function updateProductFormMode(mode, productName = '') {
+      const badge = document.getElementById('productFormModeTag');
+      const submitButton = document.querySelector('#section-products form button[type="submit"]');
+      const submitText = document.querySelector('#section-products form button[type="submit"] span:last-child');
+      const descriptionInput = document.getElementById('prodDesc');
+
+      if (badge) {
+        badge.textContent = mode === 'edit' ? `جاري تعديل: ${productName || 'منتج محدد'}` : 'إضافة منتج جديد';
+      }
+      if (descriptionInput) descriptionInput.required = mode !== 'edit';
+
+      if (submitText) {
+        submitText.textContent = mode === 'edit' ? 'حفظ التعديلات' : 'حفظ ونشر الفستان في المتجر فوراً';
+      }
+
+      if (submitButton) {
+        submitButton.classList.toggle('bg-primary', mode !== 'edit');
+        submitButton.classList.toggle('bg-secondary', mode === 'edit');
+      }
+    }
+
+    function resetProductForm() {
+      const form = document.querySelector('#section-products form');
+      form?.reset();
+      document.getElementById('productEditingId')?.remove();
+      productMedia = [];
+      renderProductMedia();
+      updateSubCategoryOptions();
+      updateProductFormMode('create');
+    }
+
+    async function handleProductCreation(event) {
+      event.preventDefault();
+      const code = document.getElementById('prodCode')?.value?.trim();
+      const name = document.getElementById('prodName')?.value?.trim();
+      const mainCategory = document.getElementById('prodMainCategory')?.value || '';
+      const subCategory = document.getElementById('prodSubCategory')?.value || '';
+      const salePrice = document.getElementById('salePriceInput')?.value || 0;
+      const rentPrice = document.getElementById('rentPriceInput')?.value || 0;
+      const isAvailable = document.getElementById('isAvailableToggle')?.checked !== false;
+      const isOffer = document.getElementById('isOfferToggle')?.checked !== false;
+      const editingId = document.getElementById('productEditingId')?.value;
+
+      if (!name || !code) return showToast('يرجى تعبئة اسم المنتج ورمزه');
+      if (!mainCategory || !subCategory) return showToast('يرجى اختيار القسم الرئيسي والفرعي');
+      const payload = {
+        category_id: Number(mainCategory.replace(/^MC-/, '')) || 1,
+        subcategory_id: Number(subCategory.replace(/^SC-/, '')) || 1,
+        code,
+        name,
+        description: document.getElementById('prodDesc')?.value?.trim() || '',
+        price: Number(salePrice) || 0,
+        rental_price: Number(rentPrice) || 0,
+        stock_status: isAvailable ? 'available' : 'unavailable',
+        is_featured: isOffer ? 1 : 0,
+        is_active: 1,
+        image_url: productMedia.find((item) => item.media_type === 'image')?.url
+          || document.getElementById('productImageUrl')?.value
+          || '',
+        media: productMedia,
+      };
+
+      try {
+        if (editingId) {
+          await fetchJson(`/api/products/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
+          showToast('تم تعديل المنتج بنجاح');
+        } else {
+          await fetchJson('/api/products', { method: 'POST', body: JSON.stringify(payload) });
+          showToast('تمت إضافة المنتج بنجاح');
+        }
+        resetProductForm();
+        await loadData();
+        switchTab('products-table');
+      } catch (error) {
+        console.error(error);
+        showToast('تعذر حفظ المنتج، تأكد من تشغيل السيرفر المحلي');
+      }
+    }
+
+    document.addEventListener('click', async (event) => {
+      const adminNavLink = event.target.closest('aside nav a[data-path]');
+      if (adminNavLink) {
+        event.preventDefault();
+        const path = adminNavLink.dataset.path;
+        if (path === 'storefront') {
+          window.top.location.href = '/';
+          return;
+        }
+        const route = {
+          overview: 'overview',
+          'main-categories': 'main-categories',
+          'sub-categories': 'sub-categories',
+          'products-management': 'products',
+          'whatsapp-orders': 'whatsapp-orders',
+          'store-settings': 'store-settings',
+        }[path];
+        if (route) switchTab(route);
+        return;
+      }
+
+      const clearStoreImage = event.target.closest('[data-clear-store-image]');
+      if (clearStoreImage) {
+        const isLogo = clearStoreImage.dataset.clearStoreImage === 'logo';
+        const urlInput = document.getElementById(isLogo ? 'storeLogoUrl' : 'storeHomeImageUrl');
+        const preview = document.getElementById(isLogo ? 'storeLogoPreview' : 'storeHomeImagePreview');
+        urlInput.value = '';
+        preview.removeAttribute('src');
+        preview.classList.add('hidden');
+        if (!isLogo && storeSettings.homepage_content) {
+          storeSettings.homepage_content.hero.image_url = '';
+          const homepageImageInput = document.querySelector('[data-homepage-path="hero.image_url"]');
+          if (homepageImageInput) homepageImageInput.value = '';
+          const homepagePreview = document.getElementById('homepageImagePreview-hero');
+          homepagePreview?.removeAttribute('src');
+          homepagePreview?.classList.add('hidden');
+        }
+        showToast('تمت إزالة الصورة من الإعدادات، احفظ لتطبيق التغيير');
+        return;
+      }
+
+      const orderStatusButton = event.target.closest('#orderStatusFilters [data-order-status]');
+      if (orderStatusButton) {
+        selectedOrderStatus = orderStatusButton.dataset.orderStatus || 'all';
+        document.querySelectorAll('#orderStatusFilters [data-order-status]').forEach((button) => {
+          const isSelected = button === orderStatusButton;
+          button.setAttribute('aria-pressed', String(isSelected));
+          button.classList.toggle('bg-primary', isSelected);
+          button.classList.toggle('text-on-primary', isSelected);
+          button.classList.toggle('bg-surface-container', !isSelected);
+          button.classList.toggle('text-on-surface-variant', !isSelected);
+        });
+        renderOrders();
+        return;
+      }
+
+      const mediaRemove = event.target.closest('[data-media-remove]');
+      if (mediaRemove) {
+        const index = Number(mediaRemove.getAttribute('data-media-remove'));
+        const removed = productMedia[index];
+        productMedia = productMedia.filter((_, itemIndex) => itemIndex !== index);
+        if (removed?.media_type === 'image' && document.getElementById('productImageUrl')?.value === removed.url) {
+          document.getElementById('productImageUrl').value = productMedia.find((item) => item.media_type === 'image')?.url || '';
+        }
+        renderProductMedia();
+        return;
+      }
+
+      const categoryDelete = event.target.closest('[data-category-delete]');
+      if (categoryDelete) {
+        const id = categoryDelete.getAttribute('data-category-delete');
+        try {
+          await fetchJson(`/api/categories/${id}`, { method: 'DELETE' });
+          showToast('تم حذف القسم الرئيسي بنجاح');
+          await loadData();
+        } catch (error) {
+          console.error(error);
+          showToast('تعذر حذف القسم الرئيسي');
+        }
+        return;
+      }
+
+      const categoryEdit = event.target.closest('[data-category-edit]');
+      if (categoryEdit) {
+        const id = categoryEdit.getAttribute('data-category-edit');
+        const category = state.categories.find((item) => String(item.id) === String(id));
+        if (!category) return;
+        const form = document.querySelector('#section-main-categories form');
+        const input = document.getElementById('mainCategoryName');
+        if (input) input.value = category.name;
+        const categoryCode = document.getElementById('mainCategoryId');
+        if (categoryCode) categoryCode.value = formatCategoryCode(category.id);
+        const hidden = document.getElementById('mainCategoryEditingId') || document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.id = 'mainCategoryEditingId';
+        hidden.value = category.id;
+        if (!document.getElementById('mainCategoryEditingId')) form.appendChild(hidden);
+        const imageField = document.getElementById('mainCategoryImageUrl');
+        const preview = document.getElementById('mainCategoryPreview');
+        if (imageField) imageField.value = category.image_url || '';
+        if (preview) {
+          preview.src = category.image_url || '';
+          preview.classList.toggle('hidden', !category.image_url);
+        }
+        setCategoryFormMode('edit');
+        switchTab('main-categories');
+        showToast('تم تحميل بيانات القسم للتعديل');
+        return;
+      }
+
+      const subcategoryDelete = event.target.closest('[data-subcategory-delete]');
+      if (subcategoryDelete) {
+        const id = subcategoryDelete.getAttribute('data-subcategory-delete');
+        try {
+          await fetchJson(`/api/subcategories/${id}`, { method: 'DELETE' });
+          showToast('تم حذف القسم الفرعي بنجاح');
+          await loadData();
+        } catch (error) {
+          console.error(error);
+          showToast('تعذر حذف القسم الفرعي');
+        }
+        return;
+      }
+
+      const subcategoryEdit = event.target.closest('[data-subcategory-edit]');
+      if (subcategoryEdit) {
+        const id = subcategoryEdit.getAttribute('data-subcategory-edit');
+        const subcategory = state.subcategories.find((item) => String(item.id) === String(id));
+        if (!subcategory) return;
+        const form = document.querySelector('#section-sub-categories form');
+        const nameInput = document.getElementById('subCategoryName');
+        const select = form?.querySelector('select');
+        if (nameInput) nameInput.value = subcategory.name;
+        const subcategoryCode = document.getElementById('subCategoryId');
+        if (subcategoryCode) subcategoryCode.value = formatSubCategoryCode(subcategory.id);
+        if (select) select.value = formatCategoryCode(subcategory.category_id || 1);
+        const hidden = document.getElementById('subCategoryEditingId') || document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.id = 'subCategoryEditingId';
+        hidden.value = subcategory.id;
+        if (!document.getElementById('subCategoryEditingId')) form.appendChild(hidden);
+        const imageField = document.getElementById('subCategoryImageUrl');
+        const preview = document.getElementById('subCategoryPreview');
+        if (imageField) imageField.value = subcategory.image_url || '';
+        if (preview) {
+          preview.src = subcategory.image_url || '';
+          preview.classList.toggle('hidden', !subcategory.image_url);
+        }
+        setSubCategoryFormMode('edit');
+        switchTab('sub-categories');
+        showToast('تم تحميل بيانات القسم الفرعي للتعديل');
+        return;
+      }
+
+      const deleteId = event.target.closest('[data-delete-id]');
+      if (deleteId) {
+        const id = deleteId.getAttribute('data-delete-id');
+        try {
+          await fetchJson(`/api/products/${id}`, { method: 'DELETE' });
+          showToast('تم حذف المنتج بنجاح');
+          await loadData();
+        } catch (error) {
+          console.error(error);
+          showToast('تعذر حذف المنتج');
+        }
+        return;
+      }
+
+      const editId = event.target.closest('[data-edit-id]');
+      if (editId) {
+        const id = editId.getAttribute('data-edit-id');
+        const product = state.products.find((item) => String(item.id) === String(id));
+        if (!product) return;
+        const form = document.querySelector('#section-products form');
+        if (form) {
+          const hidden = document.getElementById('productEditingId') || document.createElement('input');
+          hidden.id = 'productEditingId';
+          hidden.type = 'hidden';
+          hidden.value = product.id;
+          if (!document.getElementById('productEditingId')) form.appendChild(hidden);
+          document.getElementById('prodMainCategory').value = formatCategoryCode(product.category_id || 1);
+          updateSubCategoryOptions();
+          document.getElementById('prodSubCategory').value = formatSubCategoryCode(product.subcategory_id || 1);
+          document.getElementById('prodCode').value = product.code || '';
+          document.getElementById('prodName').value = product.name || '';
+          document.getElementById('prodDesc').value = product.description || '';
+          document.getElementById('salePriceInput').value = product.price || 0;
+          document.getElementById('rentPriceInput').value = product.rental_price || 0;
+          document.getElementById('isOfferToggle').checked = Number(product.is_featured) === 1;
+          document.getElementById('isAvailableToggle').checked = String(product.stock_status || 'available').toLowerCase() !== 'unavailable' && String(product.stock_status || 'available').toLowerCase() !== 'out_of_stock';
+          document.getElementById('productImageUrl').value = product.image_url || '';
+          try {
+            productMedia = await fetchJson(`/api/products/${id}/media`);
+            if (!productMedia.length && product.image_url) {
+              productMedia = [{ url: product.image_url, media_type: 'image', is_primary: 1 }];
+            }
+            renderProductMedia();
+          } catch (error) {
+            console.error(error);
+            showToast('تعذر تحميل وسائط المنتج');
+            return;
+          }
+          updateProductFormMode('edit', product.name || 'منتج');
+        }
+        switchTab('products');
+        showToast('تم تحميل بيانات المنتج للتعديل: ' + (product.name || 'المنتج المحدد'));
+      }
+    });
+
+    document.addEventListener('change', (event) => {
+      const target = event.target;
+      if (target && target.id === 'isAvailableToggle') {
+        const container = document.getElementById('buttonPreviewContainer');
+        if (!container) return;
+        container.innerHTML = target.checked ? '<button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">shopping_bag</span><span>أطلب المنتج الآن</span></button>' : '<div class="flex items-center gap-2"><span class="px-3.5 py-2 rounded-xl bg-surface-container-highest text-on-surface-variant font-label-md text-label-md">غير متوفر حالياً</span><button type="button" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">chat</span><span>للاستفسار المباشر عبر واتساب</span></button></div>';
+      }
+      if (target && target.id === 'prodMainCategory') {
+        updateSubCategoryOptions();
+      }
+      if (target instanceof HTMLInputElement && target.type === 'file') {
+        const fileInputId = target.id;
+        if (fileInputId === 'mainCategoryImageInput') {
+          handleImageFileSelect(event, 'mainCategoryImageUrl', 'mainCategoryPreview');
+        }
+        if (fileInputId === 'subCategoryImageInput') {
+          handleImageFileSelect(event, 'subCategoryImageUrl', 'subCategoryPreview');
+        }
+        if (fileInputId === 'productImageInput') {
+          handleProductMediaSelect(target.files);
+          target.value = '';
+        }
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('storeSettingsForm')?.addEventListener('submit', saveStoreSettings);
+      document.getElementById('storeLogoFile')?.addEventListener('change', (event) => {
+        uploadStoreImage(event.target.files?.[0], 'storeLogoUrl', 'storeLogoPreview');
+        event.target.value = '';
+      });
+      document.getElementById('storeHomeImageFile')?.addEventListener('change', async (event) => {
+        const uploadedUrl = await uploadStoreImage(event.target.files?.[0], 'storeHomeImageUrl', 'storeHomeImagePreview');
+        if (uploadedUrl && storeSettings.homepage_content) {
+          storeSettings.homepage_content.hero.image_url = uploadedUrl;
+          const homepageImageInput = document.querySelector('[data-homepage-path="hero.image_url"]');
+          if (homepageImageInput) homepageImageInput.value = uploadedUrl;
+          const homepagePreview = document.getElementById('homepageImagePreview-hero');
+          if (homepagePreview) {
+            homepagePreview.src = new URL(uploadedUrl, API_BASE).href;
+            homepagePreview.classList.remove('hidden');
+          }
+        }
+        event.target.value = '';
+      });
+      const form = document.querySelector('#section-products form');
+      if (form) form.addEventListener('submit', handleProductCreation);
+      document.getElementById('addProductMediaButton')?.addEventListener('click', () => {
+        document.getElementById('productImageInput')?.click();
+      });
+      document.getElementById('productMediaPicker')?.addEventListener('click', () => {
+        document.getElementById('productImageInput')?.click();
+      });
+      const categoryForm = document.querySelector('#section-main-categories form');
+      if (categoryForm) categoryForm.addEventListener('submit', handleMainCategorySubmit);
+      const subCategoryForm = document.querySelector('#section-sub-categories form');
+      if (subCategoryForm) subCategoryForm.addEventListener('submit', handleSubCategorySubmit);
+
+      document.getElementById('isAvailableToggle')?.addEventListener('change', function (e) {
+        const container = document.getElementById('buttonPreviewContainer');
+        if (!container) return;
+        container.innerHTML = e.target.checked
+          ? '<button type="button" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">shopping_bag</span><span>أطلب المنتج الآن</span></button>'
+          : '<div class="flex items-center gap-2"><span class="px-3.5 py-2 rounded-xl bg-surface-container-highest text-on-surface-variant font-label-md text-label-md">غير متوفر حالياً</span><button type="button" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] text-white font-label-md text-label-md shadow-sm"><span class="material-symbols-outlined text-[18px]">chat</span><span>للاستفسار المباشر عبر واتساب</span></button></div>';
+      });
+
+      const searchInput = document.querySelector('#section-products-table input[placeholder="بحث بالاسم أو الكود..."]');
+      if (searchInput) searchInput.addEventListener('input', renderProducts);
+      document.getElementById('productCategoryFilter')?.addEventListener('change', renderProducts);
+      document.querySelector('#section-products-table select:not(#productCategoryFilter)')?.addEventListener('change', renderProducts);
+      document.getElementById('subcategoryCategoryFilter')?.addEventListener('change', renderSubCategoryTable);
+
+      await loadData();
+      renderProductMedia();
+      updateSubCategoryOptions();
+      await loadAdminOrders();
+      togglePriceField('salePriceInput', true);
+      togglePriceField('rentPriceInput', true);
+      switchTab('overview');
+    });
+  </script>
+</div></main></div></body></html>

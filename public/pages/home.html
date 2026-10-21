@@ -1,0 +1,1226 @@
+<!-- صالون أم علي للأناقة - المتجر ولوحة الإدارة -->
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>صالون أم علي للأناقة | فساتين عرس - خطوبة - سهرة</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Font Awesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<!-- Google Cairo & Amiri Fonts for luxury Arabic presentation -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,400&amp;family=Cairo:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              pink: '#d81b60',
+              pinkLight: '#fce4ec',
+              pinkBorder: '#f8bbd0',
+              pinkDeep: '#ad1457',
+              gold: '#c59b27',
+              goldLight: '#fdf6e7',
+              green: '#25D366',
+              greenDark: '#128C7E',
+            }
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            amiri: ['Amiri', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography">
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #fffafc;
+      color: #333333;
+    }
+    .font-luxury {
+      font-family: 'Amiri', serif;
+    }
+  </style>
+<style data-purpose="decorative-accents">
+    /* Subtle decorative divider for headers */
+    .ornament-divider {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .ornament-divider::before, .ornament-divider::after {
+      content: "〰〰";
+      color: #d81b60;
+      opacity: 0.6;
+      font-size: 1.1rem;
+    }
+    .badge-offer {
+      background: linear-gradient(135deg, #e91e63, #c2185b);
+    }
+  </style>
+<style data-purpose="store-theme-overrides">
+  :root { --store-primary: #d81b60; --store-secondary: #c59b27; }
+  .text-brand-pink { color: var(--store-primary) !important; }
+  .bg-brand-pink { background-color: var(--store-primary) !important; }
+  .border-brand-pink { border-color: var(--store-primary) !important; }
+  .text-amber-500, .text-amber-600 { color: var(--store-secondary) !important; }
+  .hover\:text-brand-pink:hover { color: var(--store-primary) !important; }
+  .hover\:bg-brand-pink:hover { background-color: var(--store-primary) !important; }
+  .to-brand-pink { --tw-gradient-to: var(--store-primary) !important; }
+  .ring-brand-pink { --tw-ring-color: var(--store-primary) !important; }
+</style>
+<style data-purpose="mobile-storefront-layout">
+  @media (max-width: 640px) {
+    html, body { max-width: 100%; overflow-x: hidden; }
+    header > div { padding-inline: 12px; }
+    header > div > div:first-child {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+      padding-block: 8px;
+    }
+    header > div > div:first-child > div:nth-child(2) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+    }
+    header > div > div:first-child > div:last-child { gap: 12px; }
+    header > div > div:first-child > div:last-child a > span:first-of-type { display: none; }
+    header nav { gap: 12px; flex-wrap: wrap; justify-content: center; font-size: 12px; }
+    header > div > div:last-child { gap: 12px; }
+    header h1 { font-size: 1.5rem; line-height: 2rem; }
+    [data-purpose="hero-section"] { padding-block: 24px; }
+    [data-purpose="hero-section"] h2 { font-size: 2.25rem; line-height: 1.15; }
+    #mainCategoriesGrid { gap: 16px 10px; }
+    #mainCategoriesGrid select { min-width: 0; }
+    [data-purpose="site-footer"] > div > div:first-child { gap: 24px; }
+  }
+  @media (min-width: 480px) and (max-width: 640px) {
+    #productsShowcaseGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+<script src="/pages/nav.js"></script></head>
+<body id="pageTop" class="min-h-screen text-right flex flex-col justify-between selection:bg-pink-200">
+<!-- BEGIN: TopBar -->
+<header class="w-full bg-white border-b border-pink-100 shadow-sm" data-purpose="top-navigation">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Upper line with social icons, slogan, and user tools -->
+<div class="flex items-center justify-between py-2 border-b border-pink-50 text-xs sm:text-sm text-gray-600">
+<!-- Social Networks & Slogan -->
+<div class="flex items-center space-x-reverse space-x-4">
+<div class="flex items-center space-x-reverse space-x-2 text-brand-pink">
+<a data-homepage-social="tiktok" aria-label="TikTok" class="w-7 h-7 rounded-full bg-pink-50 flex items-center justify-center hover:bg-brand-pink hover:text-white transition" href="#"><i class="fa-brands fa-tiktok"></i></a>
+<a data-homepage-social="instagram" aria-label="Instagram" class="w-7 h-7 rounded-full bg-pink-50 flex items-center justify-center hover:bg-brand-pink hover:text-white transition" href="#"><i class="fa-brands fa-instagram"></i></a>
+<a data-homepage-social="facebook" aria-label="Facebook" class="w-7 h-7 rounded-full bg-pink-50 flex items-center justify-center hover:bg-brand-pink hover:text-white transition" href="#"><i class="fa-brands fa-facebook-f"></i></a>
+<a data-homepage-social="youtube" aria-label="YouTube" class="w-7 h-7 rounded-full bg-pink-50 flex items-center justify-center hover:bg-brand-pink hover:text-white transition" href="#"><i class="fa-brands fa-youtube"></i></a>
+</div>
+<span class="hidden md:inline-flex items-center text-pink-700 font-medium">
+<i class="fa-solid fa-heart text-xs text-brand-pink ml-1"></i> <span data-homepage-text="slogan">لأنك تستحقين كل ما هو جميل</span>
+          </span>
+</div>
+<!-- Search Bar -->
+<div class="flex-1 max-w-xs mx-4">
+<div class="relative">
+<input id="productSearchInput" data-homepage-placeholder="search_placeholder" class="w-full text-xs rounded-full border-pink-200 focus:border-brand-pink focus:ring focus:ring-pink-200 py-1.5 pr-8 pl-3 bg-pink-50/50" placeholder="ابحثِ عن فستان أحلامك..." type="search"/>
+<span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-pink-400">
+<i class="fa-solid fa-magnifying-glass text-xs"></i>
+</span>
+</div>
+</div>
+<!-- Account and Cart -->
+<div class="flex items-center space-x-reverse space-x-5">
+<a class="flex items-center gap-1 hover:text-brand-pink transition" href="#">
+<i class="fa-regular fa-user text-brand-pink"></i>
+<span data-homepage-text="nav.login">تسجيل الدخول</span>
+</a>
+<a class="flex items-center gap-1 hover:text-brand-pink relative transition" href="#">
+<i class="fa-solid fa-bag-shopping text-brand-pink"></i>
+<span data-homepage-text="nav.cart">سلة التسوق</span>
+<span class="bg-brand-pink text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+</a>
+</div>
+</div>
+<!-- Main Logo & Main Nav -->
+<div class="flex flex-col md:flex-row items-center justify-between py-3">
+<!-- Logo Branding matching the photo -->
+<div class="flex items-center gap-3">
+<div class="text-center relative">
+<div class="flex justify-center -mb-1 text-amber-500" id="storeLogoFallback">
+<i class="fa-solid fa-crown text-xl"></i>
+</div>
+<img id="storeLogo" class="hidden w-12 h-12 mx-auto mb-1 object-contain" alt="شعار المتجر" />
+<h1 id="storeNameHeader" class="text-3xl font-extrabold text-brand-pink font-luxury tracking-wide">
+              صالون أم علي
+            </h1>
+
+</div>
+</div>
+<!-- Nav Items -->
+<nav class="flex items-center gap-6 mt-3 md:mt-0 font-bold text-gray-700 text-sm">
+<a data-homepage-text="nav.home" class="text-brand-pink border-b-2 border-brand-pink pb-1" href="#pageTop">الرئيسية</a>
+
+<a data-homepage-text="nav.offers" data-store-navigation="offers" class="hover:text-brand-pink transition pb-1" href="#products-showcase">العروض</a>
+<a data-homepage-text="nav.about" class="hover:text-brand-pink transition pb-1" href="#about-store">من نحن</a>
+<a data-homepage-text="nav.contact" class="hover:text-brand-pink transition pb-1" href="#contact-store">اتصل بنا</a>
+</nav>
+</div>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: HeroBanner -->
+<section class="relative bg-gradient-to-r from-pink-100 via-rose-50 to-pink-100 py-10 md:py-14 border-b border-pink-200 overflow-hidden" data-purpose="hero-section">
+<!-- Decorative floral corner graphics -->
+<div class="absolute right-0 top-0 bottom-0 pointer-events-none opacity-20 md:opacity-40 flex items-center">
+<i class="fa-solid fa-spa text-[140px] text-pink-400"></i>
+</div>
+<div class="absolute left-4 top-4 text-pink-300 opacity-30 text-6xl">
+<i class="fa-brands fa-gratipay"></i>
+</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+<!-- Right Side: Model/Banner Image -->
+<div class="w-full md:w-5/12 flex justify-center">
+<div class="relative p-2 bg-white rounded-3xl shadow-xl ring-4 ring-pink-200/50 max-w-sm">
+<div class="overflow-hidden rounded-2xl aspect-[3/4] bg-pink-50">
+<img id="storeHomeImage" data-homepage-image="hero.image_url" alt="صالون أم علي للأناقة" class="w-full h-full object-cover object-top hover:scale-105 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
+</div>
+<span data-homepage-text="hero.badge" class="absolute -bottom-3 -right-3 bg-brand-pink text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">
+            تصاميم حديثة 2025
+          </span>
+</div>
+</div>
+<!-- Left Side: Hero Typography & Call-To-Action -->
+<div class="w-full md:w-7/12 text-center md:text-right space-y-4">
+<div class="inline-flex items-center gap-2 bg-pink-200/70 text-brand-pinkDeep px-4 py-1.5 rounded-full text-xs font-bold tracking-wide">
+<i class="fa-solid fa-gem text-amber-500"></i> <span data-homepage-text="hero.kicker">خيار العرائس الأول والأرقى</span>
+        </div>
+
+<div class="py-2">
+<span data-homepage-text="hero.category_line" class="inline-block bg-brand-pink text-white font-bold text-sm md:text-base px-6 py-1.5 rounded-full shadow">
+            فساتين عرس - خطوبة - سهرة - أعراس
+          </span>
+</div>
+<p data-homepage-text="hero.description" class="text-gray-600 max-w-lg leading-relaxed text-sm md:text-base">
+          تألقي كالأميرات في ليلتك المميزة. نوفر لكِ أفخم كولكشن لفساتين الأعراس والسهرات المصممة بأعلى معايير الرقي وبأنسب الأسعار للبيع والإيجار.
+        </p>
+<div class="pt-2">
+<a class="inline-flex items-center gap-2 bg-gradient-to-r from-brand-pink to-brand-pinkDeep text-white px-8 py-3 rounded-full font-bold text-base shadow-lg hover:shadow-pink-300 hover:scale-105 transition duration-300" href="#products-showcase">
+<i class="fa-solid fa-bag-shopping"></i>
+<span data-homepage-text="hero.cta">تسوقي الآن</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- END: HeroBanner -->
+<!-- BEGIN: MainCategories (القسم الرئيسي) -->
+<section class="py-10 bg-white" data-purpose="main-categories-section">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Section Title with decorative ornament -->
+<div class="text-center mb-8">
+<h3 data-homepage-text="categories.title" class="text-2xl font-bold text-gray-800">الأقسام الرئيسية</h3>
+<p data-homepage-text="categories.description" class="text-xs text-brand-pink font-semibold mt-1 ornament-divider">خدماتنا المتكاملة لكل مناسبة</p>
+</div>
+<p id="mainCategoriesStatus" class="text-center text-sm text-gray-500 mb-5" role="status">جارٍ تحميل الأقسام...</p>
+<div id="mainCategoriesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-6 text-center"></div>
+</div>
+</section>
+<!-- END: MainCategories -->
+<!-- BEGIN: LatestProductsSection -->
+<section class="py-12 bg-pink-50/40 border-t border-pink-100 scroll-mt-6" data-purpose="products-catalog" id="products-showcase">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Section Header -->
+<div class="text-center max-w-xl mx-auto mb-6">
+<h3 data-homepage-text="products.title" class="text-3xl font-extrabold text-brand-pink font-luxury">
+          أحدث الفساتين
+        </h3>
+<p data-homepage-text="products.subtitle" class="text-sm text-gray-600 mt-1 font-medium">
+          تألقي بإطلالتك الأجمل مع مجموعة فساتيننا المميزة
+        </p>
+<div class="text-amber-500 text-xs mt-1">
+          ✦ ✦ ✦
+        </div>
+</div>
+<!-- Product Cards Grid: Ordered prioritizing Special Offer ('عرض') -->
+<div id="productsShowcaseGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" hidden>
+<!-- CARD 1: Offer Dress (Soft Engagement Pink) -->
+<div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between" data-purpose="product-card">
+<div class="relative">
+<!-- Offer Badge -->
+<span class="absolute top-2.5 right-2.5 z-10 badge-offer text-white text-[11px] font-bold px-2.5 py-0.5 rounded shadow">
+              عرض
+            </span>
+<!-- Wishlist Heart -->
+<button class="absolute top-2.5 left-2.5 z-10 w-7 h-7 bg-white/90 text-gray-400 hover:text-brand-pink rounded-full flex items-center justify-center shadow transition text-xs">
+<i class="fa-regular fa-heart"></i>
+</button>
+<!-- Image Frame -->
+<div class="aspect-[3/4] bg-pink-100 overflow-hidden relative group">
+<img alt="فستان خطوبة ناعم" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
+<!-- Multiple images indicator badge -->
+<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-mono">
+<i class="fa-regular fa-image"></i> +5 صور
+              </span>
+</div>
+</div>
+<!-- Product Details -->
+<div class="p-3 text-center flex-1 flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-gray-800 text-sm hover:text-brand-pink transition">
+                فستان خطوبة ناعم
+              </h4>
+<p class="text-[11px] text-gray-400 font-mono mt-0.5">رقم المنتج: OM-3001</p>
+<!-- Price Box: Sale vs Rent -->
+<div class="grid grid-cols-2 border-t border-b border-pink-50 py-2 my-2 text-xs">
+<div class="border-l border-pink-100">
+<span class="block text-gray-400 text-[10px]">سعر الإيجار</span>
+<span class="font-bold text-brand-pink">180 ل.س</span>
+</div>
+<div>
+<span class="block text-gray-400 text-[10px]">سعر البيع</span>
+<span class="font-bold text-gray-700">600 ل.س</span>
+</div>
+</div>
+</div>
+<!-- Action Button: Available (متوفر) -->
+<a data-homepage-social="whatsapp" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition" href="https://wa.me/9640986763418?text=مرحبا، أود طلب فستان خطوبة ناعم OM-3001" target="_blank">
+<i class="fa-brands fa-whatsapp text-sm"></i>
+<span>أطلب المنتج</span>
+</a>
+</div>
+</div>
+<!-- CARD 2: Offer Dress (Classic Wedding Dress) -->
+<div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between" data-purpose="product-card">
+<div class="relative">
+<span class="absolute top-2.5 right-2.5 z-10 badge-offer text-white text-[11px] font-bold px-2.5 py-0.5 rounded shadow">
+              عرض
+            </span>
+<button class="absolute top-2.5 left-2.5 z-10 w-7 h-7 bg-white/90 text-gray-400 hover:text-brand-pink rounded-full flex items-center justify-center shadow transition text-xs">
+<i class="fa-regular fa-heart"></i>
+</button>
+<div class="aspect-[3/4] bg-pink-100 overflow-hidden relative group">
+<img alt="فستان زفاف كلاسيك" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
+<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-mono">
+<i class="fa-regular fa-image"></i> +6 صور
+              </span>
+</div>
+</div>
+<div class="p-3 text-center flex-1 flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-gray-800 text-sm hover:text-brand-pink transition">
+                فستان زفاف كلاسيك
+              </h4>
+<p class="text-[11px] text-gray-400 font-mono mt-0.5">رقم المنتج: OM-2001</p>
+<div class="grid grid-cols-2 border-t border-b border-pink-50 py-2 my-2 text-xs">
+<div class="border-l border-pink-100">
+<span class="block text-gray-400 text-[10px]">سعر الإيجار</span>
+<span class="font-bold text-brand-pink">250 ل.س</span>
+</div>
+<div>
+<span class="block text-gray-400 text-[10px]">سعر البيع</span>
+<span class="font-bold text-gray-700">850 ل.س</span>
+</div>
+</div>
+</div>
+<!-- Action Button: Available -->
+<a data-homepage-social="whatsapp" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition" href="https://wa.me/9640986763418?text=مرحبا، أود طلب فستان زفاف كلاسيك OM-2001" target="_blank">
+<i class="fa-brands fa-whatsapp text-sm"></i>
+<span>أطلب المنتج</span>
+</a>
+</div>
+</div>
+<!-- CARD 3: Offer Dress (One Shoulder Evening Burgundy) -->
+<div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between" data-purpose="product-card">
+<div class="relative">
+<span class="absolute top-2.5 right-2.5 z-10 badge-offer text-white text-[11px] font-bold px-2.5 py-0.5 rounded shadow">
+              عرض
+            </span>
+<button class="absolute top-2.5 left-2.5 z-10 w-7 h-7 bg-white/90 text-gray-400 hover:text-brand-pink rounded-full flex items-center justify-center shadow transition text-xs">
+<i class="fa-regular fa-heart"></i>
+</button>
+<div class="aspect-[3/4] bg-pink-100 overflow-hidden relative group">
+<img alt="فستان سهرة بكتف واحد" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
+<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-mono">
+<i class="fa-regular fa-image"></i> +5 صور
+              </span>
+</div>
+</div>
+<div class="p-3 text-center flex-1 flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-gray-800 text-sm hover:text-brand-pink transition">
+                فستان سهرة بكتف واحد
+              </h4>
+<p class="text-[11px] text-gray-400 font-mono mt-0.5">رقم المنتج: OM-1002</p>
+<div class="grid grid-cols-2 border-t border-b border-pink-50 py-2 my-2 text-xs">
+<div class="border-l border-pink-100">
+<span class="block text-gray-400 text-[10px]">سعر الإيجار</span>
+<span class="font-bold text-brand-pink">150 ل.س</span>
+</div>
+<div>
+<span class="block text-gray-400 text-[10px]">سعر البيع</span>
+<span class="font-bold text-gray-700">480 ل.س</span>
+</div>
+</div>
+</div>
+<!-- Action Button: Available -->
+<a data-homepage-social="whatsapp" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition" href="https://wa.me/9640986763418?text=مرحبا، أود طلب فستان سهرة بكتف واحد OM-1002" target="_blank">
+<i class="fa-brands fa-whatsapp text-sm"></i>
+<span>أطلب المنتج</span>
+</a>
+</div>
+</div>
+<!-- CARD 4: Offer Dress (Royal Blue Soiree) -->
+<div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between" data-purpose="product-card">
+<div class="relative">
+<span class="absolute top-2.5 right-2.5 z-10 badge-offer text-white text-[11px] font-bold px-2.5 py-0.5 rounded shadow">
+              عرض
+            </span>
+<button class="absolute top-2.5 left-2.5 z-10 w-7 h-7 bg-white/90 text-gray-400 hover:text-brand-pink rounded-full flex items-center justify-center shadow transition text-xs">
+<i class="fa-regular fa-heart"></i>
+</button>
+<div class="aspect-[3/4] bg-pink-100 overflow-hidden relative group">
+<img alt="فستان سهرة أزرق ملكي" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
+<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-mono">
+<i class="fa-regular fa-image"></i> +4 صور
+              </span>
+</div>
+</div>
+<div class="p-3 text-center flex-1 flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-gray-800 text-sm hover:text-brand-pink transition">
+                فستان سهرة أزرق ملكي
+              </h4>
+<p class="text-[11px] text-gray-400 font-mono mt-0.5">رقم المنتج: OM-1001</p>
+<div class="grid grid-cols-2 border-t border-b border-pink-50 py-2 my-2 text-xs">
+<div class="border-l border-pink-100">
+<span class="block text-gray-400 text-[10px]">سعر الإيجار</span>
+<span class="font-bold text-brand-pink">150 ل.س</span>
+</div>
+<div>
+<span class="block text-gray-400 text-[10px]">سعر البيع</span>
+<span class="font-bold text-gray-700">450 ل.س</span>
+</div>
+</div>
+</div>
+<!-- Action Button: Available -->
+<a data-homepage-social="whatsapp" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition" href="https://wa.me/9640986763418?text=مرحبا، أود طلب فستان سهرة أزرق ملكي OM-1001" target="_blank">
+<i class="fa-brands fa-whatsapp text-sm"></i>
+<span>أطلب المنتج</span>
+</a>
+</div>
+</div>
+<!-- CARD 5: Standard Product / Out of Stock (فساتين أطفال وردي) -->
+<div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between opacity-95" data-purpose="product-card">
+<div class="relative">
+<button class="absolute top-2.5 left-2.5 z-10 w-7 h-7 bg-white/90 text-gray-400 hover:text-brand-pink rounded-full flex items-center justify-center shadow transition text-xs">
+<i class="fa-regular fa-heart"></i>
+</button>
+<div class="aspect-[3/4] bg-pink-100 overflow-hidden relative group">
+<img alt="فستان أطفال وردي" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNiBmUL7VzDNCuRdSJtGKv2r8xjpTi5-JGu0612iQ68C6bSii88zCE0c0M30tIawVBrT-tdm5KdFCp_EZ_FcFrxtlRZeaGgPs10TygPMKG4AUBP7fntfvQyjKXbwJQjpnHbmDI-CdkeZqmqSo66oYsokv77Zl3Yg9WeDcTTjesk3rve9waZaAuJBGfurdVlSepEnyBS2akvwtBwweYeKidHAP6sPqyFIxPOiUR1MctjavdPtNG3t_EyHKVCHDEqPqMA"/>
+<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-mono">
+<i class="fa-regular fa-image"></i> +3 صور
+              </span>
+</div>
+</div>
+<div class="p-3 text-center flex-1 flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-gray-800 text-sm hover:text-brand-pink transition">
+                فستان أطفال وردي
+              </h4>
+<p class="text-[11px] text-gray-400 font-mono mt-0.5">رقم المنتج: OM-4001</p>
+<div class="grid grid-cols-2 border-t border-b border-pink-50 py-2 my-2 text-xs">
+<div class="border-l border-pink-100">
+<span class="block text-gray-400 text-[10px]">سعر الإيجار</span>
+<span class="font-bold text-brand-pink">50 ل.س</span>
+</div>
+<div>
+<span class="block text-gray-400 text-[10px]">سعر البيع</span>
+<span class="font-bold text-gray-700">150 ل.س</span>
+</div>
+</div>
+</div>
+<!-- Requirement: When unavailable (غير متوفر), display grey badge and green inquiry WhatsApp button -->
+<div class="space-y-1.5">
+<div class="bg-gray-100 text-gray-500 py-1 rounded text-[11px] font-bold border border-gray-200">
+                غير متوفر حالياً
+              </div>
+<a data-homepage-social="whatsapp" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition" href="https://wa.me/9640986763418?text=مرحبا، استفسار بخصوص توفر فستان أطفال وردي OM-4001" target="_blank">
+<i class="fa-brands fa-whatsapp text-sm"></i>
+<span>للاستفسار</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p id="productsShowcaseStatus" data-homepage-text="products.status.loading" class="text-center text-sm text-gray-500" role="status">جارٍ تحميل المنتجات...</p>
+</section>
+<!-- END: LatestProductsSection -->
+<!-- BEGIN: TrustFeaturesBar -->
+<section class="py-10 bg-white border-y border-pink-100 scroll-mt-6" data-purpose="trust-features" id="about-store">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+<!-- Feature 1 -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-14 rounded-full bg-pink-50 text-brand-pink flex items-center justify-center text-2xl mb-3 shadow-sm border border-pink-100">
+<i class="fa-solid fa-ribbon"></i>
+</div>
+<h4 data-homepage-text="trust.items.0.title" class="font-bold text-gray-800 text-sm">جودة عالية</h4>
+<p data-homepage-text="trust.items.0.subtitle" class="text-xs text-gray-500 mt-0.5">أفضل الخامات والتطريز</p>
+</div>
+<!-- Feature 2 -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-14 rounded-full bg-pink-50 text-brand-pink flex items-center justify-center text-2xl mb-3 shadow-sm border border-pink-100">
+<i class="fa-solid fa-truck-fast"></i>
+</div>
+<h4 data-homepage-text="trust.items.1.title" class="font-bold text-gray-800 text-sm">توصيل سريع</h4>
+<p data-homepage-text="trust.items.1.subtitle" class="text-xs text-gray-500 mt-0.5">لكل المحافظات والمناطق</p>
+</div>
+<!-- Feature 3 -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-14 rounded-full bg-pink-50 text-brand-pink flex items-center justify-center text-2xl mb-3 shadow-sm border border-pink-100">
+<i class="fa-regular fa-star"></i>
+</div>
+<h4 data-homepage-text="trust.items.2.title" class="font-bold text-gray-800 text-sm">تشكيلة واسعة</h4>
+<p data-homepage-text="trust.items.2.subtitle" class="text-xs text-gray-500 mt-0.5">من أجمل التصاميم العصرية</p>
+</div>
+<!-- Feature 4 -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-14 rounded-full bg-pink-50 text-brand-pink flex items-center justify-center text-2xl mb-3 shadow-sm border border-pink-100">
+<i class="fa-solid fa-headset"></i>
+</div>
+<h4 data-homepage-text="trust.items.3.title" class="font-bold text-gray-800 text-sm">خدمة عملاء مميزة</h4>
+<p data-homepage-text="trust.items.3.subtitle" class="text-xs text-gray-500 mt-0.5">تخدمك وتجيبك دائماً</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: TrustFeaturesBar -->
+<!-- BEGIN: WhatsAppBanner -->
+<section class="py-6 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white relative overflow-hidden scroll-mt-6" data-purpose="whatsapp-cta" id="contact-store">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- Text side -->
+<div class="text-center md:text-right">
+<h4 data-homepage-text="whatsapp_banner.title" class="text-xl md:text-2xl font-bold font-luxury">احصلي على إطلالتك المثالية اليوم</h4>
+<p data-homepage-text="whatsapp_banner.description" class="text-xs md:text-sm text-pink-100 font-medium">فساتيننا ... عنوان الأناقة والجمال لكل عروس</p>
+</div>
+<!-- Action Button -->
+<div>
+<a data-homepage-social="whatsapp" class="inline-flex items-center gap-3 bg-white text-gray-800 px-6 py-2.5 rounded-full shadow-lg hover:bg-emerald-50 transition" href="https://wa.me/9640986763418" target="_blank">
+<div class="text-left font-sans">
+<span data-homepage-text="whatsapp_banner.cta" class="block text-[10px] text-gray-500 font-bold leading-tight">تواصلي معنا عبر الواتساب</span>
+<span data-homepage-text="contact.phone" class="text-lg font-black text-emerald-600 font-mono tracking-wider">0986763418</span>
+</div>
+<span class="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl shadow">
+<i class="fa-brands fa-whatsapp"></i>
+</span>
+</a>
+</div>
+</div>
+</section>
+<!-- END: WhatsAppBanner -->
+<!-- BEGIN: AdminDashboardModal (لوحة تحكم المدير) -->
+<section class="hidden fixed inset-0 bg-black/60 z-50 backdrop-blur-sm overflow-y-auto p-4 flex items-center justify-center" data-purpose="admin-control-interface" id="adminPanelModal">
+<div class="bg-white rounded-2xl w-full max-w-4xl shadow-2xl border border-pink-200 overflow-hidden my-8">
+<!-- Dashboard Modal Header -->
+<div class="bg-gradient-to-r from-brand-pink to-brand-pinkDeep text-white px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<i class="fa-solid fa-sliders text-xl text-amber-300"></i>
+<h3 class="font-bold text-lg">لوحة إدارة المتجر (صالون أم علي)</h3>
+</div>
+<button class="text-white hover:text-pink-200 text-xl font-bold" id="closeAdminBtn">×</button>
+</div>
+<!-- Dashboard Body Tabs -->
+<div class="p-6">
+<!-- Tabs Navigation -->
+<div class="flex border-b border-gray-200 gap-4 mb-6 font-bold text-sm">
+<button class="pb-2 border-b-2 border-brand-pink text-brand-pink">1. إضافة / إدارة المنتجات</button>
+<button class="pb-2 text-gray-500 hover:text-brand-pink transition">2. الأقسام الرئيسية</button>
+<button class="pb-2 text-gray-500 hover:text-brand-pink transition">3. الأقسام الفرعية</button>
+</div>
+<!-- Form: Add/Edit Product -->
+<form class="space-y-4" onsubmit="event.preventDefault(); alert('تم حفظ بيانات الفستان بنجاح في قاعدة البيانات.');">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Unique Product ID / Code -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">رقم المنتج (فريد وغير مكرر) *</label>
+<input class="w-full text-xs rounded-lg border-gray-300 focus:border-brand-pink focus:ring-pink-200 font-mono" placeholder="مثال: OM-5002" required="" type="text"/>
+</div>
+<!-- Product Name -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">اسم الفستان / المنتج *</label>
+<input class="w-full text-xs rounded-lg border-gray-300 focus:border-brand-pink focus:ring-pink-200" placeholder="مثال: فستان ملكي لؤلؤي" required="" type="text"/>
+</div>
+<!-- Main Category -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">القسم الرئيسي المرتبط *</label>
+<select class="w-full text-xs rounded-lg border-gray-300 focus:border-brand-pink focus:ring-pink-200">
+<option>تأجير فساتين</option>
+<option>تجهيز عرائسي</option>
+<option>تأجير شنط جهاز</option>
+<option>ميكب - برفين</option>
+<option>تأجير فساتين للأطفال</option>
+</select>
+</div>
+<!-- Sub Category -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">القسم الفرعي *</label>
+<select class="w-full text-xs rounded-lg border-gray-300 focus:border-brand-pink focus:ring-pink-200">
+<option>فساتين عرس</option>
+<option>فساتين خطوبة</option>
+<option>فساتين سهرة</option>
+<option>فساتين أطفال</option>
+</select>
+</div>
+<!-- Rental Price -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">سعر الإيجار (ل.س) *</label>
+<input class="w-full text-xs rounded-lg border-gray-300 focus:border-brand-pink focus:ring-pink-200 font-mono" placeholder="150" required="" type="number"/>
+</div>
+<!-- Sale Price -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">سعر البيع (ل.س) *</label>
+<input class="w-full text-xs rounded-lg border-gray-300 focus:border-brand-pink focus:ring-pink-200 font-mono" placeholder="500" required="" type="number"/>
+</div>
+</div>
+<!-- Product description -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">شرح مبسط وتفاصيل القماش والتطريز</label>
+<textarea class="w-full text-xs rounded-lg border-gray-300 focus:border-brand-pink focus:ring-pink-200" placeholder="وصف الفستان، المقاسات المتوفرة، ونوعية القماش..." rows="2"></textarea>
+</div>
+<!-- Status Toggles: Offer & Availability -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-pink-50/60 p-3 rounded-xl border border-pink-100">
+<!-- Offer state -->
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-gray-700">حالة العرض (عرض خاص):</span>
+<label class="inline-flex items-center cursor-pointer">
+<input checked="" class="form-checkbox h-4 w-4 text-brand-pink rounded focus:ring-pink-300" type="checkbox"/>
+<span class="mr-2 text-xs font-medium text-gray-600">نعم، إظهار بادج عرض</span>
+</label>
+</div>
+<!-- Availability state -->
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-gray-700">حالة التوفر في الصالون:</span>
+<label class="inline-flex items-center cursor-pointer">
+<input checked="" class="form-checkbox h-4 w-4 text-emerald-500 rounded focus:ring-emerald-300" type="checkbox"/>
+<span class="mr-2 text-xs font-medium text-gray-600">متوفر للطلب</span>
+</label>
+</div>
+<!-- Multiple images count -->
+<div>
+<label class="block text-xs font-bold text-gray-700 mb-1">رفع صور متعددة للموديل</label>
+<input class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-brand-pink file:text-white" multiple="" type="file"/>
+</div>
+</div>
+<!-- Submit and actions -->
+<div class="flex items-center justify-end gap-3 pt-3">
+<button class="px-4 py-2 text-xs text-gray-500 hover:text-gray-700" id="cancelAdminBtn" type="button">إلغاء</button>
+<button class="bg-brand-pink hover:bg-brand-pinkDeep text-white px-6 py-2 rounded-lg text-xs font-bold shadow transition flex items-center gap-1.5" type="submit">
+<i class="fa-solid fa-cloud-arrow-up"></i>
+              حفظ ونشر الفستان
+            </button>
+</div>
+</form>
+</div>
+</div>
+</section>
+<!-- END: AdminDashboardModal -->
+<!-- BEGIN: MainFooter -->
+<footer class="bg-rose-950 text-white pt-10 pb-6 border-t border-pink-900" data-purpose="site-footer">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Footer Columns -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-pink-900/60 text-xs">
+<!-- Column 1: Brand Info -->
+<div class="text-center md:text-right">
+<div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+<i class="fa-solid fa-crown text-amber-400 text-lg"></i>
+<span id="storeNameFooter" class="text-xl font-bold font-luxury text-pink-200">صالون أم علي للأناقة</span>
+</div>
+<p data-homepage-text="footer.description" class="text-gray-300 leading-relaxed max-w-sm">
+            وجهتك الأولى لكل ما يخص أناقة العروس ومناسبات الخطوبة والاحتفالات. أحدث تشكيلات الفساتين بلمسات راقية وأسعار تنافسية.
+          </p>
+</div>
+<!-- Column 2: Navigation Links -->
+<div class="text-center">
+<h5 data-homepage-text="footer.quick_links" class="font-bold text-pink-300 text-sm mb-3">روابط سريعة</h5>
+<div class="flex justify-center flex-wrap gap-4 text-gray-300">
+<a data-homepage-text="nav.home" class="hover:text-pink-200 transition" href="#pageTop">الرئيسية</a>
+<a data-homepage-text="nav.dresses" class="hover:text-pink-200 transition" href="#products-showcase">الفساتين</a>
+<a data-homepage-text="nav.offers" data-store-navigation="offers" class="hover:text-pink-200 transition" href="#products-showcase">العروض</a>
+<a data-homepage-text="nav.about" class="hover:text-pink-200 transition" href="#about-store">من نحن</a>
+<a data-homepage-text="nav.contact" class="hover:text-pink-200 transition" href="#contact-store">اتصل بنا</a>
+</div>
+<!-- Social icons in footer -->
+<div class="flex justify-center gap-3 mt-4 text-pink-300">
+<a data-homepage-social="tiktok" class="hover:text-white transition" href="#"><i class="fa-brands fa-tiktok"></i></a>
+<a data-homepage-social="instagram" class="hover:text-white transition" href="#"><i class="fa-brands fa-instagram"></i></a>
+<a data-homepage-social="facebook" class="hover:text-white transition" href="#"><i class="fa-brands fa-facebook"></i></a>
+<a data-homepage-social="whatsapp" class="hover:text-white transition" href="#"><i class="fa-brands fa-whatsapp"></i></a>
+</div>
+</div>
+<!-- Column 3: Contact & Address matching screenshot -->
+<div class="text-center md:text-left space-y-2">
+<div class="flex items-center justify-center md:justify-end gap-2 text-gray-200">
+<span>العنوان: <span data-homepage-text="footer.address">بغداد - شارع فلسطين</span></span>
+<i class="fa-solid fa-location-dot text-brand-pink"></i>
+</div>
+<div class="flex items-center justify-center md:justify-end gap-2 font-mono text-gray-200">
+<span data-homepage-text="contact.phone">0986763418</span>
+<i class="fa-solid fa-phone text-brand-pink"></i>
+</div>
+</div>
+</div>
+<!-- Copyright Notice -->
+<div class="pt-4 text-center text-gray-400 text-[11px]">
+        © <span id="storeCopyrightName">صالون أم علي للأناقة</span> - <span data-homepage-text="footer.copyright">جميع الحقوق محفوظة</span>
+      </div>
+</div>
+</footer>
+<!-- END: MainFooter -->
+<script data-purpose="published-products">
+  const PRODUCT_API_BASE = 'http://localhost:3001';
+  const productsGrid = document.getElementById('productsShowcaseGrid');
+  const productsStatus = document.getElementById('productsShowcaseStatus');
+  const productSearchInput = document.getElementById('productSearchInput');
+  const mainCategoriesGrid = document.getElementById('mainCategoriesGrid');
+  const mainCategoriesStatus = document.getElementById('mainCategoriesStatus');
+  const defaultCategoryActionImages = {
+    offers: '/uploads/ebc3ca41-87bd-4f52-9ba3-254ecd5f7e38.png',
+    all: '/uploads/d5d1851c-af00-4283-8410-072511cbd0aa.png',
+  };
+  let publishedProducts = [];
+  let storefrontCategories = [];
+  let storefrontSubcategories = [];
+  let selectedMainCategory = 'all';
+  let selectedSubcategory = 'all';
+  let selectedOffersOnly = false;
+  let storeWhatsAppLink = 'https://wa.me/9640986763418';
+  let currentHomepageContent = null;
+  let productsRequestStatus = 'loading';
+
+    function applyStoreSettings(settings) {
+      const primaryColor = /^#[0-9a-f]{6}$/i.test(settings.primary_color || '') ? settings.primary_color : '#d81b60';
+      const secondaryColor = /^#[0-9a-f]{6}$/i.test(settings.secondary_color || '') ? settings.secondary_color : '#c59b27';
+      const storeName = typeof settings.store_name === 'string' && settings.store_name.trim()
+        ? settings.store_name.trim()
+        : 'صالون أم علي للأناقة';
+      document.documentElement.style.setProperty('--store-primary', primaryColor);
+      document.documentElement.style.setProperty('--store-secondary', secondaryColor);
+      let themeStyle = document.getElementById('runtimeStoreTheme');
+      if (!themeStyle) {
+        themeStyle = document.createElement('style');
+        themeStyle.id = 'runtimeStoreTheme';
+        document.head.append(themeStyle);
+      }
+      themeStyle.textContent = `
+        body { background-color: ${settings.homepage_content?.colors?.background || '#fffafc'}; color: ${settings.homepage_content?.colors?.text || '#333333'}; }
+        .bg-white { background-color: ${settings.homepage_content?.colors?.surface || '#ffffff'} !important; }
+        [data-purpose="top-navigation"], [data-purpose="main-categories-section"], [data-purpose="products-catalog"] { background-color: ${settings.homepage_content?.colors?.surface || '#ffffff'} !important; }
+        [data-purpose="hero-section"] { background-image: linear-gradient(to right, ${settings.homepage_content?.colors?.background || '#fffafc'}, ${settings.homepage_content?.colors?.surface || '#ffffff'}, ${settings.homepage_content?.colors?.background || '#fffafc'}) !important; }
+        .text-gray-800, .text-gray-700 { color: ${settings.homepage_content?.colors?.text || '#333333'} !important; }
+        .text-gray-600, .text-gray-500, .text-gray-400 { color: ${settings.homepage_content?.colors?.muted || '#6b7280'} !important; }
+        .text-brand-pink { color: ${primaryColor} !important; }
+        .bg-brand-pink { background-color: ${primaryColor} !important; }
+        .border-brand-pink { border-color: ${primaryColor} !important; }
+        .hover\\:text-brand-pink:hover { color: ${primaryColor} !important; }
+        .hover\\:bg-brand-pink:hover { background-color: ${primaryColor} !important; }
+        .to-brand-pink { --tw-gradient-to: ${primaryColor} !important; }
+        .ring-brand-pink { --tw-ring-color: ${primaryColor} !important; }
+        .text-amber-500, .text-amber-600 { color: ${secondaryColor} !important; }
+      `;
+      document.getElementById('storeNameHeader').textContent = storeName;
+      document.getElementById('storeNameFooter').textContent = storeName;
+      document.getElementById('storeCopyrightName').textContent = storeName;
+      document.title = `${storeName} | فساتين عرس وخطوبة وسهرة`;
+
+      const logoUrl = typeof settings.logo_url === 'string' ? settings.logo_url : '';
+      const logo = document.getElementById('storeLogo');
+      const logoFallback = document.getElementById('storeLogoFallback');
+      if (logoUrl) {
+        logo.src = mediaUrl(logoUrl);
+        logo.classList.remove('hidden');
+        logoFallback.classList.add('hidden');
+      } else {
+        logo.removeAttribute('src');
+        logo.classList.add('hidden');
+        logoFallback.classList.remove('hidden');
+      }
+      const homeImageUrl = typeof settings.homepage_image_url === 'string' ? settings.homepage_image_url : '';
+      if (homeImageUrl) document.getElementById('storeHomeImage').src = mediaUrl(homeImageUrl);
+      if (settings.homepage_content) applyHomepageContent(settings.homepage_content);
+    }
+
+    function getHomepageValue(content, path) {
+      return path.split('.').reduce((value, key) => value?.[key], content);
+    }
+
+    function applyHomepageContent(content) {
+      currentHomepageContent = content;
+      document.querySelectorAll('[data-homepage-text]').forEach((element) => {
+        const value = getHomepageValue(content, element.dataset.homepageText);
+        if (typeof value === 'string') element.textContent = value;
+      });
+      document.querySelectorAll('[data-homepage-placeholder]').forEach((element) => {
+        const value = getHomepageValue(content, element.dataset.homepagePlaceholder);
+        if (typeof value === 'string') element.setAttribute('placeholder', value);
+      });
+      document.querySelectorAll('[data-homepage-image]').forEach((element) => {
+        const value = getHomepageValue(content, element.dataset.homepageImage);
+        if (typeof value !== 'string' || !value) {
+          element.removeAttribute('src');
+          return;
+        }
+        element.src = mediaUrl(value);
+      });
+      document.querySelectorAll('[data-homepage-social]').forEach((element) => {
+        const url = content.social?.[element.dataset.homepageSocial];
+        if (typeof url === 'string' && url) {
+          element.href = url;
+          element.target = '_blank';
+          element.rel = 'noopener noreferrer';
+        } else if (element.dataset.homepageSocial !== 'whatsapp') {
+          element.removeAttribute('href');
+        }
+      });
+      storeWhatsAppLink = content.social?.whatsapp || storeWhatsAppLink;
+      if (productsRequestStatus === 'loaded') {
+        if (publishedProducts.length) renderFilteredProducts();
+        else productsStatus.textContent = homepageText('products.status.empty', 'لا توجد منتجات منشورة حالياً.');
+      } else if (productsRequestStatus === 'error') {
+        productsStatus.textContent = homepageText('products.status.error', 'تعذر تحميل المنتجات حالياً. يرجى المحاولة لاحقاً.');
+      } else {
+        productsStatus.textContent = homepageText('products.status.loading', 'جارٍ تحميل المنتجات...');
+      }
+      if (storefrontCategories.length) renderMainCategories();
+    }
+
+    function homepageText(path, fallback) {
+      const value = getHomepageValue(currentHomepageContent, path);
+      return typeof value === 'string' ? value : fallback;
+    }
+
+    async function loadStorefrontSettings() {
+      try {
+        const response = await fetch(`${PRODUCT_API_BASE}/api/store-settings`);
+        if (!response.ok) throw new Error(`Store settings request failed (${response.status})`);
+        applyStoreSettings(await response.json());
+      } catch (error) {
+        console.error('Failed to load store settings:', error);
+      }
+    }
+
+    function mediaUrl(url) {
+      return url.startsWith('/') ? new URL(url, PRODUCT_API_BASE).href : url;
+    }
+
+    function createCategoryCard(category) {
+      const card = document.createElement('article');
+      card.className = 'flex flex-col items-center min-w-0';
+
+      const categoryButton = document.createElement('button');
+      categoryButton.type = 'button';
+      categoryButton.dataset.mainCategoryFilter = String(category.id);
+      categoryButton.className = 'group flex flex-col items-center w-full';
+      categoryButton.setAttribute('aria-label', `عرض منتجات ${category.name}`);
+
+      const frame = document.createElement('span');
+      frame.dataset.categoryRing = 'true';
+      frame.className = 'w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-pink-200 group-hover:border-brand-pink bg-pink-50 p-1 flex items-center justify-center transition duration-300 shadow-md';
+      const visual = document.createElement('span');
+      visual.className = 'w-full h-full rounded-full bg-gradient-to-b from-pink-400 to-brand-pink text-white flex items-center justify-center shadow-inner relative overflow-hidden';
+      if (category.image_url) {
+        const image = document.createElement('img');
+        image.src = mediaUrl(category.image_url);
+        image.alt = category.name || '';
+        image.loading = 'lazy';
+        image.className = 'absolute inset-0 w-full h-full object-cover';
+        image.addEventListener('error', () => {
+          image.remove();
+          icon.classList.remove('hidden');
+        }, { once: true });
+        visual.append(image);
+      }
+      const icon = document.createElement('i');
+      icon.className = 'fa-solid fa-tags text-3xl relative z-10';
+      if (category.image_url) icon.classList.add('hidden');
+      visual.append(icon);
+      frame.append(visual);
+
+      categoryButton.append(frame);
+      card.append(categoryButton);
+
+      const subcategoryLabel = document.createElement('div');
+      subcategoryLabel.className = 'relative w-full max-w-48 mt-2';
+      const select = document.createElement('select');
+      select.className = 'w-full text-xs rounded-lg border border-pink-200 bg-white text-gray-700 pr-3 pl-9 py-2 focus:border-brand-pink focus:ring focus:ring-pink-100';
+      select.style.appearance = 'none';
+      select.style.webkitAppearance = 'none';
+      select.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27 fill=%27none%27%3E%3Cpath d=%27m2 4 4 4 4-4%27 stroke=%27%236b7280%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E")';
+      select.style.backgroundRepeat = 'no-repeat';
+      select.style.backgroundPosition = 'left 12px center';
+      select.dataset.subcategoryFilter = String(category.id);
+      select.setAttribute('aria-label', `الأقسام الفرعية في ${category.name}`);
+      const allOption = document.createElement('option');
+      allOption.value = 'all';
+      allOption.textContent = category.name;
+      select.append(allOption);
+      storefrontSubcategories
+        .filter((subcategory) => Number(subcategory.category_id) === Number(category.id))
+        .forEach((subcategory) => {
+          const option = document.createElement('option');
+          option.value = String(subcategory.id);
+          option.textContent = subcategory.name;
+          select.append(option);
+        });
+      subcategoryLabel.append(select);
+        card.append(subcategoryLabel);
+        return card;
+    }
+
+    function createCategoryActionCard(action, title, imageUrl, iconClass) {
+      const card = document.createElement('article');
+      card.className = 'flex flex-col items-center min-w-0';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.categoryAction = action;
+      button.className = 'group flex flex-col items-center w-full';
+      button.setAttribute('aria-label', title);
+      button.setAttribute('aria-pressed', 'false');
+
+      const frame = document.createElement('span');
+      frame.dataset.categoryRing = 'true';
+      frame.className = 'w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-pink-200 group-hover:border-brand-pink bg-pink-50 p-1 flex items-center justify-center transition duration-300 shadow-md';
+      const visual = document.createElement('span');
+      visual.className = 'w-full h-full rounded-full bg-gradient-to-b from-pink-400 to-brand-pink text-white flex items-center justify-center shadow-inner relative overflow-hidden';
+      const icon = document.createElement('i');
+      icon.className = `${iconClass} text-3xl relative z-10`;
+      if (imageUrl) {
+        const image = document.createElement('img');
+        image.src = mediaUrl(imageUrl);
+        image.alt = title;
+        image.loading = 'lazy';
+        image.className = 'absolute inset-0 w-full h-full object-cover';
+        image.addEventListener('error', () => {
+          image.remove();
+          icon.classList.remove('hidden');
+        }, { once: true });
+        icon.classList.add('hidden');
+        visual.append(image);
+      }
+      visual.append(icon);
+      frame.append(visual);
+
+      const label = document.createElement('span');
+      label.className = 'w-full max-w-48 mt-2 rounded-lg border border-pink-200 bg-white text-gray-700 px-2 py-2 text-xs group-hover:border-brand-pink group-hover:text-brand-pink transition';
+      label.textContent = title;
+      button.append(frame, label);
+      card.append(button);
+      return card;
+    }
+
+    function renderMainCategories() {
+      const actionImages = currentHomepageContent?.category_actions || {};
+      const actionCards = [
+        createCategoryActionCard(
+          'offers',
+          homepageText('nav.offers', 'العروض'),
+          actionImages.offers_image_url || storefrontCategories[0]?.image_url || defaultCategoryActionImages.offers,
+          'fa-solid fa-tags',
+        ),
+        createCategoryActionCard(
+          'all',
+          homepageText('categories.view_all', 'عرض الكل'),
+          actionImages.all_image_url || storefrontCategories[storefrontCategories.length - 1]?.image_url || defaultCategoryActionImages.all,
+          'fa-solid fa-layer-group',
+        ),
+      ];
+      mainCategoriesGrid.replaceChildren(...storefrontCategories.map(createCategoryCard), ...actionCards);
+      const hasCategories = storefrontCategories.length > 0;
+      mainCategoriesGrid.hidden = false;
+      mainCategoriesStatus.hidden = hasCategories;
+      mainCategoriesStatus.textContent = hasCategories
+        ? ''
+        : 'لا توجد أقسام رئيسية مضافة حالياً.';
+    }
+
+    async function loadMainCategories() {
+      try {
+        const [categoriesResponse, subcategoriesResponse] = await Promise.all([
+          fetch(`${PRODUCT_API_BASE}/api/categories`),
+          fetch(`${PRODUCT_API_BASE}/api/subcategories`),
+        ]);
+        if (!categoriesResponse.ok || !subcategoriesResponse.ok) {
+          throw new Error('Could not load storefront categories');
+        }
+        const [categories, subcategories] = await Promise.all([
+          categoriesResponse.json(),
+          subcategoriesResponse.json(),
+        ]);
+        if (!Array.isArray(categories) || !Array.isArray(subcategories)) {
+          throw new Error('Invalid storefront categories response');
+        }
+        storefrontCategories = categories;
+        storefrontSubcategories = subcategories;
+        renderMainCategories();
+      } catch (error) {
+        console.error('Failed to load storefront categories:', error);
+        mainCategoriesGrid.hidden = true;
+        mainCategoriesStatus.hidden = false;
+        mainCategoriesStatus.textContent = 'تعذر تحميل الأقسام حالياً. يرجى المحاولة لاحقاً.';
+      }
+    }
+
+    function appendPrice(container, label, amount, valueClass, addDivider) {
+      const wrapper = document.createElement('div');
+      if (addDivider) wrapper.className = 'border-l border-pink-100';
+      const title = document.createElement('span');
+      title.className = 'block text-gray-400 text-[10px]';
+      title.textContent = label;
+      const value = document.createElement('span');
+      value.className = `font-bold ${valueClass}`;
+      value.textContent = Number(amount) > 0
+        ? `${Number(amount).toLocaleString('ar-SY')} ل.س`
+        : homepageText('products.card.unavailable_price', 'غير متاح');
+      wrapper.append(title, value);
+      container.append(wrapper);
+    }
+
+    function createProductCard(product) {
+      const card = document.createElement('article');
+      card.className = 'bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between';
+      card.dataset.purpose = 'product-card';
+      card.dataset.realProductCard = 'true';
+
+      const media = Array.isArray(product.media) ? product.media : [];
+      const images = media.filter((item) => item.media_type === 'image' && item.url);
+      const videos = media.filter((item) => item.media_type === 'video' && item.url);
+      const cover = images.find((item) => Number(item.is_primary) === 1) || images[0];
+      const imageUrl = cover?.url || product.image_url;
+
+      const imageFrame = document.createElement('div');
+      imageFrame.className = 'aspect-[3/4] bg-pink-50 overflow-hidden relative group';
+      if (imageUrl) {
+        const image = document.createElement('img');
+        image.src = mediaUrl(imageUrl);
+        image.alt = product.name || homepageText('products.card.image_alt', 'صورة المنتج');
+        image.loading = 'lazy';
+        image.className = 'w-full h-full object-cover group-hover:scale-105 transition duration-500';
+        imageFrame.append(image);
+      } else {
+        const emptyImage = document.createElement('div');
+        emptyImage.className = 'w-full h-full flex items-center justify-center text-gray-400 text-xs';
+        emptyImage.textContent = homepageText('products.card.no_image', 'لا توجد صورة للمنتج');
+        imageFrame.append(emptyImage);
+      }
+
+      if (Number(product.is_featured) === 1 || product.is_featured === true) {
+        const badge = document.createElement('span');
+        badge.className = 'absolute top-2.5 right-2.5 z-10 badge-offer text-white text-[11px] font-bold px-2.5 py-0.5 rounded shadow';
+        badge.textContent = homepageText('products.card.offer', 'عرض');
+        imageFrame.append(badge);
+      }
+      if (images.length || videos.length) {
+        const mediaCount = document.createElement('span');
+        mediaCount.className = 'absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full';
+        mediaCount.textContent = [
+          images.length ? `${images.length.toLocaleString('ar-SY')} ${homepageText('products.card.images_suffix', 'صور')}` : '',
+          videos.length ? `${videos.length.toLocaleString('ar-SY')} ${homepageText('products.card.videos_suffix', 'فيديو')}` : '',
+        ].filter(Boolean).join(' · ');
+        imageFrame.append(mediaCount);
+      }
+
+      const details = document.createElement('div');
+      details.className = 'p-3 text-center flex-1 flex flex-col justify-between';
+      const info = document.createElement('div');
+      const name = document.createElement('h4');
+      name.className = 'font-bold text-gray-800 text-sm';
+      name.textContent = product.name || homepageText('products.card.missing_name', 'منتج');
+      const code = document.createElement('p');
+      code.className = 'text-[11px] text-gray-400 font-mono mt-0.5';
+      code.textContent = `${homepageText('products.card.code_prefix', 'رقم المنتج')}: ${product.code || '—'}`;
+      info.append(name, code);
+
+      const categoryDetails = [product.category_name, product.subcategory_name].filter(Boolean).join(' · ');
+      if (categoryDetails) {
+        const category = document.createElement('p');
+        category.className = 'text-[11px] text-gray-500 mt-1';
+        category.textContent = categoryDetails;
+        info.append(category);
+      }
+
+      if (product.description?.trim()) {
+        const description = document.createElement('p');
+        description.className = 'text-xs text-gray-600 mt-2 leading-relaxed';
+        description.textContent = product.description.trim();
+        info.append(description);
+      }
+
+      const prices = document.createElement('div');
+      prices.className = 'grid grid-cols-2 border-t border-b border-pink-50 py-2 my-2 text-xs';
+      appendPrice(prices, homepageText('products.card.rental_price', 'سعر الإيجار'), product.rental_price, 'text-brand-pink', true);
+      appendPrice(prices, homepageText('products.card.sale_price', 'سعر البيع'), product.price, 'text-gray-700', false);
+      details.append(info, prices);
+
+      const action = document.createElement('a');
+      const available = !['unavailable', 'out_of_stock', 'reserved'].includes(String(product.stock_status || '').toLowerCase());
+      action.className = `w-full ${available ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500 hover:bg-gray-600'} text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition`;
+      action.href = `${storeWhatsAppLink}${storeWhatsAppLink.includes('?') ? '&' : '?'}text=${encodeURIComponent(`${available ? 'مرحبا، أود طلب' : 'مرحبا، أستفسر عن توفر'} ${product.name || 'المنتج'} ${product.code || ''}`)}`;
+      action.target = '_blank';
+      action.rel = 'noopener noreferrer';
+      const icon = document.createElement('i');
+      icon.className = 'fa-brands fa-whatsapp text-sm';
+      const actionText = document.createElement('span');
+      actionText.textContent = available
+        ? homepageText('products.card.order', 'أطلب المنتج')
+        : homepageText('products.card.availability', 'للاستفسار عن التوفر');
+      action.append(icon, actionText);
+      details.append(action);
+      card.append(imageFrame, details);
+      return card;
+    }
+
+    function renderFilteredProducts() {
+      const searchTerm = (productSearchInput?.value || '').trim().toLowerCase();
+      const filteredProducts = publishedProducts.filter((product) => {
+        const matchesSearch = !searchTerm || [
+          product.name,
+          product.code,
+          product.category_name,
+          product.subcategory_name,
+          product.description,
+        ].filter(Boolean).join(' ').toLowerCase().includes(searchTerm);
+        const matchesMainCategory = selectedMainCategory === 'all'
+          || String(product.category_id) === selectedMainCategory;
+        const matchesSubcategory = selectedSubcategory === 'all'
+          || String(product.subcategory_id) === selectedSubcategory;
+        const matchesOffer = !selectedOffersOnly
+          || Number(product.is_featured) === 1
+          || product.is_featured === true;
+        return matchesSearch && matchesMainCategory && matchesSubcategory && matchesOffer;
+      });
+
+      productsGrid.replaceChildren(...filteredProducts.map(createProductCard));
+      productsGrid.hidden = filteredProducts.length === 0;
+      productsStatus.hidden = filteredProducts.length > 0;
+      productsStatus.textContent = publishedProducts.length && !filteredProducts.length
+        ? homepageText('products.status.no_matches', 'لا توجد منتجات تطابق الفلتر أو البحث.')
+        : '';
+    }
+
+    async function loadPublishedProducts() {
+      if (!productsGrid || !productsStatus) return;
+      try {
+        const response = await fetch(`${PRODUCT_API_BASE}/api/products?published=true`);
+        if (!response.ok) throw new Error(`Product request failed (${response.status})`);
+        publishedProducts = await response.json();
+        productsRequestStatus = 'loaded';
+        renderFilteredProducts();
+        if (!publishedProducts.length) {
+          productsStatus.hidden = false;
+          productsStatus.textContent = homepageText('products.status.empty', 'لا توجد منتجات منشورة حالياً.');
+        }
+      } catch (error) {
+        console.error('Failed to load published products:', error);
+        productsRequestStatus = 'error';
+        productsGrid.hidden = true;
+        productsStatus.hidden = false;
+        productsStatus.textContent = homepageText('products.status.error', 'تعذر تحميل المنتجات حالياً. يرجى المحاولة لاحقاً.');
+      }
+    }
+
+    function updateSelectedCategory(categoryId) {
+      selectedMainCategory = categoryId;
+      selectedOffersOnly = false;
+      setSelectedCategoryAction(null);
+      document.querySelectorAll('[data-main-category-filter]').forEach((item) => {
+        const isSelected = item.dataset.mainCategoryFilter === categoryId;
+        if (isSelected) item.setAttribute('aria-current', 'true');
+        else item.removeAttribute('aria-current');
+        item.querySelector('[data-category-ring]')?.classList.toggle('ring-2', isSelected);
+        item.querySelector('[data-category-ring]')?.classList.toggle('ring-brand-pink', isSelected);
+        item.querySelector('[data-category-ring]')?.classList.toggle('ring-offset-2', isSelected);
+      });
+      renderFilteredProducts();
+    }
+
+    function setSelectedCategoryAction(action) {
+      mainCategoriesGrid?.querySelectorAll('[data-category-action]').forEach((button) => {
+        const selected = button.dataset.categoryAction === action;
+        button.setAttribute('aria-pressed', String(selected));
+        button.querySelector('[data-category-ring]')?.classList.toggle('ring-2', selected);
+        button.querySelector('[data-category-ring]')?.classList.toggle('ring-brand-pink', selected);
+        button.querySelector('[data-category-ring]')?.classList.toggle('ring-offset-2', selected);
+      });
+      if (action) {
+        mainCategoriesGrid?.querySelectorAll('[data-main-category-filter]').forEach((button) => {
+          button.removeAttribute('aria-current');
+          button.querySelector('[data-category-ring]')?.classList.remove('ring-2', 'ring-brand-pink', 'ring-offset-2');
+        });
+      }
+    }
+
+    function selectCategoryAction(action) {
+      selectedMainCategory = 'all';
+      selectedSubcategory = 'all';
+      mainCategoriesGrid?.querySelectorAll('[data-subcategory-filter]').forEach((select) => {
+        select.value = 'all';
+      });
+      if (action === 'offers') {
+        selectedOffersOnly = true;
+      } else {
+        selectedOffersOnly = false;
+        if (productSearchInput) productSearchInput.value = '';
+      }
+      setSelectedCategoryAction(action);
+      renderFilteredProducts();
+      document.getElementById('products-showcase').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.querySelectorAll('[data-store-navigation="offers"]').forEach((link) => {
+      link.addEventListener('click', () => {
+        selectedMainCategory = 'all';
+        selectedSubcategory = 'all';
+        selectedOffersOnly = true;
+        mainCategoriesGrid?.querySelectorAll('[data-subcategory-filter]').forEach((select) => {
+          select.value = 'all';
+        });
+        setSelectedCategoryAction('offers');
+        renderFilteredProducts();
+      });
+    });
+
+    mainCategoriesGrid?.addEventListener('click', (event) => {
+      const actionButton = event.target.closest('[data-category-action]');
+      if (actionButton && mainCategoriesGrid.contains(actionButton)) {
+        selectCategoryAction(actionButton.dataset.categoryAction || 'all');
+        return;
+      }
+      const categoryButton = event.target.closest('[data-main-category-filter]');
+      if (!categoryButton || !mainCategoriesGrid.contains(categoryButton)) return;
+      selectedSubcategory = 'all';
+      mainCategoriesGrid.querySelectorAll('[data-subcategory-filter]').forEach((select) => { select.value = 'all'; });
+      updateSelectedCategory(categoryButton.dataset.mainCategoryFilter || 'all');
+      document.getElementById('products-showcase').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    mainCategoriesGrid?.addEventListener('change', (event) => {
+      const subcategorySelect = event.target.closest('[data-subcategory-filter]');
+      if (!subcategorySelect || !mainCategoriesGrid.contains(subcategorySelect)) return;
+      selectedSubcategory = subcategorySelect.value;
+      updateSelectedCategory(subcategorySelect.dataset.subcategoryFilter || 'all');
+      document.getElementById('products-showcase').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    productSearchInput?.addEventListener('input', renderFilteredProducts);
+    loadStorefrontSettings();
+    loadMainCategories();
+    loadPublishedProducts();
+  </script>
+</body></html>
