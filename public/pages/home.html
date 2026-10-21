@@ -153,13 +153,15 @@
 </div>
 <!-- Account and Cart -->
 <div class="flex items-center space-x-reverse space-x-5">
+<div class="relative">
 <a id="customerLoginLink" class="flex items-center gap-1 hover:text-brand-pink transition" href="#">
 <i class="fa-regular fa-user text-brand-pink"></i>
 <span data-homepage-text="nav.login">تسجيل الدخول</span>
 </a>
-<div id="customerAccountMenu" class="hidden fixed top-14 right-4 md:right-1/4 z-[90] bg-white rounded-xl shadow-xl border border-pink-100 p-2 min-w-44">
+<div id="customerAccountMenu" class="hidden absolute top-full right-0 mt-2 z-[90] bg-white rounded-xl shadow-xl border border-pink-100 p-2 min-w-44">
 <button id="switchCustomerButton" type="button" class="block w-full text-right px-3 py-2 rounded-lg hover:bg-pink-50 text-sm">تبديل المستخدم</button>
 <button id="logoutCustomerButton" type="button" class="block w-full text-right px-3 py-2 rounded-lg hover:bg-pink-50 text-sm text-red-600">تسجيل الخروج</button>
+</div>
 </div>
 <a class="flex items-center gap-1 hover:text-brand-pink relative transition" href="#">
 <i class="fa-solid fa-bag-shopping text-brand-pink"></i>
@@ -205,7 +207,7 @@
         <input id="authPasswordRepeat" type="password" class="border rounded-xl px-3 py-2" placeholder="تأكيد كلمة المرور" />
       </div>
       <input id="authPhone" required type="tel" class="border rounded-xl px-3 py-2" placeholder="رقم الهاتف" />
-      <input id="authLoginPassword" required type="password" class="border rounded-xl px-3 py-2" placeholder="كلمة المرور" />
+      <div id="authLoginField"><input id="authLoginPassword" required type="password" class="border rounded-xl px-3 py-2 w-full" placeholder="كلمة المرور" /></div>
       <p id="authMessage" class="text-sm text-red-600"></p>
       <button id="authSubmitButton" type="submit" class="bg-brand-pink text-white rounded-xl py-2.5 font-bold">تسجيل الدخول</button>
       <button id="authModeButton" type="button" class="text-brand-pink underline text-sm">إنشاء حساب</button>
@@ -1663,6 +1665,7 @@
         registerFields?.classList.toggle('flex', registerMode);
         document.getElementById('authPassword')?.toggleAttribute('required', registerMode);
         document.getElementById('authLoginPassword')?.toggleAttribute('required', !registerMode);
+        document.getElementById('authLoginField')?.classList.toggle('hidden', registerMode);
         if (submitButton) submitButton.textContent = registerMode ? 'إنشاء الحساب' : 'تسجيل الدخول';
         if (modeButton) modeButton.textContent = registerMode ? 'تسجيل دخول للزبائن المسجلين' : 'إنشاء حساب';
         message.textContent = '';

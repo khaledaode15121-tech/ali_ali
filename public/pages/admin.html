@@ -1077,10 +1077,9 @@
       <label class="flex flex-col gap-2 font-label-md text-label-md">اسم العميل<input id="customerName" required class="bg-surface-container-lowest px-3 py-2.5 rounded-xl" /></label>
       <label class="flex flex-col gap-2 font-label-md text-label-md">رقم الهاتف<input id="customerPhone" required type="tel" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl" /></label>
       <label class="flex flex-col gap-2 font-label-md text-label-md">كلمة المرور<input id="customerPassword" type="password" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl" /></label>
-      <label class="flex flex-col gap-2 font-label-md text-label-md">البريد الإلكتروني<input id="customerEmail" type="email" class="bg-surface-container-lowest px-3 py-2.5 rounded-xl" /></label>
       <div class="flex items-end gap-2"><button type="submit" class="px-5 py-2.5 rounded-xl bg-primary text-on-primary">حفظ العميل</button><button type="reset" id="resetCustomerButton" class="px-5 py-2.5 rounded-xl bg-surface-container-high">جديد</button></div>
     </form>
-    <div class="overflow-x-auto"><table class="w-full text-right"><thead><tr class="bg-surface-container-low"><th class="p-3">الاسم</th><th class="p-3">الهاتف</th><th class="p-3">البريد</th><th class="p-3">إجراءات</th></tr></thead><tbody id="customersTableBody"></tbody></table></div>
+    <div class="overflow-x-auto"><table class="w-full text-right"><thead><tr class="bg-surface-container-low"><th class="p-3">الاسم</th><th class="p-3">الهاتف</th><th class="p-3">إجراءات</th></tr></thead><tbody id="customersTableBody"></tbody></table></div>
   </div>
 </section>
 <section class="management-section hidden flex flex-col gap-6" id="section-store-settings">
@@ -1898,7 +1897,7 @@
     function renderCustomers() {
       const tbody = document.getElementById('customersTableBody');
       if (!tbody) return;
-      tbody.innerHTML = state.customers.map((customer) => `<tr class="border-b border-surface-container"><td class="p-3">${customer.full_name || ''}</td><td class="p-3">${customer.phone || ''}</td><td class="p-3">${customer.email || '—'}</td><td class="p-3"><button type="button" class="text-primary ml-3" data-customer-edit="${customer.id}">تعديل</button><button type="button" class="text-error" data-customer-delete="${customer.id}">حذف</button></td></tr>`).join('');
+      tbody.innerHTML = state.customers.map((customer) => `<tr class="border-b border-surface-container"><td class="p-3">${customer.full_name || ''}</td><td class="p-3">${customer.phone || ''}</td><td class="p-3"><button type="button" class="text-primary ml-3" data-customer-edit="${customer.id}">تعديل</button><button type="button" class="text-error" data-customer-delete="${customer.id}">حذف</button></td></tr>`).join('');
     }
 
     function populateOrderFormOptions() {
@@ -1918,7 +1917,7 @@
     async function handleCustomerSubmit(event) {
       event.preventDefault();
       const id = document.getElementById('customerEditingId')?.value;
-      const payload = { full_name: document.getElementById('customerName').value.trim(), phone: document.getElementById('customerPhone').value.trim(), password: document.getElementById('customerPassword').value, email: document.getElementById('customerEmail').value.trim() };
+      const payload = { full_name: document.getElementById('customerName').value.trim(), phone: document.getElementById('customerPhone').value.trim(), password: document.getElementById('customerPassword').value };
       if (!payload.full_name || !payload.phone || (!id && !payload.password)) return showToast('يرجى تعبئة الاسم والهاتف وكلمة المرور للعميل الجديد');
       try { await fetchJson(id ? `/api/customers/${id}` : '/api/customers', { method: id ? 'PUT' : 'POST', body: JSON.stringify(payload) }); document.getElementById('customerForm').reset(); document.getElementById('customerEditingId').value = ''; await loadCustomers(); showToast(id ? 'تم تعديل العميل' : 'تمت إضافة العميل'); }
       catch (error) { showToast('تعذر حفظ العميل: ' + error.message); }
@@ -2568,7 +2567,7 @@
       const customerDelete = event.target.closest('[data-customer-delete]');
       if (customerDelete) { try { await fetchJson(`/api/customers/${customerDelete.dataset.customerDelete}`, { method: 'DELETE' }); await loadCustomers(); showToast('تم حذف العميل'); } catch (error) { showToast('تعذر حذف العميل'); } return; }
       const customerEdit = event.target.closest('[data-customer-edit]');
-      if (customerEdit) { const customer = state.customers.find((item) => String(item.id) === String(customerEdit.dataset.customerEdit)); if (customer) { document.getElementById('customerEditingId').value = customer.id; document.getElementById('customerName').value = customer.full_name || ''; document.getElementById('customerPhone').value = customer.phone || ''; document.getElementById('customerEmail').value = customer.email || ''; switchTab('customers'); } return; }
+      if (customerEdit) { const customer = state.customers.find((item) => String(item.id) === String(customerEdit.dataset.customerEdit)); if (customer) { document.getElementById('customerEditingId').value = customer.id; document.getElementById('customerName').value = customer.full_name || ''; document.getElementById('customerPhone').value = customer.phone || ''; switchTab('customers'); } return; }
 
       const deleteId = event.target.closest('[data-delete-id]');
       if (deleteId) {
