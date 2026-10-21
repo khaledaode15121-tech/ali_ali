@@ -1550,6 +1550,60 @@
       const heroGroup = addGroup('صورة البانر الرئيسي');
       addImageField(heroGroup, 'صورة البانر', 'hero.image_url', 'hero');
 
+      const galleryWrap = document.createElement('div');
+      galleryWrap.className = 'md:col-span-2 flex flex-col gap-3';
+      const galleryLabel = document.createElement('label');
+      galleryLabel.textContent = 'معرض البانر (صور متعددة أو فيديو)';
+      galleryLabel.className = 'font-label-md text-label-md text-on-surface';
+      const galleryInput = document.createElement('input');
+      galleryInput.type = 'file'; galleryInput.multiple = true;
+      galleryInput.accept = 'image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime';
+      galleryInput.className = 'block w-full text-sm';
+      const galleryList = document.createElement('div');
+      galleryList.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3';
+      const renderGalleryItems = () => {
+        galleryList.replaceChildren();
+        const gallery = storeSettings.homepage_content.hero.gallery || [];
+        gallery.forEach((item, index) => {
+          const card = document.createElement('div');
+          card.className = 'relative rounded-xl border border-outline-variant p-2';
+          const preview = item.media_type === 'video' ? document.createElement('video') : document.createElement('img');
+          preview.src = new URL(item.url, API_BASE).href;
+          preview.className = 'w-full h-24 rounded-lg object-contain bg-surface-container-low';
+          if (item.media_type === 'video') { preview.controls = true; preview.muted = true; }
+          const remove = document.createElement('button');
+          remove.type = 'button'; remove.textContent = 'إزالة';
+          remove.className = 'mt-2 text-error text-sm';
+          remove.addEventListener('click', () => {
+            storeSettings.homepage_content.hero.gallery.splice(index, 1);
+            renderGalleryItems();
+          });
+          card.append(preview, remove); galleryList.append(card);
+        });
+      };
+      galleryInput.addEventListener('change', async () => {
+        const files = [...(galleryInput.files || [])];
+        for (const file of files) {
+          const imageType = ['image/jpeg','image/png','image/webp','image/gif','image/avif'].includes(file.type);
+          const videoType = ['video/mp4','video/webm','video/quicktime'].includes(file.type);
+          if ((!imageType && !videoType) || file.size > (videoType ? 50 : 10) * 1024 * 1024) {
+            showToast('نوع الملف غير مدعوم أو تجاوز الحد الأقصى للحجم'); continue;
+          }
+          try {
+            const response = await fetch(`${API_BASE}/api/uploads`, { method: 'POST', headers: { 'Content-Type': 'application/octet-stream', 'X-Media-Type': file.type }, body: file });
+            if (!response.ok) throw new Error('Upload failed');
+            const uploaded = await response.json();
+            storeSettings.homepage_content.hero.gallery ||= [];
+            storeSettings.homepage_content.hero.gallery.push({ url: uploaded.url, media_type: uploaded.media_type });
+          } catch (error) { showToast('تعذر رفع أحد ملفات المعرض'); }
+        }
+        galleryInput.value = '';
+        renderGalleryItems();
+        showToast('تم تحديث المعرض، احفظ الإعدادات لتطبيق التغيير');
+      });
+      galleryWrap.append(galleryLabel, galleryInput, galleryList);
+      heroGroup.append(galleryWrap);
+      renderGalleryItems();
       const categoryActionsGroup = addGroup('صور بطاقات العروض وعرض الكل');
       categoryActionsGroup.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
       categoryActionsGroup.querySelector('h5').classList.add('md:col-span-2');

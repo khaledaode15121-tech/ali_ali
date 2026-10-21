@@ -265,6 +265,11 @@ function normalizeHomepageContent(input) {
 
   try {
     const content = mergeText(defaultHomepageContent, input);
+    const heroGallery = Array.isArray(input?.hero?.gallery) ? input.hero.gallery : [];
+    if (heroGallery.length > 30 || heroGallery.some((item) => !item || typeof item.url !== "string" || !/^(https:\/\/|\/uploads\/)[^\s]*$/i.test(item.url) || !["image", "video"].includes(item.media_type))) {
+      return { error: "Homepage gallery must contain up to 30 valid images or videos" };
+    }
+    content.hero.gallery = heroGallery.map((item) => ({ url: item.url, media_type: item.media_type }));
     const imageUrls = [
       content.hero.image_url,
       content.category_actions.offers_image_url,
