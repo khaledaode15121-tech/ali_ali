@@ -1232,6 +1232,7 @@
       const productImageUrl = imageUrl ? new URL(mediaUrl(imageUrl), location.href).href : '';
       const salePrice = Number(product.price) > 0 ? `${Number(product.price).toLocaleString('ar-SY')} ل.س` : 'غير متاح';
       const rentalPrice = Number(product.rental_price) > 0 ? `${Number(product.rental_price).toLocaleString('ar-SY')} ل.س` : 'غير متاح';
+      const productUrl = new URL(`/product?product=${encodeURIComponent(product.id || product.code || '')}`, location.origin).href;
       const messageValues = {
         request_type: available ? 'طلب' : 'استفسار عن توفر',
         product_name: product.name || 'غير محدد',
@@ -1243,9 +1244,10 @@
         main_category: product.category_name || 'غير محدد',
         subcategory: product.subcategory_name || 'غير محدد',
         image_url: productImageUrl || 'غير متوفرة',
+        product_url: productUrl,
       };
       const messageTemplate = homepageText('products.card.whatsapp_message_template', '')
-        || 'السلام عليكم، أود {request_type} المنتج التالي:\nالاسم: {product_name}\nرقم المنتج: {product_code}\nالسعر: {price}\nالتوفر: {availability}\nالقسم الرئيسي: {main_category}\nالقسم الفرعي: {subcategory}\nصورة المنتج: {image_url}';
+        || '🖼️ صورة المنتج:\n{image_url}\n\n✨ تفاصيل المنتج المتاح لدينا ✨\n🔹 اسم المنتج: {product_name}\n📂 القسم الرئيسي: {main_category}\n📁 القسم الفرعي: {subcategory}\n🆔 كود المنتج: {product_code}\n📊 حالة التوفر: {availability}\n💰 الأسعار والخيارات:\n• 🛍️ سعر البيع: {sale_price}\n• 🔑 سعر الإيجار: {rental_price}\n\n🛒 للطلب أو الحجز والاستفسار:\nيرجى الرد مباشرة على هذه الرسالة بتحديد خيارك (شراء أم إيجار) مع كود المنتج، وسيقوم فريقنا بخدمتك فوراً! 🤝\n\n🔗 رابط المنتج:\n{product_url}';
       const productMessage = messageTemplate.replace(/\{([a-z_]+)\}/gi, (placeholder, key) => (
         Object.prototype.hasOwnProperty.call(messageValues, key.toLowerCase())
           ? messageValues[key.toLowerCase()]

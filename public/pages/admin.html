@@ -1491,14 +1491,14 @@
         input.className = 'w-full bg-surface-container-low text-on-surface px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary';
         if (input instanceof HTMLTextAreaElement) input.rows = path === 'products.card.whatsapp_message_template' ? 7 : 3;
         if (path === 'products.card.whatsapp_message_template') {
-          input.placeholder = 'المتغيرات المتاحة: {product_name} {product_code} {sale_price} {rental_price} {price} {availability} {main_category} {subcategory} {image_url} {request_type}';
+          input.placeholder = 'المتغيرات المتاحة: {product_name} {product_code} {sale_price} {rental_price} {price} {availability} {main_category} {subcategory} {image_url} {product_url} {request_type}';
           input.setAttribute('aria-label', 'قالب رسالة واتساب للمنتج، ويمكن استخدام المتغيرات الموضحة');
         }
         wrapper.append(input);
         if (path === 'products.card.whatsapp_message_template') {
           const help = document.createElement('span');
           help.className = 'text-xs text-on-surface-variant leading-relaxed';
-          help.textContent = 'اكتبي نص الرسالة كما تريدين، واستخدمي المتغيرات بين الأقواس لاستبدالها تلقائيًا ببيانات المنتج. من أمثلتها: {product_name} و{sale_price} و{availability} و{image_url}.';
+          help.textContent = 'اكتبي نص الرسالة كما تريدين، واستخدمي المتغيرات بين الأقواس لاستبدالها تلقائيًا ببيانات المنتج. تبدأ الرسالة بصورة المنتج، ويمكنك استخدام {product_name} و{sale_price} و{availability} و{image_url} و{product_url}.';
           wrapper.append(help);
         }
         parent.append(wrapper);

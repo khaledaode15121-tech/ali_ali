@@ -81,7 +81,7 @@ const defaultHomepageContent = {
       videos_suffix: "فيديو",
       order: "طلب المنتج",
       availability: "للاستفسار عن التوفر",
-      whatsapp_message_template: "السلام عليكم، أود {request_type} المنتج التالي:\nالاسم: {product_name}\nرقم المنتج: {product_code}\nسعر البيع: {sale_price}\nسعر الإيجار: {rental_price}\nالتوفر: {availability}\nالقسم الرئيسي: {main_category}\nالقسم الفرعي: {subcategory}\nصورة المنتج: {image_url}",
+      whatsapp_message_template: "🖼️ صورة المنتج:\n{image_url}\n\n✨ تفاصيل المنتج المتاح لدينا ✨\n🔹 اسم المنتج: {product_name}\n📂 القسم الرئيسي: {main_category}\n📁 القسم الفرعي: {subcategory}\n🆔 كود المنتج: {product_code}\n📊 حالة التوفر: {availability}\n💰 الأسعار والخيارات:\n• 🛍️ سعر البيع: {sale_price}\n• 🔑 سعر الإيجار: {rental_price}\n\n🛒 للطلب أو الحجز والاستفسار:\nيرجى الرد مباشرة على هذه الرسالة بتحديد خيارك (شراء أم إيجار) مع كود المنتج، وسيقوم فريقنا بخدمتك فوراً! 🤝\n\n🔗 رابط المنتج:\n{product_url}",
     },
   },
   trust: {
@@ -266,6 +266,10 @@ function normalizeHomepageContent(input) {
 
   try {
     const content = mergeText(defaultHomepageContent, input);
+    const legacyTemplate = "السلام عليكم، أود {request_type} المنتج التالي:\nالاسم: {product_name}\nرقم المنتج: {product_code}\nسعر البيع: {sale_price}\nسعر الإيجار: {rental_price}\nالتوفر: {availability}\nالقسم الرئيسي: {main_category}\nالقسم الفرعي: {subcategory}\nصورة المنتج: {image_url}";
+    if (content.products.card.whatsapp_message_template === legacyTemplate) {
+      content.products.card.whatsapp_message_template = defaultHomepageContent.products.card.whatsapp_message_template;
+    }
     const heroGallery = Array.isArray(input?.hero?.gallery) ? input.hero.gallery : [];
     if (heroGallery.length > 30 || heroGallery.some((item) => !item || typeof item.url !== "string" || !/^(https:\/\/|\/uploads\/)[^\s]*$/i.test(item.url) || !["image", "video"].includes(item.media_type))) {
       return { error: "Homepage gallery must contain up to 30 valid images or videos" };
