@@ -263,23 +263,25 @@
 <div class="mb-6 rounded-2xl border border-pink-100 bg-white p-4 shadow-sm">
 <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
 <label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productPriceFilter">
-  تصفية حسب السعر
-  <select id="productPriceFilter" class="w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
-    <option value="all">كل الأسعار</option>
-    <option value="0-250">أقل من 250</option>
-    <option value="250-500">من 250 إلى 500</option>
-    <option value="500-750">من 500 إلى 750</option>
-    <option value="750-plus">750 فأكثر</option>
-  </select>
+  <span id="productPriceFilterLabel">تصفية حسب سعر البيع</span>
+  <span class="relative">
+    <select id="productPriceFilter" class="w-full appearance-none rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pl-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
+      <option value="all">كل الأسعار</option>
+    </select>
+    <i class="fa-solid fa-chevron-down pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-brand-pink"></i>
+  </span>
 </label>
 <label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productAvailabilityFilter">
   تصفية حسب التوفر
-  <select id="productAvailabilityFilter" class="w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
-    <option value="all">كل الحالات</option>
-    <option value="available">متوفر وجاهز للتسليم</option>
-    <option value="reserved">محجوز</option>
-    <option value="out_of_stock">غير متوفر</option>
-  </select>
+  <span class="relative">
+    <select id="productAvailabilityFilter" class="w-full appearance-none rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pl-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
+      <option value="all">كل الحالات</option>
+      <option value="available">متوفر وجاهز للتسليم</option>
+      <option value="reserved">محجوز</option>
+      <option value="out_of_stock">غير متوفر</option>
+    </select>
+    <i class="fa-solid fa-chevron-down pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-brand-pink"></i>
+  </span>
 </label>
 <button id="resetProductFilters" class="rounded-xl border border-pink-200 px-4 py-2 text-xs font-bold text-brand-pink transition hover:bg-pink-50" type="button">
   إعادة ضبط التصفية
@@ -852,8 +854,24 @@
       }
     }
 
+    function renderPriceFilterOptions(content) {
+      if (!productPriceFilter) return;
+      const priceMode = getHomepageValue(content, 'products.filters.price_mode') === 'rental' ? 'rental' : 'sale';
+      const rangesText = getHomepageValue(content, 'products.filters.price_ranges')
+        || '0-250=أقل من 250;250-500=من 250 إلى 500;500-750=من 500 إلى 750;750+=750 فأكثر';
+      const ranges = String(rangesText).split(';').map((entry) => {
+        const [value, ...labelParts] = entry.split('=');
+        return { value: value?.trim(), label: labelParts.join('=').trim() };
+      }).filter((range) => range.value && range.label);
+      productPriceFilter.replaceChildren(new Option('كل الأسعار', 'all'));
+      ranges.forEach((range) => productPriceFilter.append(new Option(range.label, range.value)));
+      const label = document.getElementById('productPriceFilterLabel');
+      if (label) label.textContent = priceMode === 'rental' ? 'تصفية حسب سعر الإيجار' : 'تصفية حسب سعر البيع';
+    }
+
     function applyHomepageContent(content) {
       currentHomepageContent = content;
+      renderPriceFilterOptions(content);
       document.querySelectorAll('[data-homepage-text]').forEach((element) => {
         const value = getHomepageValue(content, element.dataset.homepageText);
         if (typeof value === 'string') element.textContent = value;
@@ -1382,6 +1400,7 @@
       const searchTerm = normalizeSearchText(productSearchInput?.value);
       const priceFilter = productPriceFilter?.value || 'all';
       const availabilityFilter = productAvailabilityFilter?.value || 'all';
+      const priceMode = getHomepageValue(currentHomepageContent, 'products.filters.price_mode') === 'rental' ? 'rental_price' : 'price';
       const filteredProducts = publishedProducts.filter((product) => {
         const searchableProductText = normalizeSearchText([
           product.name,
@@ -1398,12 +1417,11 @@
         const matchesOffer = !selectedOffersOnly
           || Number(product.is_featured) === 1
           || product.is_featured === true;
-        const salePrice = Number(product.price) || 0;
+        const selectedPrice = Number(product[priceMode]) || 0;
+        const priceRange = priceFilter.match(/^(\d+)(?:-(\d+)|\+)$/);
         const matchesPrice = priceFilter === 'all'
-          || (priceFilter === '0-250' && salePrice < 250)
-          || (priceFilter === '250-500' && salePrice >= 250 && salePrice < 500)
-          || (priceFilter === '500-750' && salePrice >= 500 && salePrice < 750)
-          || (priceFilter === '750-plus' && salePrice >= 750);
+          || (priceRange && selectedPrice >= Number(priceRange[1])
+            && (priceRange[2] ? selectedPrice < Number(priceRange[2]) : true));
         const stockStatus = String(product.stock_status || '').toLowerCase();
         const matchesAvailability = availabilityFilter === 'all'
           || (availabilityFilter === 'available' && !['unavailable', 'out_of_stock', 'reserved'].includes(stockStatus))

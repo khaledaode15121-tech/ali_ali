@@ -1421,6 +1421,8 @@
         {
           title: 'رسائل وبطاقات المنتجات',
           fields: [
+            ['نوع السعر المستخدم في التصفية', 'products.filters.price_mode'],
+            ['الفئات السعرية للتصفية', 'products.filters.price_ranges'],
             ['رسالة تحميل المنتجات', 'products.status.loading'],
             ['رسالة عدم وجود منتجات', 'products.status.empty'],
             ['رسالة تعذر تحميل المنتجات', 'products.status.error'],
@@ -1482,13 +1484,19 @@
         wrapper.className = 'flex flex-col gap-2 font-label-md text-label-md text-on-surface';
         wrapper.append(document.createTextNode(label));
         const value = String(getHomepageContentValue(content, path) ?? '');
-        const input = path === 'hero.description' || path === 'footer.description' || path === 'products.card.whatsapp_message_template'
-          ? document.createElement('textarea')
-          : document.createElement('input');
+        const input = path === 'products.filters.price_mode'
+          ? document.createElement('select')
+          : path === 'hero.description' || path === 'footer.description' || path === 'products.card.whatsapp_message_template'
+            ? document.createElement('textarea')
+            : document.createElement('input');
         input.dataset.homepagePath = path;
         input.maxLength = 1200;
         input.value = value;
         input.className = 'w-full bg-surface-container-low text-on-surface px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary';
+        if (path === 'products.filters.price_mode') {
+          input.innerHTML = '<option value="sale">سعر البيع</option><option value="rental">سعر الإيجار</option>';
+          input.value = value === 'rental' ? 'rental' : 'sale';
+        }
         if (input instanceof HTMLTextAreaElement) input.rows = path === 'products.card.whatsapp_message_template' ? 7 : 3;
         if (path === 'products.card.whatsapp_message_template') {
           input.placeholder = 'المتغيرات المتاحة: {product_name} {product_code} {sale_price} {rental_price} {price} {availability} {main_category} {subcategory} {image_url} {product_url} {request_type}';
@@ -1499,6 +1507,13 @@
           const help = document.createElement('span');
           help.className = 'text-xs text-on-surface-variant leading-relaxed';
           help.textContent = 'اكتبي نص الرسالة كما تريدين، واستخدمي المتغيرات بين الأقواس لاستبدالها تلقائيًا ببيانات المنتج. تبدأ الرسالة بصورة المنتج، ويمكنك استخدام {product_name} و{sale_price} و{availability} و{image_url} و{product_url}.';
+          wrapper.append(help);
+        }
+        if (path === 'products.filters.price_ranges') {
+          input.placeholder = 'مثال: 0-250=أقل من 250;250-500=من 250 إلى 500;750+=750 فأكثر';
+          const help = document.createElement('span');
+          help.className = 'text-xs text-on-surface-variant leading-relaxed';
+          help.textContent = 'اكتبي كل فئة بهذا الشكل: الحد الأدنى-الحد الأعلى=النص الظاهر، وافصلي بين الفئات بعلامة ;. استخدمي + للفئة المفتوحة مثل 750+.';
           wrapper.append(help);
         }
         parent.append(wrapper);

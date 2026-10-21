@@ -62,6 +62,10 @@ const defaultHomepageContent = {
   products: {
     title: "أحدث الفساتين",
     subtitle: "تألقي بإطلالتك الأجمل مع مجموعة فساتيننا المميزة",
+    filters: {
+      price_mode: "sale",
+      price_ranges: "0-250=أقل من 250;250-500=من 250 إلى 500;500-750=من 500 إلى 750;750+=750 فأكثر",
+    },
     status: {
       loading: "جارٍ تحميل المنتجات...",
       empty: "لا توجد منتجات منشورة حالياً.",
