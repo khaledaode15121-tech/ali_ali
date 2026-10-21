@@ -1437,6 +1437,7 @@
             ['تسمية عدد الفيديوهات', 'products.card.videos_suffix'],
             ['زر طلب المنتج', 'products.card.order'],
             ['زر الاستفسار عن التوفر', 'products.card.availability'],
+            ['قالب رسالة طلب المنتج عبر واتساب', 'products.card.whatsapp_message_template'],
           ],
         },
         {
@@ -1481,15 +1482,25 @@
         wrapper.className = 'flex flex-col gap-2 font-label-md text-label-md text-on-surface';
         wrapper.append(document.createTextNode(label));
         const value = String(getHomepageContentValue(content, path) ?? '');
-        const input = path === 'hero.description' || path === 'footer.description'
+        const input = path === 'hero.description' || path === 'footer.description' || path === 'products.card.whatsapp_message_template'
           ? document.createElement('textarea')
           : document.createElement('input');
         input.dataset.homepagePath = path;
         input.maxLength = 1200;
         input.value = value;
         input.className = 'w-full bg-surface-container-low text-on-surface px-3.5 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-primary';
-        if (input instanceof HTMLTextAreaElement) input.rows = 3;
+        if (input instanceof HTMLTextAreaElement) input.rows = path === 'products.card.whatsapp_message_template' ? 7 : 3;
+        if (path === 'products.card.whatsapp_message_template') {
+          input.placeholder = 'المتغيرات المتاحة: {product_name} {product_code} {sale_price} {rental_price} {price} {availability} {main_category} {subcategory} {image_url} {request_type}';
+          input.setAttribute('aria-label', 'قالب رسالة واتساب للمنتج، ويمكن استخدام المتغيرات الموضحة');
+        }
         wrapper.append(input);
+        if (path === 'products.card.whatsapp_message_template') {
+          const help = document.createElement('span');
+          help.className = 'text-xs text-on-surface-variant leading-relaxed';
+          help.textContent = 'اكتبي نص الرسالة كما تريدين، واستخدمي المتغيرات بين الأقواس لاستبدالها تلقائيًا ببيانات المنتج. من أمثلتها: {product_name} و{sale_price} و{availability} و{image_url}.';
+          wrapper.append(help);
+        }
         parent.append(wrapper);
       };
       const addImageField = (parent, label, path, id) => {

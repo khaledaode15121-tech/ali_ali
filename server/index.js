@@ -79,8 +79,9 @@ const defaultHomepageContent = {
       unavailable_price: "غير متاح",
       images_suffix: "صور",
       videos_suffix: "فيديو",
-      order: "أطلب المنتج",
+      order: "طلب المنتج",
       availability: "للاستفسار عن التوفر",
+      whatsapp_message_template: "السلام عليكم، أود {request_type} المنتج التالي:\nالاسم: {product_name}\nرقم المنتج: {product_code}\nسعر البيع: {sale_price}\nسعر الإيجار: {rental_price}\nالتوفر: {availability}\nالقسم الرئيسي: {main_category}\nالقسم الفرعي: {subcategory}\nصورة المنتج: {image_url}",
     },
   },
   trust: {

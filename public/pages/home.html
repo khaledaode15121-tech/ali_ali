@@ -1230,17 +1230,28 @@
       const available = !['unavailable', 'out_of_stock', 'reserved'].includes(String(product.stock_status || '').toLowerCase());
       action.className = `w-full ${available ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500 hover:bg-gray-600'} text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition`;
       const productImageUrl = imageUrl ? new URL(mediaUrl(imageUrl), location.href).href : '';
-      const productMessage = [
-        available ? 'السلام عليكم، أود طلب المنتج التالي:' : 'السلام عليكم، أود الاستفسار عن توفر المنتج التالي:',
-        `اسم المنتج: ${product.name || 'غير محدد'}`,
-        `رقم المنتج: ${product.code || product.id || 'غير محدد'}`,
-        `السعر: البيع ${Number(product.price) > 0 ? `${Number(product.price).toLocaleString('ar-SY')} ل.س` : 'غير متاح'} | الإيجار ${Number(product.rental_price) > 0 ? `${Number(product.rental_price).toLocaleString('ar-SY')} ل.س` : 'غير متاح'}`,
-        `التوفر: ${available ? 'متوفر' : 'غير متوفر — أرجو إعلامي عند توفره'}`,
-        `القسم الرئيسي: ${product.category_name || 'غير محدد'}`,
-        `القسم الفرعي: ${product.subcategory_name || 'غير محدد'}`,
-      ].join('\n');
-      const fallbackMessage = productImageUrl ? `${productMessage}\nرابط صورة المنتج: ${productImageUrl}` : `${productMessage}\nصورة المنتج: غير متوفرة`;
-      action.href = whatsappLinkWithMessage(fallbackMessage);
+      const salePrice = Number(product.price) > 0 ? `${Number(product.price).toLocaleString('ar-SY')} ل.س` : 'غير متاح';
+      const rentalPrice = Number(product.rental_price) > 0 ? `${Number(product.rental_price).toLocaleString('ar-SY')} ل.س` : 'غير متاح';
+      const messageValues = {
+        request_type: available ? 'طلب' : 'استفسار عن توفر',
+        product_name: product.name || 'غير محدد',
+        product_code: product.code || product.id || 'غير محدد',
+        sale_price: salePrice,
+        rental_price: rentalPrice,
+        price: `البيع ${salePrice} | الإيجار ${rentalPrice}`,
+        availability: available ? 'متوفر' : 'غير متوفر — أرجو إعلامي عند توفره',
+        main_category: product.category_name || 'غير محدد',
+        subcategory: product.subcategory_name || 'غير محدد',
+        image_url: productImageUrl || 'غير متوفرة',
+      };
+      const messageTemplate = homepageText('products.card.whatsapp_message_template', '')
+        || 'السلام عليكم، أود {request_type} المنتج التالي:\nالاسم: {product_name}\nرقم المنتج: {product_code}\nالسعر: {price}\nالتوفر: {availability}\nالقسم الرئيسي: {main_category}\nالقسم الفرعي: {subcategory}\nصورة المنتج: {image_url}';
+      const productMessage = messageTemplate.replace(/\{([a-z_]+)\}/gi, (placeholder, key) => (
+        Object.prototype.hasOwnProperty.call(messageValues, key.toLowerCase())
+          ? messageValues[key.toLowerCase()]
+          : placeholder
+      ));
+      action.href = whatsappLinkWithMessage(productMessage);
       action.target = '_blank';
       action.rel = 'noopener noreferrer';
       action.addEventListener('click', async (event) => {
@@ -1267,10 +1278,10 @@
       const icon = document.createElement('i');
       icon.className = 'fa-brands fa-whatsapp text-sm';
       const actionText = document.createElement('span');
-      const mobile = navigator.userAgentData?.mobile ?? /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-      actionText.textContent = mobile
-        ? (available ? homepageText('products.card.order', 'أطلب المنتج') : homepageText('products.card.availability', 'للاستفسار عن التوفر'))
-        : 'مراسلة المدير عبر واتساب ويب';
+      const configuredOrderLabel = homepageText('products.card.order', 'طلب المنتج');
+      actionText.textContent = available
+        ? (configuredOrderLabel === 'أطلب المنتج' ? 'طلب المنتج' : configuredOrderLabel)
+        : homepageText('products.card.availability', 'للاستفسار عن التوفر');
       action.append(icon, actionText);
       details.append(action);
       card.append(imageFrame, details);
