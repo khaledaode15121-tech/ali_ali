@@ -80,6 +80,14 @@
   .hero-media-backdrop { position: absolute; inset: -5%; z-index: -1; width: 110%; height: 110%; object-fit: cover; filter: blur(18px); opacity: .58; transform: scale(1.04); }
   .hero-media-foreground { position: relative; z-index: 1; }
 </style>
+<style data-purpose="product-filter-controls">
+  .product-filter-select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
+  }
+</style>
 <style data-purpose="mobile-storefront-layout">
   @media (max-width: 640px) {
     html, body { max-width: 100%; overflow-x: hidden; }
@@ -263,24 +271,30 @@
 <div class="mb-6 rounded-2xl border border-pink-100 bg-white p-4 shadow-sm">
 <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
 <label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productPriceFilter">
-  <span id="productPriceFilterLabel">تصفية حسب سعر البيع</span>
+  <span>تصفية حسب سعر البيع</span>
   <span class="relative">
-    <select id="productPriceFilter" class="w-full appearance-none rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pl-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
+    <select id="productPriceFilter" class="product-filter-select w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pl-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
       <option value="all">كل الأسعار</option>
     </select>
-    <i class="fa-solid fa-chevron-down pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-brand-pink"></i>
+  </span>
+</label>
+<label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productRentalPriceFilter">
+  <span>تصفية حسب سعر الإيجار</span>
+  <span class="relative">
+    <select id="productRentalPriceFilter" class="product-filter-select w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pl-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
+      <option value="all">كل الأسعار</option>
+    </select>
   </span>
 </label>
 <label class="flex min-w-[180px] flex-1 flex-col gap-1 text-right text-xs font-bold text-gray-700" for="productAvailabilityFilter">
   تصفية حسب التوفر
   <span class="relative">
-    <select id="productAvailabilityFilter" class="w-full appearance-none rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pl-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
+    <select id="productAvailabilityFilter" class="product-filter-select w-full rounded-xl border border-pink-200 bg-pink-50/40 px-3 py-2 pl-9 text-xs text-gray-800 outline-none focus:border-brand-pink focus:ring-2 focus:ring-pink-100">
       <option value="all">كل الحالات</option>
       <option value="available">متوفر وجاهز للتسليم</option>
       <option value="reserved">محجوز</option>
       <option value="out_of_stock">غير متوفر</option>
     </select>
-    <i class="fa-solid fa-chevron-down pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-brand-pink"></i>
   </span>
 </label>
 <button id="resetProductFilters" class="rounded-xl border border-pink-200 px-4 py-2 text-xs font-bold text-brand-pink transition hover:bg-pink-50" type="button">
@@ -735,6 +749,7 @@
   const productsStatus = document.getElementById('productsShowcaseStatus');
   const productSearchInput = document.getElementById('productSearchInput');
   const productPriceFilter = document.getElementById('productPriceFilter');
+  const productRentalPriceFilter = document.getElementById('productRentalPriceFilter');
   const productAvailabilityFilter = document.getElementById('productAvailabilityFilter');
   const resetProductFilters = document.getElementById('resetProductFilters');
   const mainCategoriesGrid = document.getElementById('mainCategoriesGrid');
@@ -856,7 +871,6 @@
 
     function renderPriceFilterOptions(content) {
       if (!productPriceFilter) return;
-      const priceMode = getHomepageValue(content, 'products.filters.price_mode') === 'rental' ? 'rental' : 'sale';
       const rangesText = getHomepageValue(content, 'products.filters.price_ranges')
         || '0-250=أقل من 250;250-500=من 250 إلى 500;500-750=من 500 إلى 750;750+=750 فأكثر';
       const ranges = String(rangesText).split(';').map((entry) => {
@@ -865,8 +879,10 @@
       }).filter((range) => range.value && range.label);
       productPriceFilter.replaceChildren(new Option('كل الأسعار', 'all'));
       ranges.forEach((range) => productPriceFilter.append(new Option(range.label, range.value)));
-      const label = document.getElementById('productPriceFilterLabel');
-      if (label) label.textContent = priceMode === 'rental' ? 'تصفية حسب سعر الإيجار' : 'تصفية حسب سعر البيع';
+      if (productRentalPriceFilter) {
+        productRentalPriceFilter.replaceChildren(new Option('كل الأسعار', 'all'));
+        ranges.forEach((range) => productRentalPriceFilter.append(new Option(range.label, range.value)));
+      }
     }
 
     function applyHomepageContent(content) {
@@ -1399,8 +1415,8 @@
     function renderFilteredProducts() {
       const searchTerm = normalizeSearchText(productSearchInput?.value);
       const priceFilter = productPriceFilter?.value || 'all';
+      const rentalPriceFilter = productRentalPriceFilter?.value || 'all';
       const availabilityFilter = productAvailabilityFilter?.value || 'all';
-      const priceMode = getHomepageValue(currentHomepageContent, 'products.filters.price_mode') === 'rental' ? 'rental_price' : 'price';
       const filteredProducts = publishedProducts.filter((product) => {
         const searchableProductText = normalizeSearchText([
           product.name,
@@ -1417,16 +1433,21 @@
         const matchesOffer = !selectedOffersOnly
           || Number(product.is_featured) === 1
           || product.is_featured === true;
-        const selectedPrice = Number(product[priceMode]) || 0;
-        const priceRange = priceFilter.match(/^(\d+)(?:-(\d+)|\+)$/);
-        const matchesPrice = priceFilter === 'all'
-          || (priceRange && selectedPrice >= Number(priceRange[1])
-            && (priceRange[2] ? selectedPrice < Number(priceRange[2]) : true));
+        const salePriceRange = priceFilter.match(/^(\d+)(?:-(\d+)|\+)$/);
+        const rentalPriceRange = rentalPriceFilter.match(/^(\d+)(?:-(\d+)|\+)$/);
+        const salePrice = Number(product.price) || 0;
+        const rentalPrice = Number(product.rental_price) || 0;
+        const matchesSalePrice = priceFilter === 'all'
+          || (salePriceRange && salePrice >= Number(salePriceRange[1])
+            && (salePriceRange[2] ? salePrice < Number(salePriceRange[2]) : true));
+        const matchesRentalPrice = rentalPriceFilter === 'all'
+          || (rentalPriceRange && rentalPrice >= Number(rentalPriceRange[1])
+            && (rentalPriceRange[2] ? rentalPrice < Number(rentalPriceRange[2]) : true));
         const stockStatus = String(product.stock_status || '').toLowerCase();
         const matchesAvailability = availabilityFilter === 'all'
           || (availabilityFilter === 'available' && !['unavailable', 'out_of_stock', 'reserved'].includes(stockStatus))
           || stockStatus === availabilityFilter;
-        return matchesSearch && matchesMainCategory && matchesSubcategory && matchesOffer && matchesPrice && matchesAvailability;
+        return matchesSearch && matchesMainCategory && matchesSubcategory && matchesOffer && matchesSalePrice && matchesRentalPrice && matchesAvailability;
       });
 
       productsGrid.replaceChildren(...filteredProducts.map(createProductCard));
@@ -1543,10 +1564,12 @@
 
     productSearchInput?.addEventListener('input', renderFilteredProducts);
     productPriceFilter?.addEventListener('change', renderFilteredProducts);
+    productRentalPriceFilter?.addEventListener('change', renderFilteredProducts);
     productAvailabilityFilter?.addEventListener('change', renderFilteredProducts);
     resetProductFilters?.addEventListener('click', () => {
       if (productSearchInput) productSearchInput.value = '';
       if (productPriceFilter) productPriceFilter.value = 'all';
+      if (productRentalPriceFilter) productRentalPriceFilter.value = 'all';
       if (productAvailabilityFilter) productAvailabilityFilter.value = 'all';
       selectedMainCategory = 'all';
       selectedSubcategory = 'all';
