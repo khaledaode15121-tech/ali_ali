@@ -713,14 +713,15 @@ app.delete("/api/customers/:id", async (req, res) => {
 });
 
 app.post("/api/auth/login", async (req, res) => {
+  const fullName = String(req.body.full_name || "").trim();
   const phone = String(req.body.phone || "").trim();
   const passwordHash = hashCustomerPassword(req.body.password || "");
   try {
-    const [rows] = await db.query("SELECT id, full_name, phone, email, preferred_style FROM customers WHERE phone=? AND password_hash=? LIMIT 1", [phone, passwordHash]);
+    const [rows] = await db.query("SELECT id, full_name, phone, email, preferred_style FROM customers WHERE full_name=? AND phone=? AND password_hash=? LIMIT 1", [fullName, phone, passwordHash]);
     if (!rows.length) return res.status(401).json({ message: "رقم الهاتف أو كلمة المرور غير صحيحة" });
     return res.json({ customer: rows[0] });
   } catch {
-    const customer = memory.customers.find((item) => item.phone === phone && item.password_hash === passwordHash);
+    const customer = memory.customers.find((item) => item.full_name === fullName && item.phone === phone && item.password_hash === passwordHash);
     if (!customer) return res.status(401).json({ message: "رقم الهاتف أو كلمة المرور غير صحيحة" });
     const { password_hash, ...safeCustomer } = customer;
     return res.json({ customer: safeCustomer });

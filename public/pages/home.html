@@ -195,8 +195,8 @@
   <div class="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl" dir="rtl">
     <div class="flex items-center justify-between mb-5"><h3 class="text-xl font-bold text-brand-pink">تسجيل دخول العميل</h3><button id="closeCustomerAuth" type="button" class="text-gray-500 text-2xl">×</button></div>
     <form id="customerAuthForm" class="flex flex-col gap-3">
+      <input id="authName" required class="border rounded-xl px-3 py-2" placeholder="الاسم الكامل" />
       <div id="authRegisterFields" class="hidden flex-col gap-3">
-        <input id="authName" class="border rounded-xl px-3 py-2" placeholder="الاسم الكامل" />
         <input id="authPasswordRepeat" type="password" class="border rounded-xl px-3 py-2" placeholder="تأكيد كلمة المرور" />
       </div>
       <input id="authPhone" required type="tel" class="border rounded-xl px-3 py-2" placeholder="رقم الهاتف" />
@@ -1675,7 +1675,7 @@
         try {
           if (registerMode && password !== repeat) throw new Error('كلمتا المرور غير متطابقتين');
           const path = registerMode ? '/api/customers' : '/api/auth/login';
-          const body = registerMode ? { full_name: name, phone, password } : { phone, password };
+          const body = registerMode ? { full_name: name, phone, password } : { full_name: name, phone, password };
           const response = await fetch(`${PRODUCT_API_BASE}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
           const data = await response.json();
           if (!response.ok) throw new Error(data.message || 'تعذر إتمام العملية');
