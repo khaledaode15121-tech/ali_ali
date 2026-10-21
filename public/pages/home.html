@@ -1459,6 +1459,7 @@
       productsStatus.textContent = publishedProducts.length && !filteredProducts.length
         ? homepageText('products.status.no_matches', 'لا توجد منتجات تطابق الفلتر أو البحث.')
         : '';
+      return filteredProducts;
     }
 
     async function loadPublishedProducts() {
@@ -1565,7 +1566,12 @@
       document.getElementById('products-showcase').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    productSearchInput?.addEventListener('input', renderFilteredProducts);
+    productSearchInput?.addEventListener('input', () => {
+      const filteredProducts = renderFilteredProducts();
+      if (productSearchInput.value.trim() && filteredProducts.length) {
+        document.getElementById('products-showcase')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
     productPriceFilter?.addEventListener('change', renderFilteredProducts);
     productRentalPriceFilter?.addEventListener('change', renderFilteredProducts);
     productAvailabilityFilter?.addEventListener('change', renderFilteredProducts);
