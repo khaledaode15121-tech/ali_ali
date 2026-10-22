@@ -34,6 +34,16 @@ async function init() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
   `);
   await connection.query(`
+    CREATE TABLE admin_whatsapp_resets (
+      id TINYINT NOT NULL PRIMARY KEY,
+      code_hash CHAR(64) NOT NULL,
+      code_salt CHAR(32) NOT NULL,
+      expires_at DATETIME NOT NULL,
+      attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+      last_requested_at DATETIME NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `);
+  await connection.query(`
     CREATE TABLE admin_password_resets (
       id TINYINT NOT NULL PRIMARY KEY,
       token_hash CHAR(64) NOT NULL,

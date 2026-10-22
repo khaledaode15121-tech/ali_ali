@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, randomUUID, randomInt, scryptSync, timingSafeEqual } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { db, testConnection } from "./db.js";
@@ -214,6 +214,37 @@ function requireAdmin(req, res, next) {
   if (isPublicApiRequest(req)) return next();
   if (!getAdminSession(req)) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
   return next();
+}
+async function sendAdminWhatsAppOtp(code) {
+  const token = String(process.env.WHATSAPP_ACCESS_TOKEN || "").trim();
+  const phoneNumberId = String(process.env.WHATSAPP_PHONE_NUMBER_ID || "").trim();
+  const recipient = String(process.env.ADMIN_WHATSAPP_PHONE || "").replace(/\D/g, "");
+  const templateName = String(process.env.WHATSAPP_OTP_TEMPLATE || "").trim();
+  const language = String(process.env.WHATSAPP_OTP_LANGUAGE || "ar").trim();
+  const apiVersion = String(process.env.WHATSAPP_GRAPH_API_VERSION || "v26.0").trim();
+  if (!token || !phoneNumberId || !recipient || !templateName) throw new Error("WhatsApp recovery is not configured");
+  const response = await fetch(`https://graph.facebook.com/${apiVersion}/${encodeURIComponent(phoneNumberId)}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to: recipient,
+      type: "template",
+      template: {
+        name: templateName,
+        language: { code: language },
+        components: [
+          { type: "body", parameters: [{ type: "text", text: code }] },
+          { type: "button", sub_type: "url", index: "0", parameters: [{ type: "text", text: code }] },
+        ],
+      },
+    }),
+  });
+  if (!response.ok) {
+    console.error(`Meta WhatsApp OTP send failed with HTTP ${response.status}`);
+    throw new Error("Meta WhatsApp message was not accepted");
+  }
 }
 async function sendAdminPasswordReset(resetUrl) {
   const smtpConfigured = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && adminEmail;
@@ -474,6 +505,80 @@ app.post("/api/uploads", express.raw({ type: "application/octet-stream", limit: 
 });
 app.use(express.json({ limit: "10mb" }));
 
+app.post("/api/admin-auth/request-whatsapp-reset", async (_req, res) => {
+  const genericMessage = "إذا كان استرداد واتساب مفعّلاً، فسيصلك رمز التحقق على رقم المدير المسجل.";
+  const configured = process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID && process.env.ADMIN_WHATSAPP_PHONE && process.env.WHATSAPP_OTP_TEMPLATE;
+  if (!configured) return res.json({ message: genericMessage });
+  let connection;
+  try {
+    connection = await db.getConnection();
+    const [rows] = await connection.query("SELECT last_requested_at FROM admin_whatsapp_resets WHERE id=1");
+    if (rows[0]?.last_requested_at && Date.now() - new Date(rows[0].last_requested_at).getTime() < 60_000) {
+      return res.json({ message: genericMessage });
+    }
+    const code = String(randomInt(0, 1_000_000)).padStart(6, "0");
+    const salt = randomBytes(16).toString("hex");
+    const codeHash = scryptSync(code, salt, 32).toString("hex");
+    await connection.query(
+      "INSERT INTO admin_whatsapp_resets (id, code_hash, code_salt, expires_at, attempts, last_requested_at) VALUES (1, ?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE), 0, NOW()) ON DUPLICATE KEY UPDATE code_hash=VALUES(code_hash), code_salt=VALUES(code_salt), expires_at=VALUES(expires_at), attempts=0, last_requested_at=NOW()",
+      [codeHash, salt],
+    );
+    await sendAdminWhatsAppOtp(code);
+  } catch (error) {
+    console.error("WhatsApp password reset request failed:", error.message);
+  } finally {
+    connection?.release();
+  }
+  return res.json({ message: genericMessage });
+});
+app.post("/api/admin-auth/reset-password-whatsapp", async (req, res) => {
+  const code = String(req.body?.code || "").trim();
+  const newPassword = String(req.body?.newPassword || "");
+  if (!/^\d{6}$/.test(code)) return res.status(400).json({ message: "رمز التحقق غير صالح أو منتهي الصلاحية" });
+  if (newPassword.length < 8 || Buffer.byteLength(newPassword, "utf8") > 128) {
+    return res.status(400).json({ message: "كلمة المرور يجب أن تكون بين 8 و128 بايت" });
+  }
+  let connection;
+  try {
+    connection = await db.getConnection();
+    await connection.beginTransaction();
+    const [rows] = await connection.query(
+      "SELECT code_hash, code_salt, attempts FROM admin_whatsapp_resets WHERE id=1 AND expires_at > NOW() FOR UPDATE",
+    );
+    if (!rows.length || Number(rows[0].attempts) >= 5) {
+      await connection.rollback();
+      return res.status(400).json({ message: "رمز التحقق غير صالح أو منتهي الصلاحية" });
+    }
+    const actual = scryptSync(code, rows[0].code_salt, 32);
+    const expected = Buffer.from(rows[0].code_hash, "hex");
+    if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
+      await connection.query("UPDATE admin_whatsapp_resets SET attempts=attempts+1 WHERE id=1");
+      await connection.commit();
+      return res.status(400).json({ message: "رمز التحقق غير صحيح" });
+    }
+    const salt = randomBytes(16).toString("hex");
+    const hash = scryptSync(newPassword, salt, 32).toString("hex");
+    const [updateResult] = await connection.query(
+      "UPDATE admin_credentials SET password_hash=?, password_salt=? WHERE id=1",
+      [hash, salt],
+    );
+    if (!updateResult.affectedRows) throw new Error("Admin credentials have not been initialized");
+    await connection.query("DELETE FROM admin_whatsapp_resets WHERE id=1");
+    await connection.commit();
+    adminPasswordHash = hash;
+    adminPasswordSalt = salt;
+    adminSessions.clear();
+    adminChallenges.clear();
+    res.setHeader("Set-Cookie", "admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+    return res.json({ message: "تم تغيير كلمة المرور. يمكنك تسجيل الدخول الآن." });
+  } catch (error) {
+    await connection?.rollback();
+    console.error("WhatsApp password reset failed:", error.message);
+    return res.status(503).json({ message: "تعذر تغيير كلمة المرور حالياً" });
+  } finally {
+    connection?.release();
+  }
+});
 app.post("/api/admin-auth/request-password-reset", async (_req, res) => {
   const genericMessage = "إذا كان البريد مضبوطاً، فسيصلك رابط استعادة خلال دقائق.";
   const resetBaseUrl = String(process.env.ADMIN_RESET_URL || "").trim();
@@ -1115,6 +1220,16 @@ async function startServer() {
         password_hash CHAR(64) NOT NULL,
         password_salt CHAR(32) NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_whatsapp_resets (
+        id TINYINT NOT NULL PRIMARY KEY,
+        code_hash CHAR(64) NOT NULL,
+        code_salt CHAR(32) NOT NULL,
+        expires_at DATETIME NOT NULL,
+        attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        last_requested_at DATETIME NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
     await db.query(`

@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `subcategories`;
 DROP TABLE IF EXISTS `customers`;
 DROP TABLE IF EXISTS `categories`;
+DROP TABLE IF EXISTS `admin_whatsapp_resets`;
 DROP TABLE IF EXISTS `admin_password_resets`;
 DROP TABLE IF EXISTS `admin_credentials`;
 DROP TABLE IF EXISTS `admins`;
@@ -32,6 +33,15 @@ CREATE TABLE `admin_credentials` (
   `password_hash` char(64) NOT NULL,
   `password_salt` char(32) NOT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `admin_whatsapp_resets` (
+  `id` tinyint NOT NULL,
+  `code_hash` char(64) NOT NULL,
+  `code_salt` char(32) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `attempts` tinyint unsigned NOT NULL DEFAULT 0,
+  `last_requested_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE `admin_password_resets` (
