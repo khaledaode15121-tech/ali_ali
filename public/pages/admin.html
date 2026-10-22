@@ -680,7 +680,7 @@
 </button>
 </div>
 <div id="productMediaGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 p-4 rounded-2xl bg-surface-container-low"></div>
-<button id="productMediaPicker" class="rounded-xl border-2 border-dashed border-outline-variant/60 flex flex-col items-center justify-center p-3 text-center cursor-pointer hover:bg-surface-container transition-all aspect-[3/4] relative" type="button">
+<button id="productMediaPicker" class="rounded-xl border-2 border-dashed border-outline-variant/60 flex flex-col items-center justify-center p-3 text-center cursor-pointer hover:bg-surface-container transition-all aspect-[3/2] relative" type="button">
 <span class="material-symbols-outlined text-[28px] text-primary mb-1">add_circle</span>
 <span class="font-label-sm text-label-sm text-on-surface font-semibold">إضافة صور أو فيديو</span>
 <span class="font-label-sm text-label-sm text-on-surface-variant text-[9px] mt-0.5">يمكن اختيار عدة ملفات</span>
@@ -1259,7 +1259,7 @@
           : `<img class="w-full h-full object-cover" src="${media.url}" alt="وسيط المنتج ${index + 1}" />`;
         const isCover = !isVideo && productMedia.slice(0, index).every((item) => item.media_type !== 'image');
         return `
-          <div class="relative rounded-xl overflow-hidden aspect-[3/4] shadow-sm group bg-surface-container">
+          <div class="relative rounded-xl overflow-hidden aspect-[3/2] shadow-sm group bg-surface-container">
             ${preview}
             <button class="absolute top-2 left-2 w-8 h-8 rounded-full bg-surface-container-lowest text-error flex items-center justify-center shadow-md" data-media-remove="${index}" title="حذف الوسيط" type="button">
               <span class="material-symbols-outlined text-[16px]">delete</span>
