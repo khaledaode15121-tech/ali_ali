@@ -34,6 +34,13 @@ async function init() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
   `);
   await connection.query(`
+    CREATE TABLE admin_password_resets (
+      id TINYINT NOT NULL PRIMARY KEY,
+      token_hash CHAR(64) NOT NULL,
+      expires_at DATETIME NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `);
+  await connection.query(`
     CREATE TABLE admins (
       id INT AUTO_INCREMENT PRIMARY KEY,
       full_name VARCHAR(255) NOT NULL,

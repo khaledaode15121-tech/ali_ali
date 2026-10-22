@@ -18,6 +18,7 @@ let adminPasswordHash = String(process.env.ADMIN_PASSWORD_HASH || "").trim();
 let adminPasswordSalt = String(process.env.ADMIN_PASSWORD_SALT || "ali-ali-admin");
 const adminSessions = new Map();
 const adminChallenges = new Map();
+let resetRequestCooldownUntil = 0;
 const otpLifetimeMs = 10 * 60 * 1000;
 const sessionLifetimeMs = 12 * 60 * 60 * 1000;
 const uploadDirectory = path.resolve("public", "uploads");
@@ -213,6 +214,25 @@ function requireAdmin(req, res, next) {
   if (isPublicApiRequest(req)) return next();
   if (!getAdminSession(req)) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
   return next();
+}
+async function sendAdminPasswordReset(resetUrl) {
+  const smtpConfigured = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && adminEmail;
+  if (!smtpConfigured) throw new Error("لم يتم إعداد SMTP لإرسال رابط الاستعادة");
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: String(process.env.SMTP_SECURE || "false") === "true",
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to: adminEmail,
+    subject: "استعادة كلمة مرور لوحة تحكم أم علي",
+    text: `استخدم الرابط التالي لتعيين كلمة مرور جديدة:
+${resetUrl}
+
+الرابط صالح لمدة 30 دقيقة ويستخدم مرة واحدة. إذا لم تطلب الاستعادة فتجاهل هذه الرسالة.`,
+  });
 }
 async function sendAdminOtp(code) {
   const smtpConfigured = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && adminEmail;
@@ -454,6 +474,73 @@ app.post("/api/uploads", express.raw({ type: "application/octet-stream", limit: 
 });
 app.use(express.json({ limit: "10mb" }));
 
+app.post("/api/admin-auth/request-password-reset", async (_req, res) => {
+  const genericMessage = "إذا كان البريد مضبوطاً، فسيصلك رابط استعادة خلال دقائق.";
+  const resetBaseUrl = String(process.env.ADMIN_RESET_URL || "").trim();
+  if (!adminEmail || !resetBaseUrl) return res.json({ message: genericMessage });
+  if (Date.now() < resetRequestCooldownUntil) return res.json({ message: genericMessage });
+  resetRequestCooldownUntil = Date.now() + 60_000;
+  try {
+    const resetUrl = new URL(resetBaseUrl);
+    if (resetUrl.protocol !== "https:" && !(resetUrl.protocol === "http:" && ["localhost", "127.0.0.1"].includes(resetUrl.hostname))) {
+      return res.json({ message: genericMessage });
+    }
+    const rawToken = randomBytes(32).toString("hex");
+    const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+    await db.query(
+      "INSERT INTO admin_password_resets (id, token_hash, expires_at) VALUES (1, ?, DATE_ADD(NOW(), INTERVAL 30 MINUTE)) ON DUPLICATE KEY UPDATE token_hash=VALUES(token_hash), expires_at=VALUES(expires_at)",
+      [tokenHash],
+    );
+    resetUrl.searchParams.set("reset", rawToken);
+    await sendAdminPasswordReset(resetUrl.toString());
+  } catch (error) {
+    console.error("Admin password reset email failed:", error.message);
+  }
+  return res.json({ message: genericMessage });
+});
+app.post("/api/admin-auth/reset-password", async (req, res) => {
+  const token = String(req.body?.token || "");
+  const newPassword = String(req.body?.newPassword || "");
+  if (!/^[a-f0-9]{64}$/i.test(token)) return res.status(400).json({ message: "رابط الاستعادة غير صالح أو منتهي الصلاحية" });
+  if (newPassword.length < 8 || Buffer.byteLength(newPassword, "utf8") > 128) {
+    return res.status(400).json({ message: "كلمة المرور يجب أن تكون بين 8 و128 بايت" });
+  }
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  let connection;
+  try {
+    connection = await db.getConnection();
+    await connection.beginTransaction();
+    const [rows] = await connection.query(
+      "SELECT id FROM admin_password_resets WHERE id=1 AND token_hash=? AND expires_at > NOW() FOR UPDATE",
+      [tokenHash],
+    );
+    if (!rows.length) {
+      await connection.rollback();
+      return res.status(400).json({ message: "رابط الاستعادة غير صالح أو منتهي الصلاحية" });
+    }
+    const salt = randomBytes(16).toString("hex");
+    const hash = scryptSync(newPassword, salt, 32).toString("hex");
+    const [updateResult] = await connection.query(
+      "UPDATE admin_credentials SET password_hash=?, password_salt=? WHERE id=1",
+      [hash, salt],
+    );
+    if (!updateResult.affectedRows) throw new Error("Admin credentials have not been initialized");
+    await connection.query("DELETE FROM admin_password_resets WHERE id=1");
+    await connection.commit();
+    adminPasswordHash = hash;
+    adminPasswordSalt = salt;
+    adminSessions.clear();
+    adminChallenges.clear();
+    res.setHeader("Set-Cookie", "admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+    return res.json({ message: "تم تغيير كلمة المرور. يمكنك تسجيل الدخول الآن." });
+  } catch (error) {
+    await connection.rollback();
+    console.error("Admin password reset failed:", error.message);
+    return res.status(503).json({ message: "تعذر تغيير كلمة المرور حالياً" });
+  } finally {
+    connection?.release();
+  }
+});
 app.post("/api/admin-auth/request-code", async (req, res) => {
   const username = String(req.body?.username || "").trim();
   if (username !== adminUsername || !passwordMatches(req.body?.password)) {
@@ -1028,6 +1115,13 @@ async function startServer() {
         password_hash CHAR(64) NOT NULL,
         password_salt CHAR(32) NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_password_resets (
+        id TINYINT NOT NULL PRIMARY KEY,
+        token_hash CHAR(64) NOT NULL,
+        expires_at DATETIME NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
     const [credentialRows] = await db.query("SELECT username, password_hash, password_salt FROM admin_credentials WHERE id = 1 LIMIT 1");
