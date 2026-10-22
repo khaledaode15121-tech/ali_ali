@@ -1247,7 +1247,7 @@
       wrapper.append(title, value);
       container.append(wrapper);
     }
-    const productMediaViewerState = { items: [], index: 0, zoom: 1, product: null, modal: null };
+    const productMediaViewerState = { items: [], index: 0, zoom: 1, zoomOrigin: { x: 50, y: 50 }, product: null, modal: null };
     function ensureProductMediaViewer() {
       if (productMediaViewerState.modal) return productMediaViewerState.modal;
       const modal = document.createElement('div');
@@ -1256,11 +1256,12 @@
       modal.innerHTML = `<div class="relative mx-auto flex h-full w-full max-w-6xl flex-col overflow-y-auto rounded-2xl bg-white p-3 shadow-2xl sm:p-5"><button type="button" id="closeProductMediaViewer" class="absolute left-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-pink-50 text-2xl text-brand-pink hover:bg-pink-100" aria-label="إغلاق">×</button><div class="relative flex min-h-[52vh] flex-1 items-center justify-center overflow-hidden rounded-xl bg-pink-50 p-2"><button type="button" id="productMediaViewerPrev" class="absolute right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-2xl text-brand-pink shadow hover:bg-pink-100" aria-label="الوسيط السابق">›</button><div id="productMediaViewerStage" class="flex h-full w-full items-center justify-center"></div><button type="button" id="productMediaViewerNext" class="absolute left-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-2xl text-brand-pink shadow hover:bg-pink-100" aria-label="الوسيط التالي">‹</button><div id="productMediaViewerZoomControls" class="absolute left-3 top-3 z-20 flex items-center gap-1.5 rounded-xl bg-white/90 p-1.5 shadow"><button type="button" data-product-zoom="out" class="h-8 w-8 rounded-lg bg-pink-50 text-lg font-bold text-brand-pink hover:bg-pink-100" aria-label="إبعاد">−</button><button type="button" data-product-zoom="reset" class="rounded-lg bg-pink-50 px-2 py-1.5 text-[10px] font-bold text-brand-pink hover:bg-pink-100">إعادة ضبط</button><button type="button" data-product-zoom="in" class="h-8 w-8 rounded-lg bg-pink-50 text-lg font-bold text-brand-pink hover:bg-pink-100" aria-label="تقريب">+</button></div></div><div id="productMediaViewerThumbs" class="mt-3 flex gap-2 overflow-x-auto pb-1"></div><div id="productMediaViewerInfo" class="mt-4 rounded-xl bg-pink-50 p-4 text-right"></div><div id="productMediaViewerActions" class="mt-4 grid grid-cols-2 gap-2"></div></div>`;
       document.body.append(modal);
       modal.querySelector('#closeProductMediaViewer').addEventListener('click', closeProductMediaViewer);
-      modal.querySelector('#productMediaViewerPrev').addEventListener('click', () => { productMediaViewerState.index = (productMediaViewerState.index - 1 + productMediaViewerState.items.length) % productMediaViewerState.items.length; renderProductMediaViewer(); });
-      modal.querySelector('#productMediaViewerNext').addEventListener('click', () => { productMediaViewerState.index = (productMediaViewerState.index + 1) % productMediaViewerState.items.length; renderProductMediaViewer(); });
+      modal.querySelector('#productMediaViewerPrev').addEventListener('click', () => { productMediaViewerState.index = (productMediaViewerState.index - 1 + productMediaViewerState.items.length) % productMediaViewerState.items.length; productMediaViewerState.zoom = 1; productMediaViewerState.zoomOrigin = { x: 50, y: 50 }; renderProductMediaViewer(); });
+      modal.querySelector('#productMediaViewerNext').addEventListener('click', () => { productMediaViewerState.index = (productMediaViewerState.index + 1) % productMediaViewerState.items.length; productMediaViewerState.zoom = 1; productMediaViewerState.zoomOrigin = { x: 50, y: 50 }; renderProductMediaViewer(); });
       modal.querySelectorAll('[data-product-zoom]').forEach((button) => button.addEventListener('click', () => {
         const action = button.dataset.productZoom;
         productMediaViewerState.zoom = action === 'reset' ? 1 : Math.max(1, Math.min(3, productMediaViewerState.zoom + (action === 'in' ? 0.25 : -0.25)));
+        if (action === 'reset') productMediaViewerState.zoomOrigin = { x: 50, y: 50 };
         renderProductMediaViewer();
       }));
       modal.addEventListener('click', (event) => { if (event.target === modal) closeProductMediaViewer(); });
@@ -1277,8 +1278,19 @@
       mediaElement.src = mediaUrl(current.url);
       mediaElement.className = 'max-h-[58vh] max-w-full rounded-lg object-contain transition-transform duration-200';
       mediaElement.style.transform = `scale(${productMediaViewerState.zoom})`;
+      mediaElement.style.transformOrigin = `${productMediaViewerState.zoomOrigin.x}% ${productMediaViewerState.zoomOrigin.y}%`;
       mediaElement.alt = product.name || 'وسائط المنتج';
       if (current.media_type === 'video') { mediaElement.controls = true; mediaElement.playsInline = true; mediaElement.autoplay = true; mediaElement.muted = true; mediaElement.addEventListener('canplay', () => mediaElement.play().catch(() => {}), { once: true }); }
+      if (current.media_type === 'image') {
+        mediaElement.classList.add('cursor-zoom-in');
+        mediaElement.title = 'اضغط على المكان المراد تكبيره';
+        mediaElement.addEventListener('click', (event) => {
+          const rect = mediaElement.getBoundingClientRect();
+          productMediaViewerState.zoomOrigin = { x: Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100)), y: Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100)) };
+          productMediaViewerState.zoom = productMediaViewerState.zoom >= 3 ? 1 : Math.min(3, productMediaViewerState.zoom + 0.5);
+          renderProductMediaViewer();
+        });
+      }
       stage.append(mediaElement);
       const thumbs = modal.querySelector('#productMediaViewerThumbs');
       thumbs.replaceChildren(...items.map((item, itemIndex) => {
@@ -1290,7 +1302,7 @@
         if (item.media_type === 'video') { thumb.muted = true; thumb.preload = 'metadata'; }
         button.append(thumb);
         if (item.media_type === 'video') { const label = document.createElement('span'); label.className = 'absolute inset-0 flex items-center justify-center bg-black/30'; label.textContent = '▶'; button.append(label); }
-        button.addEventListener('click', () => { productMediaViewerState.index = itemIndex; renderProductMediaViewer(); });
+        button.addEventListener('click', () => { productMediaViewerState.index = itemIndex; productMediaViewerState.zoom = 1; productMediaViewerState.zoomOrigin = { x: 50, y: 50 }; renderProductMediaViewer(); });
         return button;
       }));
       const info = modal.querySelector('#productMediaViewerInfo');
@@ -1319,6 +1331,7 @@
       productMediaViewerState.items = media;
       productMediaViewerState.index = 0;
       productMediaViewerState.zoom = 1;
+      productMediaViewerState.zoomOrigin = { x: 50, y: 50 };
       productMediaViewerState.product = product;
       const modal = ensureProductMediaViewer();
       modal.classList.remove('hidden');
