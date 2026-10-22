@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { createHash, randomUUID } from "node:crypto";
+import nodemailer from "nodemailer";
+import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { db, testConnection } from "./db.js";
@@ -11,6 +12,13 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+const adminUsername = String(process.env.ADMIN_USERNAME || "kha1512").trim();
+const adminEmail = String(process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+const adminPasswordHash = String(process.env.ADMIN_PASSWORD_HASH || "").trim();
+const adminSessions = new Map();
+const adminChallenges = new Map();
+const otpLifetimeMs = 10 * 60 * 1000;
+const sessionLifetimeMs = 12 * 60 * 60 * 1000;
 const uploadDirectory = path.resolve("public", "uploads");
 const uploadTypes = {
   "image/jpeg": "jpg",
@@ -168,6 +176,58 @@ const memory = {
 function toNumber(value, fallback = 0) {
   const parsed = Number(value ?? fallback);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+function hashAdminPassword(password) {
+  return scryptSync(String(password || ""), String(process.env.ADMIN_PASSWORD_SALT || "ali-ali-admin"), 32).toString("hex");
+}
+function passwordMatches(password) {
+  if (!adminPasswordHash) return false;
+  const actual = Buffer.from(hashAdminPassword(password), "hex");
+  const expected = Buffer.from(adminPasswordHash, "hex");
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+function readCookie(req, name) {
+  const raw = String(req.headers.cookie || "");
+  const entry = raw.split(";").map((item) => item.trim()).find((item) => item.startsWith(`${name}=`));
+  return entry ? decodeURIComponent(entry.slice(name.length + 1)) : "";
+}
+function getAdminSession(req) {
+  const token = readCookie(req, "admin_session");
+  const session = token ? adminSessions.get(token) : null;
+  if (!session || session.expiresAt <= Date.now()) {
+    if (token) adminSessions.delete(token);
+    return null;
+  }
+  session.expiresAt = Date.now() + sessionLifetimeMs;
+  return session;
+}
+function isPublicApiRequest(req) {
+  const pathName = req.path;
+  if (pathName.startsWith("/admin-auth/") || pathName === "/health") return true;
+  if (req.method === "GET" && (/^\/(store-settings|categories|subcategories|products)(\/|$)/.test(pathName))) return true;
+  if (req.method === "POST" && (pathName === "/auth/login" || pathName === "/customers")) return true;
+  return false;
+}
+function requireAdmin(req, res, next) {
+  if (isPublicApiRequest(req)) return next();
+  if (!getAdminSession(req)) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
+  return next();
+}
+async function sendAdminOtp(code) {
+  const smtpConfigured = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && adminEmail;
+  if (!smtpConfigured) throw new Error("لم يتم إعداد SMTP لإرسال رمز التحقق");
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: String(process.env.SMTP_SECURE || "false") === "true",
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to: adminEmail,
+    subject: "رمز الدخول إلى لوحة تحكم أم علي",
+    text: `رمز التحقق الخاص بك هو: ${code}\n\nالرمز صالح لمدة 10 دقائق. إذا لم تطلب تسجيل الدخول فتجاهل هذه الرسالة.`,
+  });
 }
 
 function normalizeCategoryPayload(body) {
@@ -362,7 +422,8 @@ async function safeList(entity, fallback) {
   }
 }
 
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+app.use("/api", requireAdmin);
 app.use("/uploads", express.static(uploadDirectory));
 app.post("/api/uploads", express.raw({ type: "application/octet-stream", limit: "50mb" }), async (req, res) => {
   const mimeType = String(req.header("x-media-type") || "").toLowerCase();
@@ -391,6 +452,55 @@ app.post("/api/uploads", express.raw({ type: "application/octet-stream", limit: 
   });
 });
 app.use(express.json({ limit: "10mb" }));
+
+app.post("/api/admin-auth/request-code", async (req, res) => {
+  const username = String(req.body?.username || "").trim();
+  if (username !== adminUsername || !passwordMatches(req.body?.password)) {
+    return res.status(401).json({ message: "اسم المستخدم أو كلمة المرور غير صحيحة" });
+  }
+  if (!adminEmail) return res.status(503).json({ message: "لم يتم ضبط بريد المدير في إعدادات الخادم" });
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const challengeId = randomBytes(24).toString("hex");
+  adminChallenges.set(challengeId, { username, code, expiresAt: Date.now() + otpLifetimeMs, attempts: 0 });
+  try {
+    await sendAdminOtp(code);
+    return res.json({ challengeId, message: `تم إرسال رمز التحقق إلى ${adminEmail.replace(/(^.).*(@.*$)/, "$1***$2")}` });
+  } catch (error) {
+    adminChallenges.delete(challengeId);
+    console.error("Admin OTP email failed:", error.message);
+    return res.status(503).json({ message: "تعذر إرسال رمز التحقق. تحقق من إعدادات SMTP." });
+  }
+});
+
+app.post("/api/admin-auth/verify-code", (req, res) => {
+  const challengeId = String(req.body?.challengeId || "");
+  const code = String(req.body?.code || "").trim();
+  const challenge = adminChallenges.get(challengeId);
+  if (!challenge || challenge.expiresAt <= Date.now() || challenge.attempts >= 5) {
+    adminChallenges.delete(challengeId);
+    return res.status(401).json({ message: "رمز التحقق منتهي أو غير صالح" });
+  }
+  challenge.attempts += 1;
+  if (code !== challenge.code) return res.status(401).json({ message: "رمز التحقق غير صحيح" });
+  adminChallenges.delete(challengeId);
+  const token = randomBytes(32).toString("hex");
+  adminSessions.set(token, { username: challenge.username, expiresAt: Date.now() + sessionLifetimeMs });
+  setSessionCookie(res, token);
+  return res.json({ admin: { username: challenge.username, email: adminEmail } });
+});
+
+app.get("/api/admin-auth/me", (req, res) => {
+  const session = getAdminSession(req);
+  if (!session) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
+  return res.json({ admin: { username: session.username, email: adminEmail } });
+});
+
+app.post("/api/admin-auth/logout", (req, res) => {
+  const token = readCookie(req, "admin_session");
+  if (token) adminSessions.delete(token);
+  res.setHeader("Set-Cookie", "admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+  return res.json({ message: "تم تسجيل الخروج" });
+});
 
 app.get("/api/health", async (req, res) => {
   const conn = await testConnection();
