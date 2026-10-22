@@ -1247,7 +1247,7 @@
       wrapper.append(title, value);
       container.append(wrapper);
     }
-    const productMediaViewerState = { items: [], index: 0, zoom: 1, zoomOrigin: { x: 50, y: 50 }, product: null, modal: null };
+    const productMediaViewerState = { items: [], index: 0, zoom: 1, zoomOrigin: { x: 50, y: 50 }, product: null, modal: null, historyPushed: false };
     function ensureProductMediaViewer() {
       if (productMediaViewerState.modal) return productMediaViewerState.modal;
       const modal = document.createElement('div');
@@ -1265,6 +1265,7 @@
         renderProductMediaViewer();
       }));
       modal.addEventListener('click', (event) => { if (event.target === modal) closeProductMediaViewer(); });
+      window.addEventListener('popstate', () => { if (productMediaViewerState.historyPushed) closeProductMediaViewer(true); });
       productMediaViewerState.modal = modal;
       return modal;
     }
@@ -1334,13 +1335,19 @@
       productMediaViewerState.zoomOrigin = { x: 50, y: 50 };
       productMediaViewerState.product = product;
       const modal = ensureProductMediaViewer();
+      if (modal.classList.contains('hidden')) {
+        history.pushState({ ...(history.state || {}), productMediaViewer: true }, '', `${location.pathname}${location.search}#product-media-viewer`);
+        productMediaViewerState.historyPushed = true;
+      }
       modal.classList.remove('hidden');
       document.body.classList.add('overflow-hidden');
       renderProductMediaViewer();
     }
-    function closeProductMediaViewer() {
+    function closeProductMediaViewer(fromHistory = false) {
       productMediaViewerState.modal?.classList.add('hidden');
       document.body.classList.remove('overflow-hidden');
+      if (productMediaViewerState.historyPushed && !fromHistory) history.back();
+      productMediaViewerState.historyPushed = false;
     }
 
     function createProductCard(product) {
