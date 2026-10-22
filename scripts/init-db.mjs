@@ -25,6 +25,15 @@ async function init() {
   await resetDatabase();
 
   await connection.query(`
+    CREATE TABLE admin_credentials (
+      id TINYINT NOT NULL PRIMARY KEY,
+      username VARCHAR(120) NOT NULL,
+      password_hash CHAR(64) NOT NULL,
+      password_salt CHAR(32) NOT NULL,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `);
+  await connection.query(`
     CREATE TABLE admins (
       id INT AUTO_INCREMENT PRIMARY KEY,
       full_name VARCHAR(255) NOT NULL,

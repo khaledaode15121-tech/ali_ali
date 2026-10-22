@@ -12,9 +12,10 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
-const adminUsername = String(process.env.ADMIN_USERNAME || "kha1512").trim();
+let adminUsername = String(process.env.ADMIN_USERNAME || "kha1512").trim();
 const adminEmail = String(process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-const adminPasswordHash = String(process.env.ADMIN_PASSWORD_HASH || "").trim();
+let adminPasswordHash = String(process.env.ADMIN_PASSWORD_HASH || "").trim();
+let adminPasswordSalt = String(process.env.ADMIN_PASSWORD_SALT || "ali-ali-admin");
 const adminSessions = new Map();
 const adminChallenges = new Map();
 const otpLifetimeMs = 10 * 60 * 1000;
@@ -178,7 +179,7 @@ function toNumber(value, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 function hashAdminPassword(password) {
-  return scryptSync(String(password || ""), String(process.env.ADMIN_PASSWORD_SALT || "ali-ali-admin"), 32).toString("hex");
+  return scryptSync(String(password || ""), adminPasswordSalt, 32).toString("hex");
 }
 function passwordMatches(password) {
   if (!adminPasswordHash) return false;
@@ -493,6 +494,39 @@ app.get("/api/admin-auth/me", (req, res) => {
   const session = getAdminSession(req);
   if (!session) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
   return res.json({ admin: { username: session.username, email: adminEmail } });
+});
+app.put("/api/admin-auth/credentials", async (req, res) => {
+  const session = getAdminSession(req);
+  if (!session) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
+  if (!passwordMatches(req.body?.currentPassword)) {
+    return res.status(401).json({ message: "كلمة المرور الحالية غير صحيحة" });
+  }
+  const username = String(req.body?.username || "").trim();
+  const newPassword = String(req.body?.newPassword || "");
+  if (username.length < 3 || username.length > 120) {
+    return res.status(400).json({ message: "اسم المستخدم يجب أن يكون بين 3 و120 حرفاً" });
+  }
+  if (newPassword && newPassword.length < 8) {
+    return res.status(400).json({ message: "كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف" });
+  }
+  const salt = newPassword ? randomBytes(16).toString("hex") : adminPasswordSalt;
+  const hash = newPassword ? scryptSync(newPassword, salt, 32).toString("hex") : adminPasswordHash;
+  try {
+    await db.query(
+      "INSERT INTO admin_credentials (id, username, password_hash, password_salt) VALUES (1, ?, ?, ?) ON DUPLICATE KEY UPDATE username=VALUES(username), password_hash=VALUES(password_hash), password_salt=VALUES(password_salt)",
+      [username, hash, salt],
+    );
+    adminUsername = username;
+    adminPasswordHash = hash;
+    adminPasswordSalt = salt;
+    adminSessions.clear();
+    adminChallenges.clear();
+    res.setHeader("Set-Cookie", "admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+    return res.json({ message: "تم تحديث بيانات الحساب. سجّل الدخول مجدداً بالبيانات الجديدة." });
+  } catch (error) {
+    console.error("Admin credentials update failed:", error.message);
+    return res.status(503).json({ message: "تعذر حفظ بيانات الحساب في قاعدة البيانات" });
+  }
 });
 
 app.post("/api/admin-auth/logout", (req, res) => {
@@ -987,6 +1021,28 @@ app.delete("/api/orders/:id", async (req, res) => {
 
 async function startServer() {
   try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_credentials (
+        id TINYINT NOT NULL PRIMARY KEY,
+        username VARCHAR(120) NOT NULL,
+        password_hash CHAR(64) NOT NULL,
+        password_salt CHAR(32) NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    const [credentialRows] = await db.query("SELECT username, password_hash, password_salt FROM admin_credentials WHERE id = 1 LIMIT 1");
+    if (credentialRows[0]) {
+      adminUsername = credentialRows[0].username;
+      adminPasswordHash = credentialRows[0].password_hash;
+      adminPasswordSalt = credentialRows[0].password_salt;
+    } else if (process.env.ADMIN_PASSWORD) {
+      const salt = randomBytes(16).toString("hex");
+      const hash = scryptSync(String(process.env.ADMIN_PASSWORD), salt, 32).toString("hex");
+      await db.query("INSERT INTO admin_credentials (id, username, password_hash, password_salt) VALUES (1, ?, ?, ?)", [adminUsername, hash, salt]);
+      adminPasswordHash = hash;
+      adminPasswordSalt = salt;
+      console.log("Admin password hash initialized in the database.");
+    }
     const [columns] = await db.query("SHOW COLUMNS FROM products LIKE 'description'");
     if (!columns.length) {
       await db.query("ALTER TABLE products ADD COLUMN description TEXT NULL AFTER name");
