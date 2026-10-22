@@ -22,8 +22,18 @@ DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `subcategories`;
 DROP TABLE IF EXISTS `customers`;
 DROP TABLE IF EXISTS `categories`;
+DROP TABLE IF EXISTS `admin_credentials`;
 DROP TABLE IF EXISTS `admins`;
 
+CREATE TABLE `admin_credentials` (
+  `id` tinyint NOT NULL,
+  `username` varchar(120) NOT NULL,
+  `email` varchar(254) NOT NULL DEFAULT '',
+  `password_hash` char(64) NOT NULL,
+  `password_salt` char(32) NOT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE `admins` (
   `id` int NOT NULL AUTO_INCREMENT,
   `full_name` varchar(255) NOT NULL,

@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { createHash, randomUUID } from "node:crypto";
+import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { db, testConnection } from "./db.js";
@@ -11,6 +11,13 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+let adminUsername = String(process.env.ADMIN_USERNAME || "kha1512").trim();
+let adminEmail = String(process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+let adminPasswordHash = String(process.env.ADMIN_PASSWORD_HASH || "").trim();
+let adminPasswordSalt = String(process.env.ADMIN_PASSWORD_SALT || "ali-ali-admin");
+const adminSessions = new Map();
+const adminLoginFailures = new Map();
+const sessionLifetimeMs = 12 * 60 * 60 * 1000;
 const uploadDirectory = path.resolve("public", "uploads");
 const uploadTypes = {
   "image/jpeg": "jpg",
@@ -168,6 +175,46 @@ const memory = {
 function toNumber(value, fallback = 0) {
   const parsed = Number(value ?? fallback);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+function hashAdminPassword(password) {
+  return scryptSync(String(password || ""), adminPasswordSalt, 32).toString("hex");
+}
+function passwordMatches(password) {
+  if (!adminPasswordHash) return false;
+  const actual = Buffer.from(hashAdminPassword(password), "hex");
+  const expected = Buffer.from(adminPasswordHash, "hex");
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+function readCookie(req, name) {
+  const raw = String(req.headers.cookie || "");
+  const entry = raw.split(";").map((item) => item.trim()).find((item) => item.startsWith(`${name}=`));
+  return entry ? decodeURIComponent(entry.slice(name.length + 1)) : "";
+}
+function getAdminSession(req) {
+  const token = readCookie(req, "admin_session");
+  const session = token ? adminSessions.get(token) : null;
+  if (!session || session.expiresAt <= Date.now()) {
+    if (token) adminSessions.delete(token);
+    return null;
+  }
+  session.expiresAt = Date.now() + sessionLifetimeMs;
+  return session;
+}
+function setAdminSessionCookie(req, res, token) {
+  const secure = req.secure || req.headers["x-forwarded-proto"] === "https";
+  res.setHeader("Set-Cookie", `admin_session=${encodeURIComponent(token)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${Math.floor(sessionLifetimeMs / 1000)}${secure ? "; Secure" : ""}`);
+}
+function isPublicApiRequest(req) {
+  const pathName = req.path;
+  if (pathName.startsWith("/admin-auth/") || pathName === "/health") return true;
+  if (req.method === "GET" && (/^\/(store-settings|categories|subcategories|products)(\/|$)/.test(pathName))) return true;
+  if (req.method === "POST" && (pathName === "/auth/login" || pathName === "/customers")) return true;
+  return false;
+}
+function requireAdmin(req, res, next) {
+  if (isPublicApiRequest(req)) return next();
+  if (!getAdminSession(req)) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
+  return next();
 }
 function normalizeCategoryPayload(body) {
   const { name, slug, description, image_url } = body;
@@ -362,6 +409,7 @@ async function safeList(entity, fallback) {
 }
 
 app.use(cors({ origin: true, credentials: true }));
+app.use("/api", requireAdmin);
 app.use("/uploads", express.static(uploadDirectory));
 app.post("/api/uploads", express.raw({ type: "application/octet-stream", limit: "50mb" }), async (req, res) => {
   const mimeType = String(req.header("x-media-type") || "").toLowerCase();
@@ -391,6 +439,75 @@ app.post("/api/uploads", express.raw({ type: "application/octet-stream", limit: 
 });
 app.use(express.json({ limit: "10mb" }));
 
+app.post("/api/admin-auth/login", (req, res) => {
+  const now = Date.now();
+  const ip = req.ip || req.socket.remoteAddress || "unknown";
+  const failures = adminLoginFailures.get(ip) || { count: 0, resetAt: now + 15 * 60_000 };
+  if (failures.resetAt <= now) {
+    failures.count = 0;
+    failures.resetAt = now + 15 * 60_000;
+  }
+  if (failures.count >= 10) return res.status(429).json({ message: "محاولات كثيرة. انتظر قليلاً ثم حاول مجدداً." });
+  const username = String(req.body?.username || "").trim();
+  if (username !== adminUsername || !passwordMatches(req.body?.password)) {
+    failures.count += 1;
+    adminLoginFailures.set(ip, failures);
+    return res.status(401).json({ message: "اسم المستخدم أو كلمة المرور غير صحيحة" });
+  }
+  adminLoginFailures.delete(ip);
+  const token = randomBytes(32).toString("hex");
+  adminSessions.set(token, { username, expiresAt: now + sessionLifetimeMs });
+  setAdminSessionCookie(req, res, token);
+  return res.json({ admin: { username, email: adminEmail } });
+});
+app.get("/api/admin-auth/me", (req, res) => {
+  const session = getAdminSession(req);
+  if (!session) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
+  return res.json({ admin: { username: session.username, email: adminEmail } });
+});
+app.put("/api/admin-auth/credentials", async (req, res) => {
+  const session = getAdminSession(req);
+  if (!session) return res.status(401).json({ message: "تسجيل دخول المدير مطلوب" });
+  if (!passwordMatches(req.body?.currentPassword)) {
+    return res.status(401).json({ message: "كلمة المرور الحالية غير صحيحة" });
+  }
+  const username = String(req.body?.username || "").trim();
+  const email = String(req.body?.email || "").trim().toLowerCase();
+  const newPassword = String(req.body?.newPassword || "");
+  if (username.length < 3 || username.length > 120) {
+    return res.status(400).json({ message: "اسم المستخدم يجب أن يكون بين 3 و120 حرفاً" });
+  }
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ message: "أدخل بريداً إلكترونياً صحيحاً" });
+  }
+  if (newPassword && (newPassword.length < 8 || Buffer.byteLength(newPassword, "utf8") > 128)) {
+    return res.status(400).json({ message: "كلمة المرور الجديدة يجب أن تكون بين 8 و128 بايت" });
+  }
+  const salt = newPassword ? randomBytes(16).toString("hex") : adminPasswordSalt;
+  const hash = newPassword ? scryptSync(newPassword, salt, 32).toString("hex") : adminPasswordHash;
+  try {
+    await db.query(
+      "INSERT INTO admin_credentials (id, username, email, password_hash, password_salt) VALUES (1, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE username=VALUES(username), email=VALUES(email), password_hash=VALUES(password_hash), password_salt=VALUES(password_salt)",
+      [username, email, hash, salt],
+    );
+    adminUsername = username;
+    adminEmail = email;
+    adminPasswordHash = hash;
+    adminPasswordSalt = salt;
+    adminSessions.clear();
+    res.setHeader("Set-Cookie", "admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+    return res.json({ message: "تم تحديث بيانات الحساب. سجّل الدخول مجدداً." });
+  } catch (error) {
+    console.error("Admin credentials update failed:", error.message);
+    return res.status(503).json({ message: "تعذر حفظ بيانات الحساب في قاعدة البيانات" });
+  }
+});
+app.post("/api/admin-auth/logout", (req, res) => {
+  const token = readCookie(req, "admin_session");
+  if (token) adminSessions.delete(token);
+  res.setHeader("Set-Cookie", "admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+  return res.json({ message: "تم تسجيل الخروج" });
+});
 app.get("/api/health", async (req, res) => {
   const conn = await testConnection();
   res.json({
@@ -876,6 +993,33 @@ app.delete("/api/orders/:id", async (req, res) => {
 
 async function startServer() {
   try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS admin_credentials (
+        id TINYINT NOT NULL PRIMARY KEY,
+        username VARCHAR(120) NOT NULL,
+        email VARCHAR(254) NOT NULL DEFAULT '',
+        password_hash CHAR(64) NOT NULL,
+        password_salt CHAR(32) NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    const [emailColumns] = await db.query("SHOW COLUMNS FROM admin_credentials LIKE 'email'");
+    if (!emailColumns.length) await db.query("ALTER TABLE admin_credentials ADD COLUMN email VARCHAR(254) NOT NULL DEFAULT '' AFTER username");
+    await db.query("DROP TABLE IF EXISTS admin_whatsapp_resets, admin_password_resets");
+    const [credentialRows] = await db.query("SELECT username, email, password_hash, password_salt FROM admin_credentials WHERE id = 1 LIMIT 1");
+    if (credentialRows[0]) {
+      adminUsername = credentialRows[0].username;
+      adminEmail = credentialRows[0].email || adminEmail;
+      adminPasswordHash = credentialRows[0].password_hash;
+      adminPasswordSalt = credentialRows[0].password_salt;
+    } else if (process.env.ADMIN_PASSWORD) {
+      const salt = randomBytes(16).toString("hex");
+      const hash = scryptSync(String(process.env.ADMIN_PASSWORD), salt, 32).toString("hex");
+      await db.query("INSERT INTO admin_credentials (id, username, email, password_hash, password_salt) VALUES (1, ?, ?, ?, ?)", [adminUsername, adminEmail, hash, salt]);
+      adminPasswordHash = hash;
+      adminPasswordSalt = salt;
+      console.log("Admin password hash initialized in the database.");
+    }
     const [columns] = await db.query("SHOW COLUMNS FROM products LIKE 'description'");
     if (!columns.length) {
       await db.query("ALTER TABLE products ADD COLUMN description TEXT NULL AFTER name");

@@ -9,6 +9,7 @@
     "server": "node --watch server/index.js",
     "db:init": "node scripts/init-db.mjs",
     "db:seed": "node scripts/seed-db.mjs",
+    "admin:credentials": "node scripts/set-admin-credentials.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
