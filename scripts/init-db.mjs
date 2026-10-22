@@ -28,26 +28,10 @@ async function init() {
     CREATE TABLE admin_credentials (
       id TINYINT NOT NULL PRIMARY KEY,
       username VARCHAR(120) NOT NULL,
+      email VARCHAR(254) NOT NULL DEFAULT '',
       password_hash CHAR(64) NOT NULL,
       password_salt CHAR(32) NOT NULL,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-  `);
-  await connection.query(`
-    CREATE TABLE admin_whatsapp_resets (
-      id TINYINT NOT NULL PRIMARY KEY,
-      code_hash CHAR(64) NOT NULL,
-      code_salt CHAR(32) NOT NULL,
-      expires_at DATETIME NOT NULL,
-      attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
-      last_requested_at DATETIME NOT NULL
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-  `);
-  await connection.query(`
-    CREATE TABLE admin_password_resets (
-      id TINYINT NOT NULL PRIMARY KEY,
-      token_hash CHAR(64) NOT NULL,
-      expires_at DATETIME NOT NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
   `);
   await connection.query(`

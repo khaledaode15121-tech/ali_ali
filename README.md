@@ -29,3 +29,9 @@ npm run dev
 
 The project data model and database structure were aligned to the boutique domain and documented under [docs/ERD.md](docs/ERD.md). The model includes categories, subcategories, products, offers, customers, orders, reservations, and reviews.
 "# ali_ali" 
+
+## بيانات دخول المدير
+
+تسجيل دخول لوحة التحكم يعتمد على اسم المستخدم وكلمة المرور فقط. البريد الإلكتروني محفوظ في سجل حساب المدير، ويمكن تغييره من قسم **الحساب والأمان** بعد تسجيل الدخول. كلمات المرور تحفظ كـHash مملح ولا تحفظ بصيغتها الأصلية.
+
+لتعيين بيانات المدير الحالية على قاعدة بيانات موجودة مرة واحدة، اضبط `ADMIN_USERNAME` و`ADMIN_EMAIL` و`ADMIN_PASSWORD` كمتغيرات بيئة خاصة على الخادم، ثم شغّل `npm run admin:credentials`. لا تضع كلمة المرور في Git أو سجل الأوامر. بعد نجاح الأمر احذف `ADMIN_PASSWORD` من بيئة التشغيل؛ الحساب سيظل يعمل اعتماداً على الـHash المخزن.
