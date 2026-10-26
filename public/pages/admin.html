@@ -2208,6 +2208,8 @@
       return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
     }
     async function exportOrdersInvoiceImage() {
+      // اجلب الاسم الحالي من إعدادات الصفحة الرئيسية قبل إنشاء الصورة، حتى لا نستخدم قيمة قديمة.
+      await loadStoreSettings();
       const orders = getFilteredOrders();
       if (!orders.length) return showToast('لا توجد طلبات مطابقة للفلاتر الحالية');
       if (typeof window.html2canvas !== 'function') return showToast('تعذر تحميل أداة حفظ الصورة، تحقق من اتصال الإنترنت');
