@@ -2210,9 +2210,24 @@
     function invoiceEscape(value) {
       return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
     }
+    async function createInvoiceSalonNameImage() {
+      await document.fonts?.load('800 52px Cairo');
+      const canvas = document.createElement('canvas');
+      canvas.width = 1000;
+      canvas.height = 110;
+      const context = canvas.getContext('2d');
+      context.direction = 'rtl';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.font = '800 52px Cairo, Tahoma, Arial, sans-serif';
+      context.fillStyle = '#ffffff';
+      context.fillText('صالون أم علي للأناقة', canvas.width / 2, canvas.height / 2);
+      return canvas.toDataURL('image/png');
+    }
     async function exportOrdersInvoiceImage() {
       // اجلب الاسم الحالي من إعدادات الصفحة الرئيسية قبل إنشاء الصورة، حتى لا نستخدم قيمة قديمة.
       await loadStoreSettings();
+      const salonNameImage = await createInvoiceSalonNameImage();
       const orders = getFilteredOrders();
       if (!orders.length) return showToast('لا توجد طلبات مطابقة للفلاتر الحالية');
       if (typeof window.html2canvas !== 'function') return showToast('تعذر تحميل أداة حفظ الصورة، تحقق من اتصال الإنترنت');
@@ -2234,7 +2249,7 @@
         <div style="background:linear-gradient(135deg,#075e54 0%,#087f68 62%,#0b9b7a 100%);color:#fff;padding:34px 42px 28px;position:relative;overflow:hidden">
           <div style="position:absolute;left:-45px;top:-55px;width:170px;height:170px;border:1px solid rgba(241,196,93,.5);border-radius:50%;box-shadow:0 0 0 18px rgba(241,196,93,.08),0 0 0 36px rgba(241,196,93,.06)"></div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative">
-            <div><div style="font-size:28px;font-weight:800;letter-spacing:.2px">${invoiceEscape(storeName)}</div><div style="font-size:16px;color:#f4d77a;margin-top:8px">أناقة تُرسل بثقة</div><div style="font-size:13px;color:#e2f7ef;margin-top:9px">هاتف: ${invoiceEscape(sitePhone)} &nbsp; | &nbsp; العنوان: ${invoiceEscape(siteAddress)}</div></div>
+            <div><img src="${salonNameImage}" alt="صالون أم علي للأناقة" style="display:block;width:430px;max-width:100%;height:auto;object-fit:contain"/><div style="font-size:16px;color:#f4d77a;margin-top:8px">أناقة تُرسل بثقة</div><div style="font-size:13px;color:#e2f7ef;margin-top:9px">هاتف: ${invoiceEscape(sitePhone)} &nbsp; | &nbsp; العنوان: ${invoiceEscape(siteAddress)}</div></div>
             <div style="text-align:center;border:1px solid rgba(255,255,255,.38);border-radius:16px;padding:12px 18px;background:rgba(0,0,0,.12)"><div style="font-size:12px;color:#d5f4e9">فاتورة</div><div style="font-size:22px;font-weight:800;margin-top:4px">#${orders.length.toString().padStart(3,'0')}</div></div>
           </div>
           <div style="height:1px;background:rgba(255,255,255,.45);margin:26px 0 16px"></div>
