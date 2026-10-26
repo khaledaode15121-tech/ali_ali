@@ -2189,6 +2189,12 @@
       const dates = orders.map(getOrderDate).filter(Boolean).sort();
       return { total: orders.reduce((sum, order) => sum + Number(order.total_price || 0), 0), debt: orders.reduce((sum, order) => sum + getOrderDebt(order), 0), fromDate: selectedOrderDateFrom || dates[0] || '—', toDate: selectedOrderDateTo || dates[dates.length - 1] || selectedOrderDateFrom || '—' };
     }
+    function getInvoiceStoreName() {
+      const configuredName = String(storeSettings.store_name || '').trim();
+      // ترحيل الاسم القديم تلقائيًا حتى يطابق الاسم الظاهر في الصفحة الرئيسية.
+      if (!configuredName || configuredName === 'صالون ام علي للأناقة') return 'صالون أم علي للأناقة';
+      return configuredName;
+    }
     function sendOrdersInvoiceToWhatsapp() {
       const orders = getFilteredOrders();
       if (!orders.length) return showToast('لا توجد طلبات مطابقة للفلاتر الحالية');
@@ -2196,7 +2202,7 @@
       const products = new Map(state.products.map((item) => [Number(item.id), item]));
       const details = getInvoiceDetails(orders, customers, products);
       const summary = getInvoiceSummary(orders);
-      const storeName = storeSettings.store_name || 'صالون ام علي للأناقة';
+      const storeName = getInvoiceStoreName();
       const detailText = details.map((item) => `👤 الزبون: ${item.customer}\n🆔 المنتج: ${item.product}\n📌 حالة الطلب: ${item.status}\n💰 المجموع الخاص: ${item.total.toLocaleString('ar-SY')} ل.س\n📂 الدين الخاص: ${item.debt.toLocaleString('ar-SY')} ل.س\n📅 التاريخ: ${item.date}`).join('\n━━━━━━━━━━━━━━\n');
       const message = `✨ فاتورة ${storeName} ✨\n━━━━━━━━━━━━━━\n🔹 المجموع العام: ${summary.total.toLocaleString('ar-SY')} ل.س\n📂 مجموع الديون: ${summary.debt.toLocaleString('ar-SY')} ل.س\n📁 الفترة: من ${summary.fromDate} - إلى ${summary.toDate}\n━━━━━━━━━━━━━━\n${detailText}`;
       const encodedMessage = encodeURIComponent(message);
@@ -2217,7 +2223,7 @@
       const products = new Map(state.products.map((item) => [Number(item.id), item]));
       const details = getInvoiceDetails(orders, customers, products);
       const summary = getInvoiceSummary(orders);
-      const storeName = storeSettings.store_name || 'صالون ام علي للأناقة';
+      const storeName = getInvoiceStoreName();
       const sitePhone = storeSettings.homepage_content?.contact?.phone || '0986763418';
       const siteAddress = storeSettings.homepage_content?.footer?.address || 'بغداد - شارع فلسطين';
       const total = summary.total.toLocaleString('ar-SY');
