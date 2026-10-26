@@ -2018,10 +2018,39 @@
       }
     }
 
+    function resetCustomerForm() {
+      const form = document.getElementById('customerForm');
+      form?.reset();
+      const editingId = document.getElementById('customerEditingId');
+      if (editingId) editingId.value = '';
+      const password = document.getElementById('customerPassword');
+      if (password) {
+        password.required = true;
+        password.placeholder = 'كلمة المرور للعميل الجديد';
+      }
+      const title = document.querySelector('#section-customers h3');
+      if (title) title.textContent = 'إدارة العملاء';
+      const submit = form?.querySelector('button[type="submit"]');
+      if (submit) submit.textContent = 'حفظ العميل';
+    }
     function renderCustomers() {
       const tbody = document.getElementById('customersTableBody');
       if (!tbody) return;
-      tbody.innerHTML = state.customers.map((customer) => `<tr class="border-b border-surface-container"><td class="p-3">${customer.full_name || ''}</td><td class="p-3">${customer.phone || ''}</td><td class="p-3 font-mono">${customer.password || 'غير محفوظة للعميل القديم'}</td><td class="p-3"><button type="button" class="text-primary ml-3" data-customer-edit="${customer.id}">تعديل</button><button type="button" class="text-error" data-customer-delete="${customer.id}">حذف</button></td></tr>`).join('');
+      tbody.replaceChildren(...state.customers.map((customer) => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-surface-container';
+        [customer.full_name || '', customer.phone || '', customer.password || 'غير محفوظة للعميل القديم'].forEach((value) => {
+          const cell = document.createElement('td');
+          cell.className = 'p-3';
+          cell.textContent = value;
+          row.append(cell);
+        });
+        const actions = document.createElement('td');
+        actions.className = 'p-3';
+        actions.innerHTML = `<button type="button" class="text-primary ml-3" data-customer-edit="${customer.id}">تعديل</button><button type="button" class="text-error" data-customer-delete="${customer.id}">حذف</button>`;
+        row.append(actions);
+        return row;
+      }));
     }
 
     function populateOrderFormOptions() {
@@ -2043,10 +2072,25 @@
     async function handleCustomerSubmit(event) {
       event.preventDefault();
       const id = document.getElementById('customerEditingId')?.value;
-      const payload = { full_name: document.getElementById('customerName').value.trim(), phone: document.getElementById('customerPhone').value.trim(), password: document.getElementById('customerPassword').value };
+      const payload = {
+        full_name: document.getElementById('customerName').value.trim(),
+        phone: document.getElementById('customerPhone').value.trim(),
+        password: document.getElementById('customerPassword').value,
+      };
       if (!payload.full_name || !payload.phone || (!id && !payload.password)) return showToast('يرجى تعبئة الاسم والهاتف وكلمة المرور للعميل الجديد');
-      try { await fetchJson(id ? `/api/customers/${id}` : '/api/customers', { method: id ? 'PUT' : 'POST', body: JSON.stringify(payload) }); document.getElementById('customerForm').reset(); document.getElementById('customerEditingId').value = ''; await loadCustomers(); showToast(id ? 'تم تعديل العميل' : 'تمت إضافة العميل'); }
-      catch (error) { showToast('تعذر حفظ العميل: ' + error.message); }
+      try {
+        await fetchJson(id ? `/api/customers/${id}` : '/api/customers', {
+          method: id ? 'PUT' : 'POST',
+          body: JSON.stringify(payload),
+        });
+        resetCustomerForm();
+        await loadCustomers();
+        showToast(id ? 'تم تعديل العميل بنجاح' : 'تمت إضافة العميل بنجاح');
+      } catch (error) {
+        let message = error.message || 'تعذر حفظ العميل';
+        try { message = JSON.parse(message).message || message; } catch { /* keep server message */ }
+        showToast(`تعذر حفظ العميل: ${message}`);
+      }
     }
 
     async function loadCustomers() {
@@ -2160,6 +2204,9 @@
       const whatsappUrl = isMobile ? `whatsapp://send?text=${encodedMessage}` : `https://web.whatsapp.com/send?text=${encodedMessage}`;
       window.open(whatsappUrl, '_blank', 'noopener');
     }
+    function invoiceEscape(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+    }
     async function exportOrdersInvoicePdf() {
       const orders = getFilteredOrders();
       if (!orders.length) return showToast('لا توجد طلبات مطابقة للفلاتر الحالية');
@@ -2169,22 +2216,49 @@
       const details = getInvoiceDetails(orders, customers, products);
       const summary = getInvoiceSummary(orders);
       const storeName = storeSettings.store_name || 'صالون أم علي للأناقة';
+      const total = summary.total.toLocaleString('ar-SY');
+      const debt = summary.debt.toLocaleString('ar-SY');
+      const paid = Math.max(0, summary.total - summary.debt).toLocaleString('ar-SY');
       const content = document.createElement('div');
       content.dir = 'rtl';
-      content.style.cssText = 'box-sizing:border-box;background:#fff;color:#25181e;padding:32px;width:1000px;min-height:500px;font-family:Arial,sans-serif;position:absolute;top:0;left:0;z-index:2147483647;pointer-events:none;visibility:visible;opacity:1;';
-      content.innerHTML = `<div style="text-align:center;border-bottom:3px solid #b0004a;padding-bottom:14px;margin-bottom:18px"><div style="font-size:24px;font-weight:bold;color:#b0004a">✨ ${storeName} ✨</div><div style="font-size:20px;font-weight:bold;margin-top:8px">فاتورة مجمعة</div></div><div style="background:#fff0f4;border:1px solid #d81b60;border-radius:10px;padding:14px;font-size:15px;line-height:2;margin-bottom:18px"><strong>🔹 المجموع العام:</strong> ${summary.total.toLocaleString('ar-SY')} ل.س<br><strong>📂 مجموع الديون:</strong> ${summary.debt.toLocaleString('ar-SY')} ل.س<br><strong>📁 الفترة:</strong> من ${summary.fromDate} - إلى ${summary.toDate}</div>`;
-      details.forEach((item) => {
-        const card = document.createElement('div');
-        card.style.cssText = 'border:1px solid #c9aeb5;border-right:5px solid #b0004a;border-radius:8px;padding:12px 16px;margin:0 0 12px;font-size:14px;line-height:1.9;';
-        card.innerHTML = `<div style="font-weight:bold;color:#b0004a;font-size:16px;margin-bottom:4px">👤 ${item.customer}</div><div><strong>🆔 اسم المنتج:</strong> ${item.product}</div><div><strong>📌 حالة الطلب:</strong> ${item.status}</div><div><strong>💰 المجموع الخاص:</strong> ${item.total.toLocaleString('ar-SY')} ل.س</div><div><strong>📂 الدين الخاص:</strong> ${item.debt.toLocaleString('ar-SY')} ل.س</div><div><strong>📅 التاريخ:</strong> ${item.date}</div>`;
-        content.append(card);
-      });
+      content.setAttribute('lang', 'ar');
+      content.style.cssText = 'box-sizing:border-box;background:#f2f7f4;color:#12352d;padding:0;width:794px;min-height:1120px;font-family:Arial,"Tahoma",sans-serif;position:fixed;top:0;left:0;z-index:2147483647;display:block;visibility:visible;opacity:1;overflow:hidden;';
+      content.innerHTML = `
+        <div style="background:linear-gradient(135deg,#075e54 0%,#087f68 62%,#0b9b7a 100%);color:#fff;padding:34px 42px 28px;position:relative;overflow:hidden">
+          <div style="position:absolute;left:-45px;top:-55px;width:170px;height:170px;border:1px solid rgba(241,196,93,.5);border-radius:50%;box-shadow:0 0 0 18px rgba(241,196,93,.08),0 0 0 36px rgba(241,196,93,.06)"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative">
+            <div><div style="font-size:28px;font-weight:800;letter-spacing:.2px">${invoiceEscape(storeName)}</div><div style="font-size:16px;color:#f4d77a;margin-top:8px">أناقة تُرسل بثقة</div></div>
+            <div style="text-align:center;border:1px solid rgba(255,255,255,.38);border-radius:16px;padding:12px 18px;background:rgba(0,0,0,.12)"><div style="font-size:12px;color:#d5f4e9">فاتورة</div><div style="font-size:22px;font-weight:800;margin-top:4px">#${orders.length.toString().padStart(3,'0')}</div></div>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,.45);margin:26px 0 16px"></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;font-size:14px;color:#e2f7ef"><span>تاريخ الإصدار: ${new Date().toLocaleDateString('ar-JO')}</span><span>الفترة: ${invoiceEscape(summary.fromDate)} — ${invoiceEscape(summary.toDate)}</span></div>
+        </div>
+        <div style="padding:24px 42px 40px">
+          <div style="background:#fff;border:1px solid #cce5dc;border-radius:18px;padding:20px;box-shadow:0 7px 24px rgba(7,94,84,.08);margin-bottom:20px">
+            <div style="font-size:18px;font-weight:800;color:#075e54;margin-bottom:16px">ملخص الفاتورة</div>
+            <div style="display:flex;gap:12px"><div style="flex:1;background:#e6f5ef;border-radius:13px;padding:13px"><div style="font-size:12px;color:#4a746b">المجموع العام</div><div style="font-size:19px;font-weight:800;color:#075e54;margin-top:5px">${total} <small style="font-size:11px">ل.س</small></div></div><div style="flex:1;background:#fff5d9;border-radius:13px;padding:13px"><div style="font-size:12px;color:#80672c">المدفوع</div><div style="font-size:19px;font-weight:800;color:#765a09;margin-top:5px">${paid} <small style="font-size:11px">ل.س</small></div></div><div style="flex:1;background:#ffebe8;border-radius:13px;padding:13px"><div style="font-size:12px;color:#935147">المتبقي</div><div style="font-size:19px;font-weight:800;color:#a43c2f;margin-top:5px">${debt} <small style="font-size:11px">ل.س</small></div></div></div>
+          </div>
+          <div style="font-size:18px;font-weight:800;color:#075e54;margin:6px 0 12px">تفاصيل الطلبات</div>
+          ${details.map((item, index) => `<div style="background:#fff;border:1px solid #cce5dc;border-right:6px solid #0b8f72;border-radius:15px;padding:16px 18px;margin-bottom:12px;box-shadow:0 4px 14px rgba(7,94,84,.06);page-break-inside:avoid"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px"><div style="font-size:17px;font-weight:800;color:#075e54">${invoiceEscape(item.customer)}</div><div style="font-size:11px;color:#557a72;background:#e6f5ef;border-radius:20px;padding:5px 10px">طلب ${index + 1}</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px 22px;font-size:13px;line-height:1.7"><div><span style="color:#71918a">المنتج:</span> <strong>${invoiceEscape(item.product)}</strong></div><div><span style="color:#71918a">الحالة:</span> <strong>${invoiceEscape(item.status)}</strong></div><div><span style="color:#71918a">إجمالي الطلب:</span> <strong>${item.total.toLocaleString('ar-SY')} ل.س</strong></div><div><span style="color:#71918a">المتبقي:</span> <strong style="color:#a43c2f">${item.debt.toLocaleString('ar-SY')} ل.س</strong></div><div><span style="color:#71918a">التاريخ:</span> <strong>${invoiceEscape(item.date)}</strong></div></div></div>`).join('')}
+          <div style="text-align:center;margin-top:24px;padding-top:18px;border-top:1px dashed #9fc8bb;color:#52766d;font-size:13px">شكرًا لاختياركم ${invoiceEscape(storeName)} — نتمنى لكم إطلالة لا تُنسى</div>
+        </div>`;
       document.body.append(content);
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       const today = new Date();
       const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      try { await window.html2pdf().set({ margin: 8, filename: `فاتورة-${todayValue}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, width: 1000, windowWidth: 1000 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['css', 'legacy'] } }).from(content).save(); showToast(`تم تصدير فاتورة-${todayValue}.pdf`); }
-      finally { content.remove(); }
+      try {
+        await window.html2pdf().set({
+          margin: [6, 6, 6, 6],
+          filename: `فاتورة-${todayValue}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f2f7f4', logging: false, width: 794, windowWidth: 794, scrollX: 0, scrollY: 0 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+          pagebreak: { mode: ['css', 'legacy'] },
+        }).from(content).save();
+        showToast(`تم تصدير فاتورة-${todayValue}.pdf`);
+      } finally {
+        content.remove();
+      }
     }
     async function loadAdminOrders() {
       try {
@@ -2794,7 +2868,23 @@
       const customerDelete = event.target.closest('[data-customer-delete]');
       if (customerDelete) { try { await fetchJson(`/api/customers/${customerDelete.dataset.customerDelete}`, { method: 'DELETE' }); await loadCustomers(); showToast('تم حذف العميل'); } catch (error) { showToast('تعذر حذف العميل'); } return; }
       const customerEdit = event.target.closest('[data-customer-edit]');
-      if (customerEdit) { const customer = state.customers.find((item) => String(item.id) === String(customerEdit.dataset.customerEdit)); if (customer) { document.getElementById('customerEditingId').value = customer.id; document.getElementById('customerName').value = customer.full_name || ''; document.getElementById('customerPhone').value = customer.phone || ''; document.getElementById('customerPassword').value = customer.password || ''; switchTab('customers'); } return; }
+      if (customerEdit) {
+        const customer = state.customers.find((item) => String(item.id) === String(customerEdit.dataset.customerEdit));
+        if (customer) {
+          document.getElementById('customerEditingId').value = customer.id;
+          document.getElementById('customerName').value = customer.full_name || '';
+          document.getElementById('customerPhone').value = customer.phone || '';
+          const password = document.getElementById('customerPassword');
+          password.value = '';
+          password.required = false;
+          password.placeholder = 'اتركها فارغة للإبقاء على كلمة المرور الحالية';
+          const submit = document.querySelector('#customerForm button[type="submit"]');
+          if (submit) submit.textContent = 'حفظ تعديلات العميل';
+          switchTab('customers');
+          document.getElementById('customerName')?.focus();
+        }
+        return;
+      }
 
       const deleteId = event.target.closest('[data-delete-id]');
       if (deleteId) {
@@ -2906,6 +2996,7 @@
       const form = document.querySelector('#section-products form');
       if (form) form.addEventListener('submit', handleProductCreation);
       document.getElementById('customerForm')?.addEventListener('submit', handleCustomerSubmit);
+      document.getElementById('resetCustomerButton')?.addEventListener('click', resetCustomerForm);
       document.getElementById('addOrderButton')?.addEventListener('click', () => { resetOrderForm(); populateOrderFormOptions(); document.getElementById('orderForm')?.classList.remove('hidden'); });
       document.getElementById('cancelOrderButton')?.addEventListener('click', resetOrderForm);
       document.getElementById('orderForm')?.addEventListener('submit', handleOrderSubmit);

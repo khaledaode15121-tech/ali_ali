@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { db, testConnection } from "./db.js";
@@ -789,6 +789,7 @@ app.get("/api/customers", async (req, res) => {
 app.post("/api/customers", async (req, res) => {
   const payload = normalizeCustomerPayload(req.body);
   if (!payload.full_name || !payload.phone || !payload.password) return res.status(400).json({ message: "اسم العميل والهاتف وكلمة المرور مطلوبة" });
+  if (payload.full_name.length > 255 || payload.phone.length > 50 || payload.password.length > 255) return res.status(400).json({ message: "بيانات العميل تتجاوز الطول المسموح" });
   try {
     const [duplicates] = await db.query("SELECT id FROM customers WHERE full_name=? OR phone=? LIMIT 1", [payload.full_name, payload.phone]);
     if (duplicates.length) return res.status(409).json({ message: "اسم العميل أو رقم الهاتف مستخدم مسبقاً" });
@@ -808,17 +809,25 @@ app.post("/api/customers", async (req, res) => {
 
 app.put("/api/customers/:id", async (req, res) => {
   const payload = normalizeCustomerPayload(req.body);
+  if (!payload.full_name || !payload.phone) return res.status(400).json({ message: "اسم العميل ورقم الهاتف مطلوبان" });
+  if (payload.full_name.length > 255 || payload.phone.length > 50 || payload.password.length > 255) return res.status(400).json({ message: "بيانات العميل تتجاوز الطول المسموح" });
   try {
+    const [duplicates] = await db.query("SELECT id FROM customers WHERE (full_name=? OR phone=?) AND id<>? LIMIT 1", [payload.full_name, payload.phone, req.params.id]);
+    if (duplicates.length) return res.status(409).json({ message: "اسم العميل أو رقم الهاتف مستخدم مسبقاً" });
     const passwordPart = payload.password ? ", password=?, password_hash=?" : "";
     const values = payload.password
       ? [payload.full_name, payload.phone, payload.preferred_style, payload.password, hashCustomerPassword(payload.password), req.params.id]
       : [payload.full_name, payload.phone, payload.preferred_style, req.params.id];
-    await db.query(`UPDATE customers SET full_name=?, phone=?, preferred_style=?${passwordPart} WHERE id=?`, values);
-    return res.json({ message: "Customer updated" });
+    const [result] = await db.query(`UPDATE customers SET full_name=?, phone=?, preferred_style=?${passwordPart} WHERE id=?`, values);
+    if (!result.affectedRows) return res.status(404).json({ message: "العميل غير موجود" });
+    return res.json({ message: "تم تحديث العميل" });
   } catch {
     const index = memory.customers.findIndex((item) => Number(item.id) === Number(req.params.id));
-    if (index >= 0) memory.customers[index] = { ...memory.customers[index], full_name: payload.full_name, phone: payload.phone, preferred_style: payload.preferred_style, ...(payload.password ? { password: payload.password, password_hash: hashCustomerPassword(payload.password) } : {}) };
-    return res.json({ message: "Customer updated in demo mode" });
+    if (index < 0) return res.status(404).json({ message: "العميل غير موجود" });
+    const duplicate = memory.customers.find((item) => Number(item.id) !== Number(req.params.id) && (item.full_name === payload.full_name || item.phone === payload.phone));
+    if (duplicate) return res.status(409).json({ message: "اسم العميل أو رقم الهاتف مستخدم مسبقاً" });
+    memory.customers[index] = { ...memory.customers[index], full_name: payload.full_name, phone: payload.phone, preferred_style: payload.preferred_style, ...(payload.password ? { password: payload.password, password_hash: hashCustomerPassword(payload.password) } : {}) };
+    return res.json({ message: "تم تحديث العميل" });
   }
 });
 
