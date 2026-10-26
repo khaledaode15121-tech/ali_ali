@@ -2190,10 +2190,7 @@
       return { total: orders.reduce((sum, order) => sum + Number(order.total_price || 0), 0), debt: orders.reduce((sum, order) => sum + getOrderDebt(order), 0), fromDate: selectedOrderDateFrom || dates[0] || '—', toDate: selectedOrderDateTo || dates[dates.length - 1] || selectedOrderDateFrom || '—' };
     }
     function getInvoiceStoreName() {
-      const configuredName = String(storeSettings.store_name || '').trim();
-      // ترحيل الاسم القديم تلقائيًا حتى يطابق الاسم الظاهر في الصفحة الرئيسية.
-      if (!configuredName || configuredName === 'صالون ام علي للأناقة') return 'صالون أم علي للأناقة';
-      return configuredName;
+      return 'صالون أم علي للأناقة';
     }
     function sendOrdersInvoiceToWhatsapp() {
       const orders = getFilteredOrders();
