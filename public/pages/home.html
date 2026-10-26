@@ -123,7 +123,8 @@
     #productsShowcaseGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>
-<script src="/pages/nav.js"></script></head>
+<script src="/pages/nav.js"></script><script src="/pages/html-to-image.bundle.js"></script>
+</head>
 <body id="pageTop" class="min-h-screen text-right flex flex-col justify-between selection:bg-pink-200">
 <!-- BEGIN: TopBar -->
 <header class="w-full bg-white border-b border-pink-100 shadow-sm" data-purpose="top-navigation">
@@ -1076,6 +1077,180 @@
       return url.startsWith('/') ? new URL(url, PRODUCT_API_BASE).href : url;
     }
 
+    async function shareProductToWhatsApp(product, imageUrl, message, button) {
+      const whatsappUrl = whatsappLinkWithMessage(message);
+      const originalLabel = button?.querySelector('span')?.textContent || 'مشاركة عبر واتساب';
+      let whatsappWindow = null;
+      if (button) {
+        button.disabled = true;
+        const label = button.querySelector('span');
+        if (label) label.textContent = 'جاري تجهيز الصورة…';
+      }
+
+      // Open a placeholder synchronously in the user gesture so popup blockers do not
+      // prevent WhatsApp from opening after the asynchronous image export finishes.
+      try {
+        whatsappWindow = window.open('about:blank', '_blank');
+        if (whatsappWindow) {
+          whatsappWindow.document.title = 'جاري تجهيز صورة المنتج';
+          whatsappWindow.document.body.innerHTML = '<p dir="rtl" style="font:16px Arial,sans-serif;padding:24px">جاري تجهيز صورة المنتج وفتح واتساب…</p>';
+        }
+      } catch (error) {
+        console.warn('Could not prepare the WhatsApp tab:', error);
+      }
+
+      const setStatus = (text) => {
+        if (!whatsappWindow || whatsappWindow.closed) return;
+        try {
+          whatsappWindow.document.body.textContent = text;
+          whatsappWindow.document.body.dir = 'rtl';
+          whatsappWindow.document.body.style.cssText = 'font:16px Arial,sans-serif;padding:24px';
+        } catch { /* The placeholder may already have navigated or been closed. */ }
+      };
+      const openWhatsApp = () => {
+        if (whatsappWindow && !whatsappWindow.closed) {
+          whatsappWindow.location.replace(whatsappUrl);
+        } else {
+          window.location.assign(whatsappUrl);
+        }
+      };
+
+      let card;
+      try {
+        if (!window.htmlToImage?.toBlob) throw new Error('مكتبة إنشاء الصور غير متاحة');
+
+        const imageDataUrl = await (async () => {
+          if (!imageUrl) return '';
+          try {
+            const response = await fetch(mediaUrl(imageUrl), { mode: 'cors', cache: 'force-cache' });
+            if (!response.ok) throw new Error(`Image request failed (${response.status})`);
+            const blob = await response.blob();
+            if (!blob.type.startsWith('image/')) throw new Error('Product image is not an image');
+            return await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(String(reader.result || ''));
+              reader.onerror = () => reject(reader.error || new Error('Could not read product image'));
+              reader.readAsDataURL(blob);
+            });
+          } catch (error) {
+            console.warn('Could not load the product photo for the share card:', error);
+            return '';
+          }
+        })();
+
+        const primary = getComputedStyle(document.documentElement).getPropertyValue('--store-primary').trim() || '#d81b60';
+        const secondary = getComputedStyle(document.documentElement).getPropertyValue('--store-secondary').trim() || '#c59b27';
+        const storeName = document.getElementById('storeNameHeader')?.textContent?.trim() || 'متجرنا';
+        const stockStatus = String(product.stock_status || 'available').toLowerCase();
+        const statusText = { available: 'متوفر', reserved: 'محجوز حالياً', unavailable: 'غير متوفر' }[stockStatus] || 'غير محدد';
+        const formatPrice = (value) => Number(value) > 0 ? `${Number(value).toLocaleString('ar-SY')} ل.س` : 'غير متاح';
+        const addText = (parent, tagName, text, cssText) => {
+          const element = document.createElement(tagName);
+          element.textContent = text;
+          element.style.cssText = cssText;
+          parent.append(element);
+          return element;
+        };
+
+        card = document.createElement('section');
+        card.dir = 'rtl';
+        card.style.cssText = `box-sizing:border-box;width:640px;padding:28px;background:#fff8fa;color:#34232a;font-family:Arial,Tahoma,sans-serif;display:flex;flex-direction:column;gap:18px;border:1px solid #f1dce4;border-radius:28px;`;
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:16px';
+        const brand = document.createElement('div');
+        brand.style.cssText = 'display:flex;align-items:center;gap:12px';
+        const mark = addText(brand, 'span', 'أ', `width:48px;height:48px;border-radius:50%;background:${primary};color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700`);
+        mark.setAttribute('aria-hidden', 'true');
+        const brandCopy = document.createElement('div');
+        addText(brandCopy, 'strong', storeName, `display:block;color:${primary};font-size:23px;font-weight:800`);
+        addText(brandCopy, 'span', 'تفاصيل المنتج', 'display:block;margin-top:3px;color:#806a73;font-size:14px');
+        brand.append(brandCopy);
+        addText(header, 'span', 'منتج مميز', `padding:8px 14px;border:1px solid ${secondary};border-radius:999px;color:${secondary};font-size:14px;font-weight:700;white-space:nowrap`);
+        header.prepend(brand);
+        card.append(header);
+
+        const imageFrame = document.createElement('div');
+        imageFrame.style.cssText = 'height:590px;overflow:hidden;border-radius:20px;background:#f5e9ee;display:flex;align-items:center;justify-content:center';
+        if (imageDataUrl) {
+          const image = document.createElement('img');
+          image.src = imageDataUrl;
+          image.alt = product.name || 'صورة المنتج';
+          image.style.cssText = 'width:100%;height:100%;object-fit:contain';
+          imageFrame.append(image);
+          await image.decode();
+        } else {
+          addText(imageFrame, 'span', 'صورة المنتج غير متاحة', 'color:#806a73;font-size:22px;font-weight:700');
+        }
+        card.append(imageFrame);
+
+        addText(card, 'h1', product.name || 'منتج', `margin:0;color:${primary};font-size:30px;line-height:1.4;font-weight:800`);
+        const codeAndCategory = document.createElement('div');
+        codeAndCategory.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px';
+        [
+          `كود المنتج: ${product.code || product.id || '—'}`,
+          [product.category_name, product.subcategory_name].filter(Boolean).join(' / '),
+        ].filter(Boolean).forEach((value) => addText(codeAndCategory, 'span', value, 'padding:7px 12px;border-radius:999px;background:#f8eaf0;color:#705760;font-size:14px;font-weight:600'));
+        addText(codeAndCategory, 'span', statusText, `padding:7px 12px;border-radius:999px;background:${stockStatus === 'available' ? '#e6f6ec' : '#fff1dd'};color:${stockStatus === 'available' ? '#217243' : '#8b5a00'};font-size:14px;font-weight:700`);
+        card.append(codeAndCategory);
+
+        const prices = document.createElement('div');
+        prices.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:12px';
+        [
+          ['سعر البيع', formatPrice(product.price)],
+          ['سعر الإيجار', formatPrice(product.rental_price)],
+        ].forEach(([label, value]) => {
+          const priceCard = document.createElement('div');
+          priceCard.style.cssText = 'padding:15px 18px;border:1px solid #f1dce4;border-radius:16px;background:#fff;text-align:center';
+          addText(priceCard, 'span', label, 'display:block;color:#806a73;font-size:14px');
+          addText(priceCard, 'strong', value, `display:block;margin-top:6px;color:${primary};font-size:21px`);
+          prices.append(priceCard);
+        });
+        card.append(prices);
+
+        if (product.description?.trim()) {
+          const description = document.createElement('p');
+          description.textContent = product.description.trim();
+          description.style.cssText = 'margin:0;padding:14px 16px;border-radius:14px;background:#fff;color:#59464e;font-size:15px;line-height:1.8;white-space:pre-wrap';
+          card.append(description);
+        }
+        addText(card, 'div', 'للطلب أو الاستفسار عبر واتساب', `padding-top:12px;border-top:1px solid #ead6df;text-align:center;color:${primary};font-size:16px;font-weight:700`);
+        document.body.append(card);
+        if (document.fonts?.ready) await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1200))]);
+
+        const imageBlob = await window.htmlToImage.toBlob(card, {
+          backgroundColor: '#fff8fa',
+          cacheBust: true,
+          pixelRatio: 2,
+          skipFonts: true,
+        });
+        if (!imageBlob) throw new Error('تعذر تحويل بطاقة المنتج إلى صورة');
+        const downloadUrl = URL.createObjectURL(imageBlob);
+        const downloadLink = document.createElement('a');
+        const safeProductCode = String(product.code || product.id || 'product').replace(/[^\w\u0600-\u06FF-]+/g, '-');
+        downloadLink.href = downloadUrl;
+        downloadLink.download = `product-${safeProductCode}.png`;
+        downloadLink.style.display = 'none';
+        document.body.append(downloadLink);
+        downloadLink.click();
+        downloadLink.remove();
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 60_000);
+        setStatus('تم تنزيل صورة المنتج. جارٍ فتح واتساب…');
+        await new Promise((resolve) => setTimeout(resolve, 350));
+        openWhatsApp();
+      } catch (error) {
+        console.error('Could not create the product share image:', error);
+        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+        window.alert('تعذر إنشاء صورة المنتج وتنزيلها. تحقق من اتصال الإنترنت وصورة المنتج ثم أعد المحاولة.');
+      } finally {
+        card?.remove();
+        if (button) {
+          button.disabled = false;
+          const label = button.querySelector('span');
+          if (label) label.textContent = originalLabel;
+        }
+      }
+    }
+
     function createCategoryCard(category) {
       const card = document.createElement('article');
       card.className = 'flex flex-col items-center min-w-0';
@@ -1321,7 +1496,10 @@
       shareButton.innerHTML = '<i class="fa-brands fa-whatsapp"></i><span>مشاركة عبر واتساب</span>';
       shareButton.addEventListener('click', () => {
         const shareUrl = new URL(`/product?product=${encodeURIComponent(product.id || product.code || '')}`, location.origin).href;
-        const imageItem = (product.media || []).find((item) => item.media_type === 'image' && item.url);
+        const currentItem = productMediaViewerState.items[productMediaViewerState.index];
+        const imageItem = currentItem?.media_type === 'image' && currentItem.url
+          ? currentItem
+          : (product.media || []).find((item) => item.media_type === 'image' && item.url);
         const imageUrl = imageItem?.url || product.image_url;
         const status = { available: 'متوفر', reserved: 'محجوز حالياً', unavailable: 'غير متوفر' }[String(product.stock_status || 'available').toLowerCase()] || 'غير محدد';
         const shareMessage = [
@@ -1334,7 +1512,7 @@
           imageUrl ? `صورة المنتج: ${new URL(mediaUrl(imageUrl), location.href).href}` : '',
           `رابط صفحة المنتج: ${shareUrl}`,
         ].filter(Boolean).join('\n');
-        window.open(whatsappLinkWithMessage(shareMessage), '_blank', 'noopener,noreferrer');
+        shareProductToWhatsApp(product, imageUrl, shareMessage, shareButton);
       });
       actions.append(orderButton, shareButton);
     }
@@ -1513,7 +1691,7 @@
       productPageUrl.hash = 'products-showcase';
       const productShareText = `${productMessage}\nرابط صفحة المتجر: ${productPageUrl.href}`;
       shareButton.addEventListener('click', () => {
-        window.open(whatsappLinkWithMessage(productShareText), '_blank', 'noopener,noreferrer');
+        shareProductToWhatsApp(product, imageUrl, productShareText, shareButton);
       });
       const productActions = document.createElement('div');
       productActions.className = 'grid grid-cols-2 gap-2';
