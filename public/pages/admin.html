@@ -2232,7 +2232,7 @@
       const content = document.createElement('div');
       content.dir = 'rtl';
       content.setAttribute('lang', 'ar');
-      content.style.cssText = 'box-sizing:border-box;background:#f2f7f4;color:#12352d;padding:0;width:794px;min-height:1120px;font-family:"Cairo",Tahoma,Arial,sans-serif;direction:rtl;unicode-bidi:plaintext;position:fixed;top:0;left:0;z-index:2147483647;display:block;visibility:visible;opacity:1;overflow:hidden;';
+      content.style.cssText = 'box-sizing:border-box;background:#f2f7f4;color:#12352d;padding:0;width:794px;min-height:1120px;font-family:"Cairo",Tahoma,Arial,sans-serif;direction:rtl;text-align:right;position:fixed;top:0;left:0;z-index:2147483647;display:block;visibility:visible;opacity:1;overflow:hidden;';
       content.innerHTML = `
         <div style="background:linear-gradient(135deg,#075e54 0%,#087f68 62%,#0b9b7a 100%);color:#fff;padding:34px 42px 28px;position:relative;overflow:hidden">
           <div style="position:absolute;left:-45px;top:-55px;width:170px;height:170px;border:1px solid rgba(241,196,93,.5);border-radius:50%;box-shadow:0 0 0 18px rgba(241,196,93,.08),0 0 0 36px rgba(241,196,93,.06)"></div>
@@ -2263,6 +2263,7 @@
         const canvas = await window.html2canvas(content, {
           scale: 2,
           useCORS: true,
+          foreignObjectRendering: true,
           backgroundColor: '#f2f7f4',
           logging: false,
           width: 794,
