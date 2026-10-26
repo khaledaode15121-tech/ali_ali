@@ -1064,7 +1064,7 @@
     </div>
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="flex flex-wrap gap-3"><div class="px-4 py-3 rounded-xl bg-primary-container text-on-primary-container">مجموع السعر الكلي: <strong id="ordersTotalSum">0</strong> ل.س</div><div class="px-4 py-3 rounded-xl bg-secondary-container text-on-secondary-container">مجموع الديون: <strong id="ordersDebtSum">0</strong> ل.س</div></div>
-      <div class="flex flex-wrap gap-2"><button type="button" id="printOrdersButton" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-secondary text-white"><span class="material-symbols-outlined">send</span>إرسال الفاتورة واتساب</button><button type="button" id="exportOrdersPdfButton" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white"><span class="material-symbols-outlined">picture_as_pdf</span>تصدير الفاتورة PDF</button></div>
+      <div class="flex flex-wrap gap-2"><button type="button" id="printOrdersButton" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-secondary text-white"><span class="material-symbols-outlined">send</span>إرسال الفاتورة واتساب</button><button type="button" id="exportOrdersImageButton" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white"><span class="material-symbols-outlined">image</span>حفظ الفاتورة كصورة</button></div>
     </div>
     <p class="hidden text-center text-on-surface-variant py-6" id="ordersStatus" role="status"></p>
     <div class="overflow-x-auto">
@@ -2207,10 +2207,10 @@
     function invoiceEscape(value) {
       return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
     }
-    async function exportOrdersInvoicePdf() {
+    async function exportOrdersInvoiceImage() {
       const orders = getFilteredOrders();
       if (!orders.length) return showToast('لا توجد طلبات مطابقة للفلاتر الحالية');
-      if (typeof window.html2pdf !== 'function') return showToast('تعذر تحميل أداة PDF، تحقق من اتصال الإنترنت');
+      if (typeof window.html2canvas !== 'function') return showToast('تعذر تحميل أداة حفظ الصورة، تحقق من اتصال الإنترنت');
       const customers = new Map(state.customers?.map((item) => [Number(item.id), item]) || []);
       const products = new Map(state.products.map((item) => [Number(item.id), item]));
       const details = getInvoiceDetails(orders, customers, products);
@@ -2247,15 +2247,21 @@
       const today = new Date();
       const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       try {
-        await window.html2pdf().set({
-          margin: [6, 6, 6, 6],
-          filename: `فاتورة-${todayValue}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f2f7f4', logging: false, width: 794, windowWidth: 794, scrollX: 0, scrollY: 0 },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-          pagebreak: { mode: ['css', 'legacy'] },
-        }).from(content).save();
-        showToast(`تم تصدير فاتورة-${todayValue}.pdf`);
+        const canvas = await window.html2canvas(content, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#f2f7f4',
+          logging: false,
+          width: 794,
+          windowWidth: 794,
+          scrollX: 0,
+          scrollY: 0,
+        });
+        const link = document.createElement('a');
+        link.download = `فاتورة-${todayValue}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast(`تم حفظ فاتورة-${todayValue}.png`);
       } finally {
         content.remove();
       }
@@ -3012,7 +3018,7 @@
       document.getElementById('orderSortFilter')?.addEventListener('change', (event) => { selectedOrderSort = event.target.value; renderOrders(); });
       document.getElementById('resetOrderFilters')?.addEventListener('click', () => { selectedOrderStatus = 'all'; selectedOrderCustomer = 'all'; selectedOrderDateFrom = ''; selectedOrderDateTo = ''; selectedOrderSort = 'date_desc'; document.getElementById('orderStatusFilter').value = 'all'; document.getElementById('orderCustomerFilter').value = 'all'; document.getElementById('orderDateFrom').value = ''; document.getElementById('orderDateTo').value = ''; document.getElementById('orderSortFilter').value = 'date_desc'; renderOrders(); });
       document.getElementById('printOrdersButton')?.addEventListener('click', sendOrdersInvoiceToWhatsapp);
-      document.getElementById('exportOrdersPdfButton')?.addEventListener('click', exportOrdersInvoicePdf);
+      document.getElementById('exportOrdersImageButton')?.addEventListener('click', exportOrdersInvoiceImage);
       document.getElementById('addProductMediaButton')?.addEventListener('click', () => {
         document.getElementById('productImageInput')?.click();
       });
