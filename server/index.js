@@ -30,7 +30,7 @@ const uploadTypes = {
   "video/quicktime": "mov",
 };
 const defaultStoreSettings = {
-  store_name: "صالون أم علي للأناقة",
+  store_name: "صالون ام علي للأناقة",
   logo_url: "",
   homepage_image_url: "",
   primary_color: "#d81b60",
