@@ -1318,10 +1318,23 @@
       orderButton.innerHTML = '<i class="fa-brands fa-whatsapp"></i><span>طلب المنتج</span>';
       const shareButton = document.createElement('button');
       shareButton.type = 'button'; shareButton.className = 'flex items-center justify-center gap-2 rounded-xl bg-brand-pink px-4 py-3 font-bold text-white hover:bg-brand-pinkDeep';
-      shareButton.innerHTML = '<i class="fa-solid fa-share-nodes"></i><span>مشاركة</span>';
-      shareButton.addEventListener('click', async () => {
+      shareButton.innerHTML = '<i class="fa-brands fa-whatsapp"></i><span>مشاركة عبر واتساب</span>';
+      shareButton.addEventListener('click', () => {
         const shareUrl = new URL(`/product?product=${encodeURIComponent(product.id || product.code || '')}`, location.origin).href;
-        try { if (navigator.share) await navigator.share({ title: product.name || 'منتج', text: `شاهد/ي ${product.name || 'هذا المنتج'}`, url: shareUrl }); else { await navigator.clipboard.writeText(shareUrl); shareButton.querySelector('span').textContent = 'تم نسخ الرابط'; setTimeout(() => { shareButton.querySelector('span').textContent = 'مشاركة'; }, 1800); } } catch (error) { if (error.name !== 'AbortError') console.warn('Product sharing failed:', error); }
+        const imageItem = (product.media || []).find((item) => item.media_type === 'image' && item.url);
+        const imageUrl = imageItem?.url || product.image_url;
+        const status = { available: 'متوفر', reserved: 'محجوز حالياً', unavailable: 'غير متوفر' }[String(product.stock_status || 'available').toLowerCase()] || 'غير محدد';
+        const shareMessage = [
+          `أرغب بالاستفسار أو الطلب عن المنتج: ${product.name || 'منتج'}`,
+          `كود المنتج: ${product.code || product.id || '—'}`,
+          `القسم: ${[product.category_name, product.subcategory_name].filter(Boolean).join(' / ') || '—'}`,
+          `حالة التوفر: ${status}`,
+          `سعر البيع: ${Number(product.price) > 0 ? `${Number(product.price).toLocaleString('ar-SY')} ل.س` : 'غير متاح'}`,
+          `سعر الإيجار: ${Number(product.rental_price) > 0 ? `${Number(product.rental_price).toLocaleString('ar-SY')} ل.س` : 'غير متاح'}`,
+          imageUrl ? `صورة المنتج: ${new URL(mediaUrl(imageUrl), location.href).href}` : '',
+          `رابط صفحة المنتج: ${shareUrl}`,
+        ].filter(Boolean).join('\n');
+        window.open(whatsappLinkWithMessage(shareMessage), '_blank', 'noopener,noreferrer');
       });
       actions.append(orderButton, shareButton);
     }
@@ -1490,45 +1503,17 @@
       const shareButton = document.createElement('button');
       shareButton.type = 'button';
       shareButton.className = 'w-full bg-brand-pink hover:bg-brand-pinkDeep text-white py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow transition';
-      shareButton.setAttribute('aria-label', `مشاركة المنتج ${product.name || ''}`);
+      shareButton.setAttribute('aria-label', `مشاركة المنتج ${product.name || ''} عبر واتساب`);
       const shareIcon = document.createElement('i');
-      shareIcon.className = 'fa-solid fa-share-nodes text-sm';
+      shareIcon.className = 'fa-brands fa-whatsapp text-sm';
       const shareLabel = document.createElement('span');
-      shareLabel.textContent = 'مشاركة';
+      shareLabel.textContent = 'مشاركة عبر واتساب';
       shareButton.append(shareIcon, shareLabel);
       const productPageUrl = new URL(location.href);
       productPageUrl.hash = 'products-showcase';
       const productShareText = `${productMessage}\nرابط صفحة المتجر: ${productPageUrl.href}`;
-      shareButton.addEventListener('click', async () => {
-        if (navigator.share) {
-          try {
-            await navigator.share({ title: product.name || 'منتج من المتجر', text: productShareText, url: productPageUrl.href });
-            return;
-          } catch (error) {
-            if (error.name === 'AbortError') return;
-          }
-        }
-        try {
-          if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(productShareText);
-          } else {
-            const temporaryInput = document.createElement('textarea');
-            temporaryInput.value = productShareText;
-            temporaryInput.style.position = 'fixed';
-            temporaryInput.style.opacity = '0';
-            document.body.append(temporaryInput);
-            temporaryInput.select();
-            const copied = document.execCommand('copy');
-            temporaryInput.remove();
-            if (!copied) throw new Error('Copy to clipboard is unavailable');
-          }
-          shareLabel.textContent = 'تم نسخ التفاصيل';
-          setTimeout(() => { shareLabel.textContent = 'مشاركة'; }, 2200);
-        } catch (error) {
-          console.warn('Could not share or copy product details:', error);
-          shareLabel.textContent = 'تعذرت المشاركة';
-          setTimeout(() => { shareLabel.textContent = 'مشاركة'; }, 2200);
-        }
+      shareButton.addEventListener('click', () => {
+        window.open(whatsappLinkWithMessage(productShareText), '_blank', 'noopener,noreferrer');
       });
       const productActions = document.createElement('div');
       productActions.className = 'grid grid-cols-2 gap-2';
