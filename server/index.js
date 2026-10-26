@@ -239,7 +239,8 @@ function normalizeSubcategoryPayload(body) {
 }
 
 function normalizeProductPayload(body) {
-  const { category_id, subcategory_id, code, name, description, price, rental_price, stock_status, is_featured, is_active, image_url } = body;
+  const { category_id, subcategory_id, code, name, description, price, rental_price, stock_status, is_featured, is_active, image_url, share_image_url } = body;
+  const rawShareImageUrl = String(share_image_url || "").trim();
   return {
     category_id: toNumber(category_id),
     subcategory_id: toNumber(subcategory_id),
@@ -254,6 +255,7 @@ function normalizeProductPayload(body) {
     is_featured: is_featured ? 1 : 0,
     is_active: is_active !== false ? 1 : 0,
     image_url: normalizeImageUrl(image_url),
+    share_image_url: /^(https:\/\/|\/uploads\/)[^\s]*$/i.test(rawShareImageUrl) ? rawShareImageUrl : "",
   };
 }
 
@@ -869,9 +871,9 @@ app.post("/api/products", async (req, res) => {
     try {
       await connection.beginTransaction();
       [result] = await connection.query(
-        `INSERT INTO products (category_id, subcategory_id, code, name, description, price, rental_price, stock_status, is_featured, is_active, image_url)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [payload.category_id, payload.subcategory_id, payload.code, payload.name, payload.description, payload.price, payload.rental_price, payload.stock_status, payload.is_featured, payload.is_active, payload.image_url],
+        `INSERT INTO products (category_id, subcategory_id, code, name, description, price, rental_price, stock_status, is_featured, is_active, image_url, share_image_url)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [payload.category_id, payload.subcategory_id, payload.code, payload.name, payload.description, payload.price, payload.rental_price, payload.stock_status, payload.is_featured, payload.is_active, payload.image_url, payload.share_image_url || null],
       );
       for (const [index, item] of media.entries()) {
         if (typeof item?.url !== "string" || !/^(https?:\/\/|\/uploads\/)/i.test(item.url)) continue;
@@ -888,12 +890,12 @@ app.post("/api/products", async (req, res) => {
     } finally {
       connection.release();
     }
-    return res.status(201).json({ id: result.insertId, message: "Product created", image_url: payload.image_url });
+    return res.status(201).json({ id: result.insertId, message: "Product created", image_url: payload.image_url, share_image_url: payload.share_image_url || null });
   } catch {
     const nextId = memory.products.length ? Math.max(...memory.products.map((p) => p.id)) + 1 : 1;
     const newProduct = { id: nextId, ...payload, media };
     memory.products.push(newProduct);
-    return res.status(201).json({ id: nextId, message: "Product created in demo mode", image_url: payload.image_url });
+    return res.status(201).json({ id: nextId, message: "Product created in demo mode", image_url: payload.image_url, share_image_url: payload.share_image_url || null });
   }
 });
 
@@ -907,8 +909,8 @@ app.put("/api/products/:id", async (req, res) => {
     try {
       await connection.beginTransaction();
       await connection.query(
-        `UPDATE products SET category_id=?, subcategory_id=?, code=?, name=?, description=?, price=?, rental_price=?, stock_status=?, is_featured=?, is_active=?, image_url=? WHERE id=?`,
-        [payload.category_id, payload.subcategory_id, payload.code, payload.name, payload.description, payload.price, payload.rental_price, payload.stock_status, payload.is_featured, payload.is_active, payload.image_url, id],
+        `UPDATE products SET category_id=?, subcategory_id=?, code=?, name=?, description=?, price=?, rental_price=?, stock_status=?, is_featured=?, is_active=?, image_url=?, share_image_url=? WHERE id=?`,
+        [payload.category_id, payload.subcategory_id, payload.code, payload.name, payload.description, payload.price, payload.rental_price, payload.stock_status, payload.is_featured, payload.is_active, payload.image_url, payload.share_image_url || null, id],
       );
       if (media) {
         await connection.query("DELETE FROM product_media WHERE product_id = ?", [id]);
@@ -928,13 +930,13 @@ app.put("/api/products/:id", async (req, res) => {
     } finally {
       connection.release();
     }
-    return res.json({ message: "Product updated", image_url: payload.image_url });
+    return res.json({ message: "Product updated", image_url: payload.image_url, share_image_url: payload.share_image_url || null });
   } catch {
     const productIndex = memory.products.findIndex((p) => p.id === Number(id));
     if (productIndex >= 0) {
       memory.products[productIndex] = { ...memory.products[productIndex], ...payload, ...(media ? { media } : {}) };
     }
-    return res.json({ message: "Product updated in demo mode", image_url: payload.image_url });
+    return res.json({ message: "Product updated in demo mode", image_url: payload.image_url, share_image_url: payload.share_image_url || null });
   }
 });
 
@@ -1036,6 +1038,10 @@ async function startServer() {
     const [imageColumns] = await db.query("SHOW COLUMNS FROM products LIKE 'image_url'");
     if (!imageColumns.length) {
       await db.query("ALTER TABLE products ADD COLUMN image_url TEXT NULL AFTER is_active");
+    }
+    const [shareImageColumns] = await db.query("SHOW COLUMNS FROM products LIKE 'share_image_url'");
+    if (!shareImageColumns.length) {
+      await db.query("ALTER TABLE products ADD COLUMN share_image_url TEXT NULL AFTER image_url");
     }
     const [customerPasswordColumns] = await db.query("SHOW COLUMNS FROM customers LIKE 'password_hash'");
     if (!customerPasswordColumns.length) await db.query("ALTER TABLE customers ADD COLUMN password_hash CHAR(64) NULL AFTER phone");

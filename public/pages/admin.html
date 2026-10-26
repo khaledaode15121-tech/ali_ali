@@ -57,7 +57,7 @@
     #homepageContentEditor { min-width: 0; }
   }
 </style>
-<script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "outline-variant": "#e3bdc3", "on-background": "#25181e", "surface-variant": "#f4dce4", "primary-fixed-dim": "#ffb2bf", "on-tertiary-container": "#fff2f3", "on-primary": "#ffffff", "secondary-container": "#fed65b", "primary-fixed": "#ffd9de", "on-secondary-container": "#745c00", "surface-container-high": "#fae2ea", "on-secondary": "#ffffff", "tertiary-container": "#dc0c5a", "inverse-primary": "#ffb2bf", "on-tertiary-fixed": "#400014", "on-secondary-fixed": "#241a00", "secondary": "#735c00", "on-primary-fixed-variant": "#90003b", "on-secondary-fixed-variant": "#574500", "error": "#ba1a1a", "on-error-container": "#93000a", "surface-container-highest": "#f4dce4", "primary-container": "#d81b60", "surface-container-low": "#fff0f4", "on-surface-variant": "#5a4044", "surface-bright": "#fff8f8", "background": "#fff8f8", "on-tertiary": "#ffffff", "surface-container-lowest": "#ffffff", "outline": "#8e6f74", "tertiary": "#b00046", "error-container": "#ffdad6", "secondary-fixed": "#ffe088", "inverse-surface": "#3b2c32", "inverse-on-surface": "#ffecf2", "surface": "#fff8f8", "on-primary-fixed": "#3f0016", "surface-container": "#ffe8f0", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#900038", "surface-dim": "#ebd4dc", "tertiary-fixed": "#ffd9de", "tertiary-fixed-dim": "#ffb2be", "on-surface": "#25181e", "on-primary-container": "#fff2f3", "primary": "#b0004a", "surface-tint": "#bc004f", "secondary-fixed-dim": "#e9c349" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-mobile": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-xl": "2.5rem", "margin": "2.5rem", "gutter": "1.25rem", "space-md": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem" }, "fontFamily": { "label-sm": [ "Plus Jakarta Sans" ], "display-lg": [ "Playfair Display" ], "body-lg": [ "Plus Jakarta Sans" ], "headline-lg": [ "Playfair Display" ], "label-md": [ "Plus Jakarta Sans" ], "title-lg": [ "Plus Jakarta Sans" ], "headline-lg-mobile": [ "Playfair Display" ], "title-md": [ "Plus Jakarta Sans" ], "headline-md": [ "Playfair Display" ], "display-lg-mobile": [ "Playfair Display" ], "body-md": [ "Plus Jakarta Sans" ], "label-lg": [ "Plus Jakarta Sans" ] }, "fontSize": { "label-sm": [ "10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600" } ], "display-lg": [ "48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "26px", "fontWeight": "400" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "fontWeight": "600" } ], "label-md": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ], "title-lg": [ "20px", { "lineHeight": "28px", "fontWeight": "600" } ], "headline-lg-mobile": [ "26px", { "lineHeight": "34px", "fontWeight": "600" } ], "title-md": [ "16px", { "lineHeight": "24px", "fontWeight": "600" } ], "headline-md": [ "24px", { "lineHeight": "32px", "fontWeight": "500" } ], "display-lg-mobile": [ "34px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "body-md": [ "14px", { "lineHeight": "22px", "fontWeight": "400" } ], "label-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "600" } ] } } } };</script><script src="/pages/nav.js"></script><style>@media print { body * { visibility: hidden !important; } #section-whatsapp-orders, #section-whatsapp-orders * { visibility: visible !important; } #section-whatsapp-orders { position: absolute; top: 0; right: 0; width: 100%; } .print-hide, #orderFilters, #orderForm, #addOrderButton, #printOrdersButton { display: none !important; } #section-whatsapp-orders > div { box-shadow: none !important; } }</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script></head><body class="bg-surface font-body-md text-on-surface antialiased"><div id="adminAuthOverlay" class="fixed inset-0 z-[100] bg-[#fff8f8] flex items-center justify-center p-5"><div class="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl border border-[#f4dce4]"><div class="text-center mb-7"><div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-container text-on-primary-container shadow-md"><span class="material-symbols-outlined text-3xl">lock</span></div><h1 class="font-headline-md text-headline-md text-primary">دخول المدير</h1><p class="mt-2 text-sm text-on-surface-variant">أدخل اسم المستخدم وكلمة المرور للمتابعة</p></div><form id="adminLoginForm" class="flex flex-col gap-4"><label class="flex flex-col gap-2 text-sm font-semibold">اسم المستخدم<input id="adminUsername" required autocomplete="username" class="rounded-xl border border-outline-variant/50 px-4 py-3 outline-none focus:ring-2 focus:ring-primary" value="kha1512" /></label><label class="flex flex-col gap-2 text-sm font-semibold">كلمة المرور<input id="adminPassword" required type="password" autocomplete="current-password" class="rounded-xl border border-outline-variant/50 px-4 py-3 outline-none focus:ring-2 focus:ring-primary" /></label><p id="adminAuthMessage" class="min-h-5 text-center text-sm text-error"></p><button id="adminAuthSubmit" type="submit" class="rounded-xl bg-primary px-5 py-3 font-semibold text-white shadow-md hover:brightness-105">تسجيل الدخول</button></form></div></div><aside class="fixed right-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-6 px-4"><div class="flex flex-col gap-6"><div class="flex items-center gap-3 px-3 py-2"><div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center shadow-md"><span class="material-symbols-outlined text-on-primary-container text-[22px]">styler</span></div><div><span class="font-headline-md text-headline-md text-primary block leading-none">أم علي</span><span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest mt-1 block">للأناقة والإتيليه</span></div></div><div class="h-[1px] bg-outline-variant/40 mx-2"></div><nav class="flex flex-col gap-1.5" data-active-classes="bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_4px_16px_rgba(216,27,96,0.15)]"><a aria-current="page" class="flex items-center gap-3.5 px-4 py-3 transition-all bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_4px_16px_rgba(216,27,96,0.15)]" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">dashboard</span><span>نظرة عامة والإحصائيات</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="main-categories" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">category</span><span>الأقسام الرئيسية</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="sub-categories" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">account_tree</span><span>الأقسام الفرعية</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="products-management" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">checkroom</span><span>إدارة المنتجات والفساتين</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="whatsapp-orders" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">chat</span><span>طلبات واستفسارات الواتساب</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="customers" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">group</span><span>إدارة العملاء</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="store-settings" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">tune</span><span>إعدادات المتجر</span></a>
+<script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "outline-variant": "#e3bdc3", "on-background": "#25181e", "surface-variant": "#f4dce4", "primary-fixed-dim": "#ffb2bf", "on-tertiary-container": "#fff2f3", "on-primary": "#ffffff", "secondary-container": "#fed65b", "primary-fixed": "#ffd9de", "on-secondary-container": "#745c00", "surface-container-high": "#fae2ea", "on-secondary": "#ffffff", "tertiary-container": "#dc0c5a", "inverse-primary": "#ffb2bf", "on-tertiary-fixed": "#400014", "on-secondary-fixed": "#241a00", "secondary": "#735c00", "on-primary-fixed-variant": "#90003b", "on-secondary-fixed-variant": "#574500", "error": "#ba1a1a", "on-error-container": "#93000a", "surface-container-highest": "#f4dce4", "primary-container": "#d81b60", "surface-container-low": "#fff0f4", "on-surface-variant": "#5a4044", "surface-bright": "#fff8f8", "background": "#fff8f8", "on-tertiary": "#ffffff", "surface-container-lowest": "#ffffff", "outline": "#8e6f74", "tertiary": "#b00046", "error-container": "#ffdad6", "secondary-fixed": "#ffe088", "inverse-surface": "#3b2c32", "inverse-on-surface": "#ffecf2", "surface": "#fff8f8", "on-primary-fixed": "#3f0016", "surface-container": "#ffe8f0", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#900038", "surface-dim": "#ebd4dc", "tertiary-fixed": "#ffd9de", "tertiary-fixed-dim": "#ffb2be", "on-surface": "#25181e", "on-primary-container": "#fff2f3", "primary": "#b0004a", "surface-tint": "#bc004f", "secondary-fixed-dim": "#e9c349" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-mobile": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-xl": "2.5rem", "margin": "2.5rem", "gutter": "1.25rem", "space-md": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem" }, "fontFamily": { "label-sm": [ "Plus Jakarta Sans" ], "display-lg": [ "Playfair Display" ], "body-lg": [ "Plus Jakarta Sans" ], "headline-lg": [ "Playfair Display" ], "label-md": [ "Plus Jakarta Sans" ], "title-lg": [ "Plus Jakarta Sans" ], "headline-lg-mobile": [ "Playfair Display" ], "title-md": [ "Plus Jakarta Sans" ], "headline-md": [ "Playfair Display" ], "display-lg-mobile": [ "Playfair Display" ], "body-md": [ "Plus Jakarta Sans" ], "label-lg": [ "Plus Jakarta Sans" ] }, "fontSize": { "label-sm": [ "10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600" } ], "display-lg": [ "48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "26px", "fontWeight": "400" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "fontWeight": "600" } ], "label-md": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ], "title-lg": [ "20px", { "lineHeight": "28px", "fontWeight": "600" } ], "headline-lg-mobile": [ "26px", { "lineHeight": "34px", "fontWeight": "600" } ], "title-md": [ "16px", { "lineHeight": "24px", "fontWeight": "600" } ], "headline-md": [ "24px", { "lineHeight": "32px", "fontWeight": "500" } ], "display-lg-mobile": [ "34px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "body-md": [ "14px", { "lineHeight": "22px", "fontWeight": "400" } ], "label-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "600" } ] } } } };</script><script src="/pages/nav.js"></script><style>@media print { body * { visibility: hidden !important; } #section-whatsapp-orders, #section-whatsapp-orders * { visibility: visible !important; } #section-whatsapp-orders { position: absolute; top: 0; right: 0; width: 100%; } .print-hide, #orderFilters, #orderForm, #addOrderButton, #printOrdersButton { display: none !important; } #section-whatsapp-orders > div { box-shadow: none !important; } }</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script src="/pages/html-to-image.bundle.js"></script><script src="/pages/product-share-card.js"></script></head><body class="bg-surface font-body-md text-on-surface antialiased"><div id="adminAuthOverlay" class="fixed inset-0 z-[100] bg-[#fff8f8] flex items-center justify-center p-5"><div class="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl border border-[#f4dce4]"><div class="text-center mb-7"><div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-container text-on-primary-container shadow-md"><span class="material-symbols-outlined text-3xl">lock</span></div><h1 class="font-headline-md text-headline-md text-primary">دخول المدير</h1><p class="mt-2 text-sm text-on-surface-variant">أدخل اسم المستخدم وكلمة المرور للمتابعة</p></div><form id="adminLoginForm" class="flex flex-col gap-4"><label class="flex flex-col gap-2 text-sm font-semibold">اسم المستخدم<input id="adminUsername" required autocomplete="username" class="rounded-xl border border-outline-variant/50 px-4 py-3 outline-none focus:ring-2 focus:ring-primary" value="kha1512" /></label><label class="flex flex-col gap-2 text-sm font-semibold">كلمة المرور<input id="adminPassword" required type="password" autocomplete="current-password" class="rounded-xl border border-outline-variant/50 px-4 py-3 outline-none focus:ring-2 focus:ring-primary" /></label><p id="adminAuthMessage" class="min-h-5 text-center text-sm text-error"></p><button id="adminAuthSubmit" type="submit" class="rounded-xl bg-primary px-5 py-3 font-semibold text-white shadow-md hover:brightness-105">تسجيل الدخول</button></form></div></div><aside class="fixed right-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-6 px-4"><div class="flex flex-col gap-6"><div class="flex items-center gap-3 px-3 py-2"><div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center shadow-md"><span class="material-symbols-outlined text-on-primary-container text-[22px]">styler</span></div><div><span class="font-headline-md text-headline-md text-primary block leading-none">أم علي</span><span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest mt-1 block">للأناقة والإتيليه</span></div></div><div class="h-[1px] bg-outline-variant/40 mx-2"></div><nav class="flex flex-col gap-1.5" data-active-classes="bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_4px_16px_rgba(216,27,96,0.15)]"><a aria-current="page" class="flex items-center gap-3.5 px-4 py-3 transition-all bg-primary-container text-on-primary-container font-label-lg rounded-xl shadow-[0_4px_16px_rgba(216,27,96,0.15)]" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">dashboard</span><span>نظرة عامة والإحصائيات</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="main-categories" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">category</span><span>الأقسام الرئيسية</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="sub-categories" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">account_tree</span><span>الأقسام الفرعية</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="products-management" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">checkroom</span><span>إدارة المنتجات والفساتين</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="whatsapp-orders" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">chat</span><span>طلبات واستفسارات الواتساب</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="customers" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">group</span><span>إدارة العملاء</span></a><a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="store-settings" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">tune</span><span>إعدادات المتجر</span></a>
 <a class="flex items-center gap-3.5 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-md" data-path="account-security" href="#"><span class="material-symbols-outlined text-[20px] text-secondary">manage_accounts</span><span>الحساب والأمان</span></a></nav></div><div class="px-2 flex flex-col gap-3"><a class="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-surface-container-highest text-primary hover:bg-primary-container hover:text-on-primary-container transition-all font-label-md" data-path="storefront" href="#"><span class="material-symbols-outlined text-[18px]">storefront</span><span>العودة للمتجر الرئيسي</span></a><div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-high"><div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col flex-1 overflow-hidden"><span class="font-label-md text-label-md text-on-surface truncate">المدير العام</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">admin@omali-couture.com</span></div></div></div></aside><div class="pr-72"><header class="fixed top-0 right-72 left-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8"><div class="flex items-center gap-4"><div class="relative flex items-center"><span class="material-symbols-outlined absolute right-3 text-on-surface-variant text-[18px]">search</span><input class="bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant text-body-md font-body-md pr-9 pl-4 py-1.5 rounded-lg outline-none w-72 shadow-sm focus:ring-1 focus:ring-primary" placeholder="بحث سريع في المنتجات والطلبات..." type="text"/></div></div><div class="flex items-center gap-4"><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full"></span></button><div class="h-6 w-[1px] bg-outline-variant/30"></div><div class="flex items-center gap-3"><div class="text-left hidden sm:block"><span class="block font-label-md text-label-md text-on-surface">صالون أم علي</span><span class="block font-label-sm text-label-sm text-secondary font-medium">لوحة التحكم الإدارية</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
 <!-- Content Area -->
 <div class="p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
@@ -1197,7 +1197,7 @@
       return true;
     }
     async function loadAdminData() {
-      await Promise.all([loadData(), loadCustomers(), loadNextProductCode(), loadAdminOrders()]);
+      await Promise.all([loadData(), loadCustomers(), loadNextProductCode(), loadAdminOrders(), loadStoreSettings()]);
     }
     document.getElementById('adminLoginForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -2673,12 +2673,40 @@
       catch { input.value = `OM-${String(state.products.length + 1).padStart(4, '0')}`; }
     }
 
+    async function saveGeneratedProductShareCard(productId, payload, productForCard) {
+      const store = {
+        store_name: storeSettings.store_name,
+        address: storeSettings.homepage_content?.footer?.address || '',
+        phone: storeSettings.homepage_content?.contact?.phone || '',
+        primary_color: storeSettings.primary_color,
+        secondary_color: storeSettings.secondary_color,
+      };
+      const cardBlob = await window.renderProductShareCardBlob(productForCard, store, payload.image_url, API_BASE);
+      const uploadResponse = await fetch(`${API_BASE}/api/uploads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream', 'X-Media-Type': 'image/png' },
+        body: cardBlob,
+      });
+      if (!uploadResponse.ok) {
+        let reason = 'تعذر رفع بطاقة المشاركة';
+        try { reason = (await uploadResponse.json()).message || reason; } catch { /* Keep the Arabic fallback. */ }
+        throw new Error(reason);
+      }
+      const uploadedCard = await uploadResponse.json();
+      await fetchJson(`/api/products/${productId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ ...payload, share_image_url: uploadedCard.url }),
+      });
+    }
+
     async function handleProductCreation(event) {
       event.preventDefault();
       const code = document.getElementById('prodCode')?.value?.trim();
       const name = document.getElementById('prodName')?.value?.trim();
-      const mainCategory = document.getElementById('prodMainCategory')?.value || '';
-      const subCategory = document.getElementById('prodSubCategory')?.value || '';
+      const mainCategoryInput = document.getElementById('prodMainCategory');
+      const subCategoryInput = document.getElementById('prodSubCategory');
+      const mainCategory = mainCategoryInput?.value || '';
+      const subCategory = subCategoryInput?.value || '';
       const salePrice = document.getElementById('salePriceInput')?.value || 0;
       const rentPrice = document.getElementById('rentPriceInput')?.value || 0;
       const stockStatus = document.getElementById('productStockStatus')?.value || 'available';
@@ -2687,6 +2715,11 @@
 
       if (!name || !code) return showToast('يرجى تعبئة اسم المنتج ورمزه');
       if (!mainCategory || !subCategory) return showToast('يرجى اختيار القسم الرئيسي والفرعي');
+      const submitButton = event.currentTarget.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.setAttribute('aria-busy', 'true');
+      }
       const payload = {
         category_id: Number(mainCategory.replace(/^MC-/, '')) || 1,
         subcategory_id: Number(subCategory.replace(/^SC-/, '')) || 1,
@@ -2702,16 +2735,38 @@
           || document.getElementById('productImageUrl')?.value
           || '',
         media: productMedia,
+        share_image_url: '',
       };
 
       try {
+        let productId = editingId;
         if (editingId) {
           await fetchJson(`/api/products/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
-          showToast('تم تعديل المنتج بنجاح');
         } else {
-          await fetchJson('/api/products', { method: 'POST', body: JSON.stringify(payload) });
-          showToast('تمت إضافة المنتج بنجاح');
+          showToast('جارٍ حفظ المنتج وتجهيز بطاقة المشاركة…');
+          const created = await fetchJson('/api/products', { method: 'POST', body: JSON.stringify(payload) });
+          productId = created.id;
         }
+
+        let shareCardSaved = false;
+        try {
+          if (!productId) throw new Error('لم يُرجع الخادم رقم المنتج');
+          if (editingId) showToast('تم حفظ التعديلات. جارٍ تحديث بطاقة المشاركة…');
+          const productForCard = {
+            ...payload,
+            id: productId,
+            category_name: mainCategoryInput?.selectedOptions?.[0]?.textContent?.trim() || '',
+            subcategory_name: subCategoryInput?.selectedOptions?.[0]?.textContent?.trim() || '',
+          };
+          await saveGeneratedProductShareCard(productId, payload, productForCard);
+          shareCardSaved = true;
+        } catch (shareError) {
+          console.error('Product was saved, but its reusable share card could not be stored:', shareError);
+        }
+
+        showToast(shareCardSaved
+          ? (editingId ? 'تم تحديث المنتج وبطاقة المشاركة. ستُستخدم الصورة المحفوظة عند إعادة الإرسال.' : 'تمت إضافة المنتج وحفظ بطاقة المشاركة لإعادة استخدامها.')
+          : 'تم حفظ المنتج، لكن تعذر تخزين بطاقة المشاركة. أعد حفظ المنتج للمحاولة مجدداً.');
         resetProductForm();
         await loadData();
         switchTab('products-table');
@@ -2721,8 +2776,13 @@
         try {
           const details = JSON.parse(error.message);
           if (details.message) errorMessage = `تعذر حفظ المنتج: ${details.message}`;
-        } catch { /* Keep the friendly fallback message. */ }
+        } catch { /* Keep the friendly fallback. */ }
         showToast(errorMessage);
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.removeAttribute('aria-busy');
+        }
       }
     }
 
@@ -3067,12 +3127,9 @@
 
       const isAuthenticated = await authenticateAdmin();
       if (!isAuthenticated) return;
-      await loadData();
-      await loadCustomers();
-      await loadNextProductCode();
+      await Promise.all([loadData(), loadCustomers(), loadNextProductCode(), loadAdminOrders(), loadStoreSettings()]);
       renderProductMedia();
       updateSubCategoryOptions();
-      await loadAdminOrders();
       togglePriceField('salePriceInput', true);
       togglePriceField('rentPriceInput', true);
       switchTab('overview');

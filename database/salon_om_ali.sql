@@ -79,6 +79,8 @@ CREATE TABLE `products` (
   `stock_status` enum('available','reserved','out_of_stock') DEFAULT 'available',
   `is_featured` tinyint(1) DEFAULT '0',
   `is_active` tinyint(1) DEFAULT '1',
+  `image_url` text,
+  `share_image_url` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`),

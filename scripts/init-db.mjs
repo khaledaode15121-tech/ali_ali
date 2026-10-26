@@ -83,6 +83,7 @@ async function init() {
       is_featured TINYINT(1) DEFAULT 0,
       is_active TINYINT(1) DEFAULT 1,
       image_url TEXT,
+      share_image_url TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       INDEX idx_category_id (category_id),
       INDEX idx_subcategory_id (subcategory_id),
